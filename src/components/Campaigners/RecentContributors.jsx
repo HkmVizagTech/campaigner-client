@@ -1,16 +1,10 @@
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Trophy, Clock, Heart, Medal } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
-
-const contributors = [
-  { name: "Rajalakshmi Rangarajan", amount: "10 Sq. Ft.", time: "54 days ago" },
-  { name: "Manikandan P S", amount: "10 Sq. Ft.", time: "54 days ago" },
-  { name: "Sameer Kumar Epari", amount: "8 Sq. Ft.", time: "21 days ago" },
-  { name: "Mageswari Guruswamy", amount: "5 Sq. Ft.", time: "46 days ago" },
-  { name: "Sarangan Muthukrishnan", amount: "5 Sq. Ft.", time: "39 days ago" },
-];
+import { useSelector } from "react-redux";
+import moment from "moment";
+import { Skeleton } from "../ui/skeleton";
 
 const podium = [
   {
@@ -35,6 +29,14 @@ const podium = [
 
 export default function RecentContributors() {
   const [tab, setTab] = useState("top");
+  const {
+    topDonorsArr,
+    lastestDonorsArr,
+    topDonorsLoading,
+    lastestDonorsLoading,
+  } = useSelector((state) => state.campaginer);
+  const isLoading = tab === "top" ? topDonorsLoading : lastestDonorsLoading;
+  const donorsArr = (tab === "top" ? topDonorsArr : lastestDonorsArr) || [];
 
   return (
     <section className="py-16 sm:py-24 px-4">
@@ -81,60 +83,103 @@ export default function RecentContributors() {
 
       <div className="mt-10 sm:mt-14 max-w-4xl mx-auto">
         <Card className="p-3 sm:p-6 space-y-3 bg-muted shadow-inner gap-2">
-          {contributors.map((item, index) => {
-            const isTop = index < 3;
-            const style = podium[index];
-
-            return (
+          {isLoading ? (
+            Array.from({ length: 5 }).map((_, index) => (
               <div
                 key={index}
-                className={cn(
-                  "relative flex flex-col gap-4 rounded-2xl p-4 bg-background shadow-sm transition hover:shadow-md",
-                  "sm:flex-row sm:items-center sm:justify-between",
-                  isTop && `bg-linear-to-r ${style.gradient}`,
-                )}
+                className="flex flex-col gap-4 rounded-2xl p-4 bg-background shadow-sm sm:flex-row sm:items-center sm:justify-between"
               >
-                {isTop && (
-                  <div
-                    className={cn(
-                      "absolute left-0 top-0 h-full w-1 rounded-l-2xl",
-                      style.accent,
-                    )}
-                  />
-                )}
-
                 <div className="flex items-center gap-4">
-                  <div
-                    className={cn(
-                      "relative h-12 w-12 rounded-full flex items-center justify-center bg-muted font-semibold ring-1 shrink-0",
-                      isTop ? style.ring : "ring-border",
-                    )}
-                  >
-                    {isTop ? (
-                      <style.icon className="h-6 w-6 text-primary" />
-                    ) : (
-                      item.name.charAt(0)
-                    )}
-                  </div>
-
-                  <div>
-                    <p className="font-semibold leading-tight">{item.name}</p>
-                    <p className="text-sm text-muted-foreground flex items-center gap-1">
-                      <Heart className="h-4 w-4 text-primary" />
-                      Donated{" "}
-                      <span className="font-medium text-foreground">
-                        {item.amount}
-                      </span>
-                    </p>
+                  <Skeleton className="h-12 w-12 rounded-full" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-40" />
+                    <Skeleton className="h-3 w-28" />
                   </div>
                 </div>
+                <Skeleton className="h-3 w-16 sm:self-end" />
+              </div>
+            ))
+          ) : donorsArr.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-16 text-center space-y-4">
+              <div className="h-16 w-16 rounded-full bg-background flex items-center justify-center shadow-sm ring-1 ring-border">
+                <Heart className="h-8 w-8 text-muted-foreground" />
+              </div>
 
-                <p className="text-xs text-muted-foreground sm:text-right">
-                  {item.time}
+              <div className="space-y-1">
+                <p className="font-semibold text-lg">No contributors yet</p>
+                <p className="text-sm text-muted-foreground max-w-sm">
+                  Be the first to contribute and help build this spiritual
+                  legacy.
                 </p>
               </div>
-            );
-          })}
+            </div>
+          ) : (
+            donorsArr.map((item, index) => {
+              const isTop = index < 3 && tab === "top";
+              const style = podium[index];
+
+              const days = moment().diff(moment(item.createdAt), "days");
+
+              const label =
+                days === 0
+                  ? "Today"
+                  : days === 1
+                    ? "1 day ago"
+                    : `${days} days ago`;
+
+              return (
+                <div
+                  key={item?._id || index}
+                  className={cn(
+                    "relative flex flex-col gap-4 rounded-2xl p-4 bg-background shadow-sm transition hover:shadow-md",
+                    "sm:flex-row sm:items-center sm:justify-between",
+                    isTop && `bg-linear-to-r ${style.gradient}`,
+                  )}
+                >
+                  {isTop && (
+                    <div
+                      className={cn(
+                        "absolute left-0 top-0 h-full w-1 rounded-l-2xl",
+                        style.accent,
+                      )}
+                    />
+                  )}
+
+                  <div className="flex items-center gap-4">
+                    <div
+                      className={cn(
+                        "relative h-12 w-12 rounded-full flex items-center justify-center bg-muted font-semibold ring-1 shrink-0",
+                        isTop ? style.ring : "ring-border",
+                      )}
+                    >
+                      {isTop ? (
+                        <style.icon className="h-6 w-6 text-primary" />
+                      ) : (
+                        item?.donorName?.charAt(0) || "?"
+                      )}
+                    </div>
+
+                    <div>
+                      <p className="font-semibold leading-tight">
+                        {item?.donorName}
+                      </p>
+                      <p className="text-sm text-muted-foreground flex items-center gap-1">
+                        <Heart className="h-4 w-4 text-primary" />
+                        Donated{" "}
+                        <span className="font-medium text-foreground">
+                          {item.amount}
+                        </span>
+                      </p>
+                    </div>
+                  </div>
+
+                  <p className="text-xs text-muted-foreground sm:text-right">
+                    {label}
+                  </p>
+                </div>
+              );
+            })
+          )}
         </Card>
 
         <p className="text-xs mt-7 text-muted-foreground text-center">

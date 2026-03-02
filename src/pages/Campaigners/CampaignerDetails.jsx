@@ -51,7 +51,7 @@ const CampaignerDetails = () => {
       }),
     );
 
-    dispatch(getTopDonors(currentCampaign._id));
+    dispatch(getTopDonors(currentCampaign?._id));
   }, [campaignerId, currentCampaign?._id, dispatch]);
 
   useEffect(() => {

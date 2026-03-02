@@ -1,5 +1,6 @@
 import api from "@/api/api";
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import { toast } from "react-toastify";
 
 export const getCampainer = createAsyncThunk(
   "getCampaigner",
@@ -18,6 +19,7 @@ export const getCampainer = createAsyncThunk(
       const response = await api.get(url);
       return response?.data?.data;
     } catch (error) {
+      toast.error(error?.message || "Internal Server Error");
       return rejectWithValue(error?.message || "Internal Server error");
     }
   },
@@ -30,6 +32,7 @@ export const getSingleCampaignerDetails = createAsyncThunk(
       const response = await api.get(`/campaigner/details/${id}`);
       return response?.data?.data;
     } catch (error) {
+      toast.error(error?.message || "Internal Server Error");
       return rejectWithValue(error?.message || "Internal Server error");
     }
   },
@@ -42,6 +45,7 @@ export const getTopDonors = createAsyncThunk(
       const response = await api.get(`/campaigner/topdonors/${id}`);
       return response?.data?.data;
     } catch (error) {
+      toast.error(error?.message || "Internal Server Error");
       return rejectWithValue(error?.message || "Internal Server error");
     }
   },
@@ -56,6 +60,7 @@ export const getLastestDonors = createAsyncThunk(
       );
       return response?.data?.data;
     } catch (error) {
+      toast.error(error?.message || "Internal Server Error");
       return rejectWithValue(error?.message || "Internal Server error");
     }
   },
@@ -71,9 +76,9 @@ export const createCampaigner = createAsyncThunk(
         },
       });
 
-      console.log(response);
       return response?.data;
     } catch (error) {
+      toast.error(error?.message || "Internal Server Error");
       return rejectWithValue(error?.message || "Internal Server error");
     }
   },
@@ -87,6 +92,7 @@ export const getTempleDevotesList = createAsyncThunk(
       const response = await api.get("/devote");
       return response?.data?.data;
     } catch (error) {
+      toast.error(error?.message || "Internal Server Error");
       return rejectWithValue(error?.message || "Internal Server error");
     }
   },
@@ -100,6 +106,7 @@ export const getMediaList = createAsyncThunk(
       const response = await api.get("/media");
       return response?.data?.data;
     } catch (error) {
+      toast.error(error?.message || "Internal Server Error");
       return rejectWithValue(error?.message || "Internal Server error");
     }
   },

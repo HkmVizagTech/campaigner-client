@@ -1,6 +1,6 @@
 "use client";
 
-import { Megaphone, Users, Wallet } from "lucide-react";
+import { HeartHandshake, Megaphone, Users, Wallet } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
 import { NavUser } from "@/components/nav-user";
@@ -47,6 +47,21 @@ const data = {
         {
           title: "All Campaigners",
           url: "/admin/campaigners",
+        },
+      ],
+    },
+    {
+      title: "Seva's",
+      url: "#",
+      icon: HeartHandshake,
+      items: [
+        {
+          title: "Add Seva",
+          url: "/admin/add-seva",
+        },
+        {
+          title: "Seva List",
+          url: "/admin/seva-list",
         },
       ],
     },
