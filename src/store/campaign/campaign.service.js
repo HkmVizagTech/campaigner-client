@@ -9,8 +9,8 @@ export const getCurrentCampaign = createAsyncThunk(
       const response = await api.get("/campaign?status=active");
       return response?.data?.data;
     } catch (error) {
-      toast.error(error?.message || "Internal Server Error");
-      return rejectWithValue(error?.message || "Internal Server error");
+      toast.error(error.response?.data?.message || "Internal Server Error");
+      return rejectWithValue(error.response?.data?.message || "Internal Server error");
     }
   },
 );

@@ -3,6 +3,7 @@ import {
   addNewSeva,
   deleteSeva,
   getSevaList,
+  getSingleSevaDetails,
   updateSeva,
 } from "./seva.service";
 
@@ -10,8 +11,10 @@ const initialState = {
   sevaLoading: false,
   addSevaLoading: false,
   deleteLoading: false,
+  getSingleSevaLoading: false,
   error: null,
   sevaList: [],
+  getSingleSeva: {},
 };
 
 export const sevaReducer = createSlice({
@@ -59,6 +62,17 @@ export const sevaReducer = createSlice({
       })
       .addCase(updateSeva.rejected, (state, { payload }) => {
         state.addSevaLoading = false;
+        state.error = payload;
+      })
+      .addCase(getSingleSevaDetails.pending, (state) => {
+        state.getSingleSevaLoading = true;
+      })
+      .addCase(getSingleSevaDetails.fulfilled, (state, { payload }) => {
+        state.getSingleSevaLoading = false;
+        state.getSingleSeva = payload;
+      })
+      .addCase(getSingleSevaDetails.rejected, (state, { payload }) => {
+        state.getSingleSevaLoading = false;
         state.error = payload;
       }),
 });

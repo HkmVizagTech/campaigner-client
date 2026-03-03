@@ -10,8 +10,8 @@ export const getSevaList = createAsyncThunk(
 
       return response?.data?.data;
     } catch (error) {
-      toast.error(error?.message || "Internal Server Error");
-      return rejectWithValue(error?.message || "Internal Server error");
+      toast.error(error.response?.data?.message || "Internal Server Error");
+      return rejectWithValue(error.response?.data?.message || "Internal Server error");
     }
   },
 );
@@ -24,8 +24,8 @@ export const addNewSeva = createAsyncThunk(
 
       return response?.data;
     } catch (error) {
-      toast.error(error?.message || "Internal Server Error");
-      return rejectWithValue(error?.message || "Internal Server error");
+      toast.error(error.response?.data?.message || "Internal Server Error");
+      return rejectWithValue(error.response?.data?.message || "Internal Server error");
     }
   },
 );
@@ -37,8 +37,10 @@ export const deleteSeva = createAsyncThunk(
       const response = await api.delete(`/seva/${id}`);
       return response?.data;
     } catch (error) {
-      toast.error(error?.message || "Internal Server Error");
-      return rejectWithValue(error?.message || "Internal Server Error");
+      toast.error(error.response?.data?.message || "Internal Server Error");
+      return rejectWithValue(
+        error.response?.data?.message || "Internal Server Error",
+      );
     }
   },
 );
@@ -50,8 +52,20 @@ export const updateSeva = createAsyncThunk(
       const response = await api.put(`/seva/${id}`, formData);
       return response?.data;
     } catch (error) {
-      toast.error(error?.message || "Internal Server Error");
-      return rejectWithValue(error?.message || "Internal Server Error");
+      toast.error(error.response?.data?.message || "Internal Server Error");
+      return rejectWithValue(error.response?.data?.message || "Internal Server Error");
+    }
+  },
+);
+
+export const getSingleSevaDetails = createAsyncThunk(
+  "sevaDetails",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await api.get(`seva/${id}`);
+      return response?.data?.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || "Internal Server error");
     }
   },
 );

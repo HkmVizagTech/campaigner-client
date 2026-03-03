@@ -15,20 +15,34 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Eye, Pencil, Trash2 } from "lucide-react";
+import { Eye, Loader2, Pencil, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getSevaList } from "@/store/seva/seva.service";
+import { deleteSeva, getSevaList } from "@/store/seva/seva.service";
+import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const SevaList = () => {
   const dispatch = useDispatch();
-  const { sevaList, sevaLoading } = useSelector((state) => state.seva);
+  const { sevaList, sevaLoading, deleteLoading } = useSelector(
+    (state) => state.seva,
+  );
 
   const [selectedSeva, setSelectedSeva] = useState(null);
 
   useEffect(() => {
     dispatch(getSevaList());
   }, [dispatch]);
+
+  const handleDelete = async (id) => {
+    try {
+      await dispatch(deleteSeva(id)).unwrap();
+      await dispatch(getSevaList()).unwrap();
+      toast.success("Seva Deleted Successfully");
+    } catch (error) {
+      toast.error(error || "Internal Server error");
+    }
+  };
 
   return (
     <section className="py-2 px-4">
@@ -62,9 +76,7 @@ const SevaList = () => {
                   <TableHead>Seva Name</TableHead>
                   <TableHead>Amount (₹)</TableHead>
                   <TableHead>Benefits</TableHead>
-                  <TableHead className="text-center w-40">
-                    Actions
-                  </TableHead>
+                  <TableHead className="text-center w-40">Actions</TableHead>
                 </TableRow>
               </TableHeader>
 
@@ -91,24 +103,37 @@ const SevaList = () => {
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="text-muted-foreground hover:text-primary"
+                          className="text-muted-foreground hover:text-primary cursor-pointer"
                           onClick={() => setSelectedSeva(seva)}
                         >
                           <Eye className="h-4 w-4" />
                         </Button>
 
                         {/* Edit */}
-                        <Button variant="ghost" size="icon">
-                          <Pencil className="h-4 w-4" />
-                        </Button>
+                        <Link
+                          to={`/admin/seva/${seva?._id}/${seva?.sevaName}/edit`}
+                        >
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="cursor-pointer"
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                        </Link>
 
                         {/* Delete */}
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="text-destructive"
+                          className="text-destructive cursor-pointer"
+                          onClick={() => handleDelete(seva?._id)}
                         >
-                          <Trash2 className="h-4 w-4" />
+                          {deleteLoading ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            <Trash2 className="h-4 w-4" />
+                          )}
                         </Button>
                       </div>
                     </TableCell>

@@ -28,6 +28,7 @@ const AllRoutes = () => {
         <Route path="/admin/campaigners" element={<Campaigners />} />
         <Route path="/admin/add-seva" element={<AddNewSeva />} />
         <Route path="/admin/seva-list" element={<SevaList />} />
+        <Route path="/admin/seva/:id/:sevaname/edit" element={<AddNewSeva />} />
       </Route>
     </Routes>
   );

@@ -1,12 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Plus, Trash2 } from "lucide-react";
+import { Edit, Plus, Trash2 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { addNewSeva } from "@/store/seva/seva.service";
+import {
+  addNewSeva,
+  getSingleSevaDetails,
+  updateSeva,
+} from "@/store/seva/seva.service";
 import { toast } from "react-toastify";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 const AddNewSeva = () => {
   const [formData, setFormData] = useState({
@@ -15,7 +20,28 @@ const AddNewSeva = () => {
     sevaPoints: [""],
   });
   const dispatch = useDispatch();
-  const { addSevaLoading } = useSelector((state) => state.seva);
+  const { addSevaLoading, getSingleSeva } = useSelector((state) => state.seva);
+  const { pathname } = useLocation();
+  const { id } = useParams();
+  const navigate = useNavigate();
+
+  const isEdit = pathname.includes("edit");
+
+  useEffect(() => {
+    if (!id || !isEdit) return;
+
+    dispatch(getSingleSevaDetails(id));
+  }, [dispatch, id, isEdit]);
+
+  useEffect(() => {
+    if (!Object.keys(getSingleSeva).length || !id) return;
+
+    setFormData({
+      sevaAmount: getSingleSeva?.sevaAmount,
+      sevaName: getSingleSeva?.sevaName,
+      sevaPoints: getSingleSeva?.sevaPoints,
+    });
+  }, [getSingleSeva, id]);
 
   const handleChange = (field, value) => {
     setFormData((prev) => ({
@@ -59,14 +85,25 @@ const AddNewSeva = () => {
   const handleSubmit = async () => {
     if (!isFormValid) return;
 
-    const result = await dispatch(addNewSeva(formData)).unwrap();
-    setFormData({
-      sevaName: "",
-      sevaAmount: "",
-      sevaPoints: [""],
-    });
-    if (result?.success) {
-      toast.success("Seva Added");
+    try {
+      let result;
+
+      if (isEdit) {
+        result = await dispatch(updateSeva({ id, formData })).unwrap();
+        toast.success("Seva Updated Successfully");
+        navigate("/admin/seva-list");
+      } else {
+        result = await dispatch(addNewSeva(formData)).unwrap();
+        toast.success("Seva Added Successfully");
+
+        setFormData({
+          sevaName: "",
+          sevaAmount: "",
+          sevaPoints: [""],
+        });
+      }
+    } catch (error) {
+      toast.error(error?.message || "Something went wrong");
     }
   };
 
@@ -76,10 +113,12 @@ const AddNewSeva = () => {
         <Card className="p-8 space-y-8 shadow-md rounded-2xl">
           <div className="space-y-1">
             <h2 className="text-2xl font-semibold tracking-tight">
-              Add New Seva
+              {isEdit ? "Edit Seva" : "Add New Seva"}
             </h2>
             <p className="text-sm text-muted-foreground">
-              Create a new seva offering with benefits.
+              {isEdit
+                ? "Edit an existing seva offering and update its details or benefits."
+                : "Create a new seva offering with benefits."}
             </p>
           </div>
 
@@ -159,7 +198,11 @@ const AddNewSeva = () => {
             className="w-full h-11 text-base font-medium"
             disabled={!isFormValid || addSevaLoading}
           >
-            {addSevaLoading ? "Loading..." : "Save Seva"}
+            {addSevaLoading
+              ? "Loading..."
+              : isEdit
+                ? "Update Seva"
+                : "Save Seva"}
           </Button>
         </Card>
       </div>
