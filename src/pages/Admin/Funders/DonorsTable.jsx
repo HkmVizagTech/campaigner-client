@@ -32,8 +32,8 @@ export default function DonorsTable() {
   const [selectedDonor, setSelectedDonor] = useState(null);
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
-  const [selectedSeva, setSelectedSeva] = useState("");
-  const [selectedCampaign, setSelectedCampaign] = useState("");
+  const [selectedSeva, setSelectedSeva] = useState("all");
+  const [selectedCampaign, setSelectedCampaign] = useState("all");
   const {
     getDonationsArr,
     getDonationsLoading: loading,
@@ -53,12 +53,13 @@ export default function DonorsTable() {
           search,
           id,
           campId: selectedCampaign,
+          sevaId: selectedSeva,
         }),
       );
     }, 500);
 
     return () => clearTimeout(delay);
-  }, [search, page, dispatch, id, selectedCampaign]);
+  }, [search, page, dispatch, id, selectedCampaign, selectedSeva]);
 
   useEffect(() => {
     dispatch(getSevaList());

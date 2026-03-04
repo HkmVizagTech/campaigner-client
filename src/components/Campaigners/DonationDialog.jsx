@@ -54,7 +54,7 @@ const openRazorPay = async (payload, navigate) => {
   rzp.open();
 };
 
-export function DonationDialog({ open, onOpenChange, inputValue }) {
+export function DonationDialog({ open, onOpenChange, inputValue, sevaId }) {
   const [formData, setFormData] = useState({
     name: "",
     phoneNumber: "",
@@ -103,6 +103,7 @@ export function DonationDialog({ open, onOpenChange, inputValue }) {
       campaignId: currentCampaign?._id,
       campaignerId,
       isAnonymous: formData.anonymous,
+      sevaId,
     };
 
     if (formData.pan) {
