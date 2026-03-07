@@ -11,6 +11,8 @@ import AddNewSeva from "@/pages/Admin/Seva/AddNewSeva";
 import SevaList from "@/pages/Admin/Seva/SevaList";
 import NotFound from "@/pages/NotFound";
 import DonorsTable from "@/pages/Admin/Funders/DonorsTable";
+import CampaignerRegister from "@/components/Campaigners/CampaignerRegister";
+import Dashboard from "@/pages/Admin/Dashboard";
 
 const AllRoutes = () => {
   return (
@@ -21,9 +23,11 @@ const AllRoutes = () => {
         element={<CampaignerDetails />}
       />
       <Route path="/contact" element={<Contact />} />
+      <Route path="/campaigner/register" element=<CampaignerRegister /> />
       <Route path="/thankyou" element={<ThankYouPage />} />
 
       <Route element={<Admin />}>
+        <Route path="/admin/dashboard" element={<Dashboard />} />
         <Route path="/admin/campaigners" element={<Campaigners />} />
         <Route path="/admin/create-campaign" element={<CreateCampaign />} />
         <Route path="/admin/create-campaigner" element={<CreateCampaigner />} />

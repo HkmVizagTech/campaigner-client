@@ -1,6 +1,12 @@
 "use client";
 
-import { HeartHandshake, Megaphone, Users, Wallet } from "lucide-react";
+import {
+  HeartHandshake,
+  LayoutDashboard,
+  Megaphone,
+  Users,
+  Wallet,
+} from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
 import { NavUser } from "@/components/nav-user";
@@ -20,6 +26,11 @@ const data = {
     avatar: "/avatars/shadcn.jpg",
   },
   navMain: [
+    {
+      title: "Dashboard",
+      url: "/admin/dashboard",
+      icon: LayoutDashboard,
+    },
     {
       title: "Campaigns",
       url: "#",
@@ -47,6 +58,10 @@ const data = {
         {
           title: "All Campaigners",
           url: "/admin/campaigners",
+        },
+        {
+          title: "Campaigner Registrations",
+          url: "/admin/campaigner/registrations",
         },
       ],
     },

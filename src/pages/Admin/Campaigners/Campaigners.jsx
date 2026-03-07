@@ -15,7 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getCampainer } from "@/store/campaigners/campaigners.service";
 import { getCurrentCampaign } from "@/store/campaign/campaign.service";
 import CustomPagination from "@/components/utils/CustomPagination";
-import { Funnel } from "lucide-react";
+import { Funnel, Pencil, Trash2 } from "lucide-react";
 import {
   Popover,
   PopoverContent,
@@ -27,6 +27,17 @@ import {
 import { Field, FieldGroup } from "@/components/ui/field";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export default function CampaignersTable() {
   const navigate = useNavigate();
@@ -134,7 +145,7 @@ export default function CampaignersTable() {
             </PopoverContent>
           </Popover>
 
-          <Button variant="outline">Export CSV</Button>
+          {/* <Button variant="outline">Export CSV</Button> */}
         </div>
       </div>
 
@@ -196,6 +207,55 @@ export default function CampaignersTable() {
                     >
                       View Funders
                     </Button>
+                  </TableCell>
+                  <TableCell className="text-center">
+                    <div className="flex justify-center gap-2">
+                      {/* EDIT */}
+                      <Button
+                        size="icon-sm"
+                        variant="outline"
+                        onClick={() =>
+                          navigate(`/admin/campaigner/edit/${item._id}`)
+                        }
+                      >
+                        <Pencil size={16} />
+                      </Button>
+
+                      {/* DELETE MODAL */}
+                      {item?.raisedAmount < 0 && (
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button size="icon-sm" variant="destructive">
+                              <Trash2 size={16} />
+                            </Button>
+                          </AlertDialogTrigger>
+
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>
+                                Delete Campaigner
+                              </AlertDialogTitle>
+
+                              <AlertDialogDescription>
+                                This action cannot be undone. This will
+                                permanently delete the campaigner and their
+                                data.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+
+                              <AlertDialogAction
+                                onClick={() => handleDelete(item._id)}
+                              >
+                                Delete
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      )}
+                    </div>
                   </TableCell>
                 </TableRow>
               );

@@ -16,13 +16,16 @@ export default function DonorDetailsModal({ donor, onClose }) {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
           <Detail label="Donor Name" value={donor.donorName} />
           <Detail label="Phone" value={donor.donorPhone} />
-          <Detail label="Amount" value={`₹${donor.amount}`} />
+          <Detail
+            label="Amount"
+            value={`₹${donor.amount?.toLocaleString("en-IN")}`}
+          />
           <Detail label="Status" value={donor.status} />
           <Detail label="Payment Gateway" value={donor.paymentGateway} />
           <Detail label="Campaign" value={donor.campaign?.title} />
           <Detail
             label="Campaign Target"
-            value={`₹${donor.campaign?.targetAmount}`}
+            value={`₹${donor.campaign?.targetAmount?.toLocaleString("en-IN")}`}
           />
           <Detail label="Campaigner" value={donor.campaigner?.name} />
           <Detail

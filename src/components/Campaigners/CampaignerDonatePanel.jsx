@@ -58,7 +58,10 @@ const CampaignDonatePanel = ({ details, sevas = [], sevaLoading }) => {
 
   return (
     <>
-      <div className="h-full w-full flex flex-col rounded-3xl overflow-hidden bg-card shadow-xl border border-border">
+      <div
+        id="donation-card"
+        className="h-full w-full flex flex-col rounded-3xl overflow-hidden bg-card shadow-xl border border-border"
+      >
         <div className="relative px-6 py-8 bg-linear-to-br from-secondary via-secondary/90 to-secondary/80 text-secondary-foreground">
           <div className="absolute inset-0 bg-black/5 pointer-events-none" />
 
