@@ -47,7 +47,7 @@ const CustomCard = ({ campainer, index }) => {
       >
         {/* IMAGE */}
         <div className="relative w-[96%] mx-auto mt-3 h-80 rounded-xl overflow-hidden bg-secondary">
-          {index < 10 && (
+          {index < 10 && campainer?.raisedAmount >= 100 && (
             <div className="absolute top-3 left-4 z-10 h-12 w-12 rounded-lg bg-primary flex items-center justify-center shadow-lg">
               <span className="text-primary-foreground text-lg font-bold">
                 {index + 1}
@@ -55,7 +55,7 @@ const CustomCard = ({ campainer, index }) => {
             </div>
           )}
 
-          {index < 10 && (
+          {index < 10 && campainer?.raisedAmount >= 100 && (
             <div
               className="
       absolute 
@@ -63,7 +63,7 @@ const CustomCard = ({ campainer, index }) => {
       right-3 
       z-10
       rounded-full 
-      bg-gradient-to-r 
+      bg-linear-to-r 
       from-primary 
       to-secondary
       px-4 
@@ -84,7 +84,7 @@ const CustomCard = ({ campainer, index }) => {
             className="h-full w-full object-cover"
           />
 
-          <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-card to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-15 bg-linear-to-t from-card to-transparent" />
         </div>
 
         {/* CONTENT */}
@@ -116,7 +116,7 @@ const CustomCard = ({ campainer, index }) => {
           <div
             className="
             absolute inset-0
-            bg-gradient-to-br
+            bg-linear-to-br
             from-secondary
             via-secondary/95
             to-secondary/80
@@ -130,7 +130,7 @@ const CustomCard = ({ campainer, index }) => {
           <div
             className="
             absolute inset-0
-            bg-gradient-to-t
+            bg-linear-to-t
             from-black/20
             via-transparent
             to-white/10

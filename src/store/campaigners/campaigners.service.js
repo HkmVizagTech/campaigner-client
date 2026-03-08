@@ -97,6 +97,36 @@ export const createCampaigner = createAsyncThunk(
   },
 );
 
+export const updateCampaigner = createAsyncThunk(
+  "updateCampaigner",
+  async ({ id, formData }, { rejectWithValue }) => {
+    try {
+      const response = await api.put(`/campaigner/${id}`, formData);
+      return response?.data;
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Internal Server Error");
+      return rejectWithValue(
+        error.response?.data?.message || "Internal Server error",
+      );
+    }
+  },
+);
+
+export const deleteCampaigner = createAsyncThunk(
+  "deleteCampaigner",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await api.delete(`/campaigner/${id}`);
+      return response?.data;
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Internal Server Error");
+      return rejectWithValue(
+        error.response?.data?.message || "Internal Server error",
+      );
+    }
+  },
+);
+
 // Temple Devotes
 export const getTempleDevotesList = createAsyncThunk(
   "devotesList",

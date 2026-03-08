@@ -54,8 +54,29 @@ const states = [
   "Ladakh",
   "Jammu and Kashmir",
 ];
+const loadRazorpay = () => {
+  return new Promise((resolve) => {
+    if (window.Razorpay) {
+      resolve(true);
+      return;
+    }
 
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+
+    document.body.appendChild(script);
+  });
+};
 const openRazorPay = async (payload, navigate) => {
+  const isLoaded = await loadRazorpay();
+
+  if (!isLoaded) {
+    alert("Payment service failed to load");
+    return;
+  }
+
   const res = await api.post("/donations/create-order", payload);
 
   const { orderId, amount, currency, key, donationId } = res.data.data;
@@ -92,6 +113,10 @@ const openRazorPay = async (payload, navigate) => {
   };
 
   const rzp = new window.Razorpay(options);
+  rzp.on("payment.failed", function (response) {
+    alert("Payment failed. Please try again.");
+  });
+
   rzp.open();
 };
 
@@ -138,8 +163,12 @@ export function DonationDialog({ open, onOpenChange, inputValue, sevaId }) {
       newErrors.phoneNumber = "Enter valid 10 digit mobile number";
     }
 
-    if (formData.tax && !formData.pan.trim()) {
-      newErrors.pan = "PAN number is required for 80G exemption";
+    if (formData.tax) {
+      if (!formData.pan.trim()) {
+        newErrors.pan = "PAN number is required for 80G exemption";
+      } else if (!/[A-Z]{5}[0-9]{4}[A-Z]{1}/.test(formData.pan)) {
+        newErrors.pan = "Enter valid PAN number";
+      }
     }
 
     if (formData.tax || formData.prasadam) {

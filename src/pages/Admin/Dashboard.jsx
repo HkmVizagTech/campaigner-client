@@ -57,7 +57,7 @@ export default function Dashboard() {
       getCampainer({
         id: currentCampaign?._id,
         status: "active",
-        campStatus:"active",
+        campStatus: "active",
         page: 1,
         pageSize: 10,
         sort: "raised_desc",
@@ -243,9 +243,7 @@ export default function Dashboard() {
                       key={i}
                       className={isTop ? "bg-primary/5 font-medium" : ""}
                     >
-                      <TableCell className="font-semibold">
-                        #{i + 1}
-                      </TableCell>
+                      <TableCell className="font-semibold">#{i + 1}</TableCell>
 
                       <TableCell className="font-medium">{c.name}</TableCell>
 
@@ -270,13 +268,16 @@ export default function Dashboard() {
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-3">
-                          {i < 3 && (
+                          {i < 3 && c.raisedAmount >= 100 && (
                             <span className={`text-lg ${rankStyles[i]}`}>
                               {topThreeIcons[i]}
                             </span>
                           )}
-
-                          <Badge variant="secondary">{sevaBadges[i]}</Badge>
+                          {c.raisedAmount >= 100 ? (
+                            <Badge variant="secondary">{sevaBadges[i]}</Badge>
+                          ) : (
+                            "-"
+                          )}
                         </div>
                       </TableCell>
                     </TableRow>

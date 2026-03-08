@@ -1,12 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
   createCampaigner,
+  deleteCampaigner,
   getCampainer,
   getLastestDonors,
   getMediaList,
   getSingleCampaignerDetails,
   getTempleDevotesList,
   getTopDonors,
+  updateCampaigner,
 } from "./campaigners.service";
 
 const initialState = {
@@ -17,6 +19,7 @@ const initialState = {
   templeDevotesLoading: false,
   createCampaignerLoading: false,
   mediaLoading: false,
+  deleteLoading: false,
   campaginers: [],
   topDonorsArr: [],
   lastestDonorsArr: [],
@@ -119,6 +122,26 @@ const campaginersReducer = createSlice({
       })
       .addCase(getMediaList.rejected, (state, { payload }) => {
         state.mediaLoading = false;
+        state.error = payload;
+      })
+      .addCase(updateCampaigner.pending, (state) => {
+        state.createCampaignerLoading = true;
+      })
+      .addCase(updateCampaigner.fulfilled, (state) => {
+        state.createCampaignerLoading = false;
+      })
+      .addCase(updateCampaigner.rejected, (state, { payload }) => {
+        state.createCampaignerLoading = false;
+        state.error = payload;
+      })
+      .addCase(deleteCampaigner.pending, (state) => {
+        state.deleteLoading = true;
+      })
+      .addCase(deleteCampaigner.fulfilled, (state) => {
+        state.deleteLoading = false;
+      })
+      .addCase(deleteCampaigner.rejected, (state, { payload }) => {
+        state.deleteLoading = false;
         state.error = payload;
       }),
 });

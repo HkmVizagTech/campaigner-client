@@ -20,10 +20,13 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   createCampaigner,
   getMediaList,
+  getSingleCampaignerDetails,
   getTempleDevotesList,
+  updateCampaigner,
 } from "@/store/campaigners/campaigners.service";
 import { getCurrentCampaign } from "@/store/campaign/campaign.service";
 import { toast } from "react-toastify";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 export default function CreateCampaigner() {
   const dispatch = useDispatch();
@@ -32,8 +35,11 @@ export default function CreateCampaigner() {
     templeDevotesLoading,
     mediaList,
     createCampaignerLoading,
+    singleCampaignerDetails,
   } = useSelector((state) => state.campaginer);
   const { currentCampaign } = useSelector((state) => state.campaign);
+  const { campaignerId } = useParams();
+  const { pathname } = useLocation();
   const [formData, setFormData] = useState({
     name: "",
     phoneNumber: "",
@@ -44,8 +50,9 @@ export default function CreateCampaigner() {
 
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
-  const [loading, setLoading] = useState(false);
   const [selectedImage, setSelectedImg] = useState(null);
+  const isEdit = pathname.includes("edit");
+  const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(getCurrentCampaign());
@@ -58,6 +65,28 @@ export default function CreateCampaigner() {
   useEffect(() => {
     dispatch(getMediaList());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (!currentCampaign || !isEdit) return;
+    dispatch(getSingleCampaignerDetails(campaignerId));
+  }, [campaignerId, isEdit, dispatch]);
+
+  useEffect(() => {
+    if (
+      !Object.keys(singleCampaignerDetails?.campaginers ?? {}).length ||
+      !campaignerId
+    )
+      return;
+    setFormData({
+      name: singleCampaignerDetails?.campaginers?.name,
+      phoneNumber: singleCampaignerDetails?.campaginers?.phoneNumber,
+      templeDevoteInTouch:
+        singleCampaignerDetails?.campaginers?.templeDevoteInTouch?._id,
+      targetAmount: singleCampaignerDetails?.campaginers?.targetAmount,
+    });
+    setPreview(singleCampaignerDetails?.campaginers?.image?.url);
+    setImage(singleCampaignerDetails?.campaginers?.image?.filename);
+  }, [singleCampaignerDetails, campaignerId]);
 
   const handleChange = (e) => {
     setFormData((prev) => ({
@@ -93,34 +122,44 @@ export default function CreateCampaigner() {
         data.append("image", image);
       }
 
-      const result = await dispatch(createCampaigner(data)).unwrap();
+      if (!isEdit) {
+        const result = await dispatch(createCampaigner(data)).unwrap();
 
-      if (result?.success) {
-        toast.success("Campaigner Created Successfully!");
+        if (result?.success) {
+          toast.success("Campaigner Created Successfully!");
+        }
+
+        setFormData({
+          name: "",
+          phoneNumber: "",
+          templeDevoteInTouch: "",
+          imageId: "",
+          targetAmount: 0,
+        });
+        setImage(null);
+        setPreview(null);
+        setSelectedImg(null);
+      } else if (campaignerId && isEdit) {
+        const result = await dispatch(
+          updateCampaigner({ id: campaignerId, formData }),
+        ).unwrap();
+        if (result?.success) {
+          toast.success("Campaigner Updated Successfully!");
+          navigate("/admin/campaigners");
+        }
       }
     } catch (error) {
       console.error(error);
-    } finally {
-      setFormData({
-        name: "",
-        phoneNumber: "",
-        templeDevoteInTouch: "",
-        recentImage: "",
-        targetAmount: 0,
-      });
-      setImage(null);
-      setPreview(null);
-      setSelectedImg(null);
     }
   };
-
-  console.log(mediaList);
 
   return (
     <div className="p-8 w-full max-w-6xl mx-auto space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-semibold">Create Campaigner</h1>
+        <h1 className="text-3xl font-semibold">
+          {isEdit ? "Edit Campaigner" : "Create Campaigner"}
+        </h1>
         <p className="text-muted-foreground">
           Assign campaign, devote and upload campaigner image.
         </p>
@@ -183,7 +222,6 @@ export default function CreateCampaigner() {
                   value={formData?.targetAmount || ""}
                   onChange={handleChange}
                   required
-                  className="cursor-not-allowed"
                 />
               </div>
             </div>
@@ -224,8 +262,8 @@ export default function CreateCampaigner() {
               <div className="space-y-2">
                 <Label>Recent Images</Label>
                 <Select
-                  value={formData.recentImage}
-                  disabled={!!image}
+                  value={formData.imageId}
+                  disabled={!!image || isEdit}
                   onValueChange={(value) => {
                     setFormData({ ...formData, imageId: value });
                     setSelectedImg(value);
@@ -253,11 +291,19 @@ export default function CreateCampaigner() {
                   type="file"
                   accept="image/*"
                   onChange={handleImageChange}
-                  className={`absolute inset-0 opacity-0 ${!!selectedImage ? "cursor-not-allowed" : "cursor-pointer"} z-10`}
-                  disabled={!!selectedImage}
+                  className={`absolute inset-0 opacity-0 ${
+                    selectedImage || isEdit
+                      ? "cursor-not-allowed"
+                      : "cursor-pointer"
+                  } z-10`}
+                  disabled={selectedImage || isEdit}
                 />
 
-                <div className="border-2 border-dashed border-border rounded-lg p-6 text-center hover:bg-muted transition-all duration-200">
+                <div
+                  className={`border-2 border-dashed border-border rounded-lg p-6 text-center transition-all duration-200 ${
+                    selectedImage || isEdit ? "opacity-60" : "hover:bg-muted"
+                  }`}
+                >
                   {preview ? (
                     <img
                       src={preview}
@@ -276,7 +322,13 @@ export default function CreateCampaigner() {
             {/* Submit */}
             <div className="flex justify-end">
               <Button type="submit" disabled={createCampaignerLoading}>
-                {createCampaignerLoading ? "Creating..." : "Create Campaigner"}
+                {createCampaignerLoading
+                  ? isEdit
+                    ? "Updating..."
+                    : "Creating..."
+                  : isEdit
+                    ? "Update Campaigner"
+                    : "Create Campaigner"}
               </Button>
             </div>
           </form>

@@ -12,7 +12,10 @@ import { Progress } from "@/components/ui/progress";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getCampainer } from "@/store/campaigners/campaigners.service";
+import {
+  deleteCampaigner,
+  getCampainer,
+} from "@/store/campaigners/campaigners.service";
 import { getCurrentCampaign } from "@/store/campaign/campaign.service";
 import CustomPagination from "@/components/utils/CustomPagination";
 import { Funnel, Pencil, Trash2 } from "lucide-react";
@@ -38,6 +41,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import CampaignerDetailsModal from "@/components/utils/CampaignerDetailsModal";
+import { toast } from "react-toastify";
 
 export default function CampaignersTable() {
   const navigate = useNavigate();
@@ -221,9 +225,10 @@ export default function CampaignersTable() {
                     <TableCell>
                       <Button
                         size="sm"
-                        onClick={() =>
-                          navigate(`/admin/funders?id=${item?._id}`)
-                        }
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/admin/funders?id=${item?._id}`);
+                        }}
                       >
                         View Funders
                       </Button>
@@ -234,18 +239,23 @@ export default function CampaignersTable() {
                         <Button
                           size="icon-sm"
                           variant="outline"
-                          onClick={() =>
-                            navigate(`/admin/campaigner/edit/${item._id}`)
-                          }
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/admin/campaigner/edit/${item._id}`);
+                          }}
                         >
                           <Pencil size={16} />
                         </Button>
 
                         {/* DELETE MODAL */}
-                        {item?.raisedAmount < 0 && (
+                        {item?.raisedAmount <= 0 && (
                           <AlertDialog>
                             <AlertDialogTrigger asChild>
-                              <Button size="icon-sm" variant="destructive">
+                              <Button
+                                size="icon-sm"
+                                variant="destructive"
+                                onClick={(e) => e.stopPropagation()}
+                              >
                                 <Trash2 size={16} />
                               </Button>
                             </AlertDialogTrigger>
@@ -267,7 +277,36 @@ export default function CampaignersTable() {
                                 <AlertDialogCancel>Cancel</AlertDialogCancel>
 
                                 <AlertDialogAction
-                                  onClick={() => handleDelete(item._id)}
+                                  onClick={async (e) => {
+                                    e.stopPropagation();
+                                    try {
+                                      const result = await dispatch(
+                                        deleteCampaigner(item?._id),
+                                      ).unwrap();
+
+                                      if (result?.success) {
+                                        toast.success(
+                                          "Campaigner Deleted Successfully",
+                                        );
+
+                                        dispatch(
+                                          getCampainer({
+                                            id: currentCampaign?._id,
+                                            status: "active",
+                                            campStatus: "active",
+                                            page,
+                                            pageSize,
+                                            sort,
+                                            search,
+                                          }),
+                                        );
+                                      }
+                                    } catch (error) {
+                                      toast.error(
+                                        error || "Failed to delete campaigner",
+                                      );
+                                    }
+                                  }}
                                 >
                                   Delete
                                 </AlertDialogAction>
