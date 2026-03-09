@@ -35,6 +35,7 @@ export default function DonorsTable() {
   const id = searchParams.get("id");
   const [selectedSeva, setSelectedSeva] = useState("all");
   const [selectedCampaign, setSelectedCampaign] = useState("all");
+  const [isPrasadam, setIsPrasadam] = useState("all");
   const {
     getDonationsArr,
     getDonationsLoading: loading,
@@ -62,9 +63,18 @@ export default function DonorsTable() {
         id,
         campId: selectedCampaign,
         sevaId: selectedSeva,
+        isPrasadam: isPrasadam === "true" ? true : undefined,
       }),
     );
-  }, [debouncedSearch, page, dispatch, id, selectedCampaign, selectedSeva]);
+  }, [
+    debouncedSearch,
+    page,
+    dispatch,
+    id,
+    selectedCampaign,
+    selectedSeva,
+    isPrasadam,
+  ]);
 
   useEffect(() => {
     dispatch(getSevaList());
@@ -131,6 +141,22 @@ export default function DonorsTable() {
                   {item?.title}
                 </SelectItem>
               ))}
+            </SelectContent>
+          </Select>
+
+          <Select
+            value={isPrasadam}
+            onValueChange={(value) => {
+              setPage(1);
+              setIsPrasadam(value);
+            }}
+          >
+            <SelectTrigger className="w-56">
+              <SelectValue placeholder="Prasadam Eligibility" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All</SelectItem>
+              <SelectItem value="true">Eligible for Prasadam</SelectItem>
             </SelectContent>
           </Select>
         </div>

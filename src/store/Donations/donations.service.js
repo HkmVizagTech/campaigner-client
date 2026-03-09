@@ -4,7 +4,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 export const getDonations = createAsyncThunk(
   "donations/getDonations",
   async (obj, { rejectWithValue }) => {
-    const { page, pageSize, id, campId, search, sevaId } = obj;
+    const { page, pageSize, id, campId, search, sevaId, isPrasadam } = obj;
 
     let url = `/donations?page=${page}&pageSize=${pageSize}`;
 
@@ -22,6 +22,10 @@ export const getDonations = createAsyncThunk(
 
     if (search?.trim()) {
       url += `&search=${search}`;
+    }
+
+    if (isPrasadam) {
+      url += `&isPrasadam=${isPrasadam}`;
     }
 
     try {
