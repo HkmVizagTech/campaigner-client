@@ -128,7 +128,7 @@ const CampaignerRegistrations = () => {
                       value: "pending",
                     },
                     {
-                      label: "Reject",
+                      label: "Rejected",
                       value: "reject",
                     },
                   ]?.map((item) => (

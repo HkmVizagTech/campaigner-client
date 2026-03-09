@@ -117,7 +117,7 @@ export default function Dashboard() {
 
       {/* CARDS */}
 
-      <div className="grid gap-6 md:grid-cols-4">
+      <div className="grid gap-6 md:grid-cols-3 xl:grid-cols-5">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="text-sm">Target Amount</CardTitle>
@@ -169,6 +169,19 @@ export default function Dashboard() {
           <CardContent>
             <div className="text-2xl font-bold">
               {loading ? "..." : summary?.activeCampaigners || 0}
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle className="text-sm">Pending Campaigners</CardTitle>
+            <Users className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {loading ? "..." : summary?.pendingCampaigners || 0}
             </div>
           </CardContent>
         </Card>
