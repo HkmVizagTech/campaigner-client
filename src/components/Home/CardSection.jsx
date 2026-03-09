@@ -93,14 +93,17 @@ const CardSection = ({ currentCampaign }) => {
 
   return (
     <section className="mt-10" id="card-sections">
-      <div className="flex gap-2 flex-col md:flex-row justify-between mb-5 px-3">
+      <div className="flex gap-2 flex-col md:flex-row justify-between mb-5 px-2">
         <h2 className="text md:text-2xl font-semibold">
           Campaigners Supporting This Seva ({campainersCount})
         </h2>
         <Input
           placeholder="Search campaigner..."
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => {
+            setPage(1);
+            setSearch(e.target.value);
+          }}
           className="max-w-sm"
         />
       </div>
