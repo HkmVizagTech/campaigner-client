@@ -72,7 +72,7 @@ export default function TempleSpacesSection() {
     <section className="py-14 px-4">
       <div className="max-w-5xl mx-auto text-center mb-14">
         <h2 className="text-3xl md:text-4xl font-bold">
-          Inside Dakshina <span className="text-primary">Dwaraka Dham</span>
+          Inside Hare Krishna <span className="text-primary">Vaikuntam</span>
         </h2>
         <p className="text-muted-foreground mt-3">
           Each contribution helps build sacred spaces that uplift hearts.
