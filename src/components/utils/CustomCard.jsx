@@ -30,23 +30,9 @@ const CustomCard = ({ campainer, index }) => {
 
   return (
     <Link to={`/campaigner/${campainer?._id}/${campainer?.name}`}>
-      <Card
-        className="
-        relative 
-        flex 
-        flex-col 
-        rounded-2xl 
-        bg-card 
-        shadow-md 
-        transition-all 
-        duration-300
-        hover:shadow-xl
-        hover:-translate-y-1
-        py-0
-      "
-      >
+      <Card className="relative flex flex-col h-full rounded-2xl bg-card shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1 py-0">
         {/* IMAGE */}
-        <div className="relative w-[96%] mx-auto mt-3 h-80 rounded-xl overflow-hidden bg-secondary">
+        <div className="relative w-[96%] mx-auto mt-3 aspect-5/6 rounded-xl overflow-hidden bg-secondary">
           {index < 10 && campainer?.raisedAmount >= 100 && (
             <div className="absolute top-3 left-4 z-10 h-12 w-12 rounded-lg bg-primary flex items-center justify-center shadow-lg">
               <span className="text-primary-foreground text-lg font-bold">
@@ -81,14 +67,14 @@ const CustomCard = ({ campainer, index }) => {
           <img
             src={campainer?.image?.url}
             alt={`Campaigner-${campainer?.image?.filename}`}
-            className="h-full w-full object-cover"
+            className="h-full w-full object-cover object-center transition-transform duration-500 hover:scale-105"
           />
 
           <div className="absolute inset-x-0 bottom-0 h-15 bg-linear-to-t from-card to-transparent" />
         </div>
 
         {/* CONTENT */}
-        <CardContent className="flex-1 px-5 py-1 space-y-2">
+        <CardContent className="flex flex-col flex-1 px-5 py-1 space-y-2">
           <h3 className="text-sm font-medium leading-relaxed text-foreground">
             <span className="font-bold uppercase tracking-wide">
               {campainer?.name}&apos;S

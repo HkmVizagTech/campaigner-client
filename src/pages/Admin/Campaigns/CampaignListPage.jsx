@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Search, SlidersHorizontal } from "lucide-react";
+import { Pen, Search, SlidersHorizontal, Trash2 } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -30,6 +30,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { getCampaignsList } from "@/store/campaign/campaign.service";
 import CustomPagination from "@/components/utils/CustomPagination";
+import { Progress } from "@/components/ui/progress";
 
 const PAGE_SIZE = 10;
 
@@ -171,7 +172,7 @@ const CampaignListPage = () => {
               <TableHead>Campaign</TableHead>
               <TableHead>Target</TableHead>
               <TableHead>Raised</TableHead>
-              <TableHead>Progress</TableHead>
+              <TableHead className="w-[15%]">Progress</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Start Date</TableHead>
               <TableHead>End Date</TableHead>
@@ -202,7 +203,14 @@ const CampaignListPage = () => {
                   ₹{campaign?.raisedAmount?.toLocaleString("en-IN")}
                 </TableCell>
 
-                <TableCell>{campaign?.percentage}%</TableCell>
+                <TableCell className="w-40">
+                  <div className="space-y-2">
+                    <Progress value={campaign?.percentage} />
+                    <span className="text-xs text-muted-foreground">
+                      {campaign?.percentage}%
+                    </span>
+                  </div>
+                </TableCell>
 
                 <TableCell>
                   <StatusBadge status={campaign?.status} />
@@ -214,6 +222,18 @@ const CampaignListPage = () => {
 
                 <TableCell>
                   {new Date(campaign?.endDate).toLocaleDateString()}
+                </TableCell>
+                <TableCell>
+                  <div className="flex gap-2.5">
+                    <Button variant="outline">
+                      <Pen />
+                    </Button>
+                    {campaign?.raisedAmount <= 0 && (
+                      <Button variant="destructive">
+                        <Trash2 />
+                      </Button>
+                    )}
+                  </div>
                 </TableCell>
               </TableRow>
             ))}
