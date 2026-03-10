@@ -32,7 +32,7 @@ const CustomCard = ({ campainer, index }) => {
     <Link to={`/campaigner/${campainer?._id}/${campainer?.name}`}>
       <Card className="relative flex flex-col h-full rounded-2xl bg-card shadow-md transition-all duration-300 hover:shadow-[0_15px_40px_rgba(0,0,0,0.15)] hover:-translate-y-1 py-0">
         {/* IMAGE */}
-        <div className="relative w-[96%] mx-auto mt-3 aspect-5/6 rounded-xl overflow-hidden bg-muted">
+        <div className="relative w-[96%] mx-auto mt-3 aspect-2/2 rounded-xl overflow-hidden bg-muted">
           {/* RANK BADGE */}
           {index < 10 && campainer?.raisedAmount >= 100 && (
             <div className="absolute top-3 left-4 z-10 h-12 w-12 rounded-lg bg-primary flex items-center justify-center shadow-lg">
