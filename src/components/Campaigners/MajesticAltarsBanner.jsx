@@ -16,6 +16,7 @@ export default function MajesticAltarsBanner() {
           src="https://storage.googleapis.com/campaigners-images/Temple%20Images/majestic_altar.jpg"
           alt="Altars"
           className="absolute inset-0 w-full h-full object-cover opacity-40 zoom-medium"
+          loading="lazy"
         />
 
         <div className="relative z-10 text-center px-6">
@@ -28,8 +29,8 @@ export default function MajesticAltarsBanner() {
           </h2>
 
           <p className="max-w-2xl mx-auto text-white/80 text-sm md:text-base">
-            Home to Sri Sri Rukmini Dwarkadisha, Sri Narasimha, and Sri Sri Gaura
-            Nitai — creating a powerful spiritual epicenter.
+            Home to Sri Sri Rukmini Dwarkadisha, Sri Narasimha, and Sri Sri
+            Gaura Nitai — creating a powerful spiritual epicenter.
           </p>
 
           <p className="mt-6 text-primary font-semibold">

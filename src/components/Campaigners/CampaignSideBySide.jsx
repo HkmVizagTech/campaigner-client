@@ -26,11 +26,11 @@ const CampaignSideBySide = () => {
         "
         >
           {/* IMAGE */}
-          <div className="relative h-[340px] md:h-[380px] bg-muted shrink-0">
+          <div className="relative h-85 md:h-95 bg-muted shrink-0">
             <div
               className="
               absolute inset-0
-              bg-gradient-to-br
+              bg-linear-to-br
               from-primary/10
               via-transparent
               to-secondary/10
@@ -40,6 +40,7 @@ const CampaignSideBySide = () => {
             <img
               src={singleCampaignerDetails?.campaginers?.image?.url}
               alt={`Campaigner-${singleCampaignerDetails?.campaginers?.image?.filename}`}
+              loading="lazy"
               className="
               relative z-10
               h-full w-full
@@ -48,7 +49,7 @@ const CampaignSideBySide = () => {
             "
             />
 
-            <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-card to-transparent" />
+            <div className="absolute inset-x-0 bottom-0 h-24 bg-linear-to-t from-card to-transparent" />
           </div>
 
           {/* CONTENT */}

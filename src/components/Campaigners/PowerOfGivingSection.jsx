@@ -95,6 +95,7 @@ export default function PowerOfGivingSection() {
                 playsInline
                 preload="auto"
                 className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                loading="lazy"
               />
               <div
                 className="absolute inset-x-0 bottom-0 h-[55%] 
@@ -181,6 +182,7 @@ export default function PowerOfGivingSection() {
             src="https://storage.googleapis.com/campaigners-images/Temple%20Images/education_wing.jpg"
             alt="Building Character"
             className="absolute inset-0 w-full h-full object-cover zoom-medium"
+            loading="lazy"
           />
 
           {/* Dark Overlay */}
@@ -251,6 +253,7 @@ export default function PowerOfGivingSection() {
           src="https://storage.googleapis.com/campaigners-images/Temple%20Images/prabhupada.jpg"
           alt="Srila Prabhupada"
           className="h-40 w-40 rounded-full mx-auto object-cover shadow-lg"
+          loading="lazy"
         />
 
         <Card className="max-w-2xl mx-auto p-6 text-muted-foreground leading-relaxed">

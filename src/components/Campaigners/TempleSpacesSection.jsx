@@ -88,6 +88,7 @@ export default function TempleSpacesSection() {
             <img
               src={item.image}
               className={`absolute inset-0 w-full h-full object-cover ${positionImageArr[i]}`}
+              loading="lazy"
             />
             <div className="absolute inset-0 bg-black/50" />
 

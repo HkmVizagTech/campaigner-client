@@ -81,6 +81,7 @@ const YoutubeIframe = () => {
                 className="absolute inset-0 w-full h-full rounded-2xl sm:rounded-3xl"
                 allow="autoplay; encrypted-media; picture-in-picture"
                 allowFullScreen
+                loading="lazy"
               />
             </div>
           </Card>

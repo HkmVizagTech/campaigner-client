@@ -55,6 +55,7 @@ export default function DonorPrivileges() {
                   src={p.image}
                   alt={p.title}
                   className="w-full h-56 object-cover"
+                  loading="lazy"
                 />
               </div>
             </Card>
