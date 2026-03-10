@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import CircularProgress from "./CircularProgress";
 import { useSelector } from "react-redux";
 
@@ -58,11 +58,11 @@ const ProgressBanner = () => {
             <CircularProgress value={progress} />
 
             <div>
-              <p className="text-sm text-gray-600 font-medium">
+              <p className="text-sm lg:text-lg text-gray-600 font-medium">
                 Fundraising Goal
               </p>
 
-              <p className="text-2xl font-bold text-gray-900">
+              <p className="text-2xl lg:text-3xl font-bold text-gray-900">
                 ₹{currentCampaign?.targetAmount?.toLocaleString("en-IN")}
               </p>
             </div>
@@ -83,11 +83,11 @@ const ProgressBanner = () => {
 
           {/* RIGHT : Message + CTA */}
           <div className="text-center md:text-right max-w-sm">
-            <h3 className="text-lg font-semibold text-gray-900">
+            <h3 className="text-lg lg:text-2xl font-semibold text-gray-900">
               Mandir Nirmana Seva
             </h3>
 
-            <p className="text-sm text-gray-600 mt-1">
+            <p className="text-sm lg:text-lg text-gray-600 mt-1">
               Join devotees in building a sacred temple that will serve
               generations to come.
             </p>

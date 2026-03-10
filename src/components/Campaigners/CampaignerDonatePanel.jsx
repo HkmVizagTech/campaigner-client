@@ -37,6 +37,7 @@ const CampaignDonatePanel = ({ details, sevas = [], sevaLoading }) => {
       .sort((a, b) => a.sevaAmount - b.sevaAmount)
       .filter((s) => s.sevaAmount >= num);
   }, [inputValue, sevas]);
+
   const handleInputChange = (value) => {
     const num = Number(value);
 
@@ -68,6 +69,7 @@ const CampaignDonatePanel = ({ details, sevas = [], sevaLoading }) => {
       inputRef.current?.focus();
     });
   };
+
   const handleSelect = (seva) => {
     setInputValue(seva.sevaAmount);
     setSelectedSeva(seva);
@@ -80,16 +82,15 @@ const CampaignDonatePanel = ({ details, sevas = [], sevaLoading }) => {
         id="donation-card"
         className="h-full w-full flex flex-col rounded-3xl overflow-hidden bg-card shadow-xl border border-border"
       >
-        {/* TOP BLUE SECTION */}
-        <div className="relative px-6 py-8 bg-linear-to-br from-secondary via-secondary/95 to-secondary/80 text-secondary-foreground">
-          {/* subtle overlay */}
-          <div className="absolute inset-0 bg-black/10 pointer-events-none" />
+        {/* TOP GOLD SECTION */}
+        <div className="relative px-6 py-8 bg-linear-to-br from-yellow-300 via-yellow-400 to-amber-500 text-black shadow-[0_10px_40px_rgba(250,204,21,0.25)]">
+          <div className="absolute inset-0 bg-black/5 pointer-events-none" />
 
           <div className="relative space-y-7">
             {/* AMOUNT + GOAL */}
             <div className="grid grid-cols-2 gap-4">
-              <div className="rounded-2xl bg-white/12 border border-white/20 px-5 py-4 backdrop-blur-md shadow-sm">
-                <p className="text-xs uppercase tracking-wide text-emerald-300">
+              <div className="rounded-2xl bg-white/30 border border-white/40 px-5 py-4 backdrop-blur-md shadow-sm">
+                <p className="text-xs uppercase tracking-wide text-black/70">
                   Amount Raised
                 </p>
 
@@ -98,8 +99,8 @@ const CampaignDonatePanel = ({ details, sevas = [], sevaLoading }) => {
                 </p>
               </div>
 
-              <div className="rounded-2xl bg-white/12 border border-white/20 px-5 py-4 text-right backdrop-blur-md shadow-sm">
-                <p className="text-xs uppercase tracking-wide text-white/70">
+              <div className="rounded-2xl bg-white/30 border border-white/40 px-5 py-4 text-right backdrop-blur-md shadow-sm">
+                <p className="text-xs uppercase tracking-wide text-black/70">
                   Campaign Goal
                 </p>
 
@@ -113,19 +114,28 @@ const CampaignDonatePanel = ({ details, sevas = [], sevaLoading }) => {
             <div className="space-y-3">
               <Progress
                 value={details?.campaginers?.percentage}
-                className="h-4 rounded-full bg-white/25"
+                className="
+      h-4
+      rounded-full
+      bg-white/40
+      border border-white/50
+      shadow-inner
+      [&>div]:bg-linear-to-r
+      [&>div]:from-orange-700
+      [&>div]:to-amber-600
+    "
               />
 
-              <p className="text-sm text-white/80">
+              <p className="text-sm text-black/80">
                 {details?.campaginers?.percentage?.toFixed(2)}% achieved
               </p>
             </div>
 
             {/* DAYS + FUNDERS */}
-            <div className="rounded-2xl bg-white/12 border border-white/20 px-6 py-5 backdrop-blur-md shadow-sm">
-              <div className="grid grid-cols-2 divide-x divide-white/30 text-center">
+            <div className="rounded-2xl bg-white/30 border border-white/40 px-6 py-5 backdrop-blur-md shadow-sm">
+              <div className="grid grid-cols-2 divide-x divide-black/20 text-center">
                 <div>
-                  <p className="text-xs uppercase tracking-wide text-white/70">
+                  <p className="text-xs uppercase tracking-wide text-black/70">
                     Days Left
                   </p>
 
@@ -133,7 +143,7 @@ const CampaignDonatePanel = ({ details, sevas = [], sevaLoading }) => {
                 </div>
 
                 <div>
-                  <p className="text-xs uppercase tracking-wide text-white/70">
+                  <p className="text-xs uppercase tracking-wide text-black/70">
                     Funders
                   </p>
 
@@ -143,20 +153,10 @@ const CampaignDonatePanel = ({ details, sevas = [], sevaLoading }) => {
             </div>
           </div>
         </div>
+
         {/* SPIRITUAL QUOTE */}
         <div className="px-6 pt-5">
-          <div
-            className="
-      rounded-xl
-      border border-border
-      bg-muted/40
-      px-5 py-4
-      text-sm
-      leading-relaxed
-      text-muted-foreground
-      shadow-sm
-    "
-          >
+          <div className="rounded-xl border border-border bg-muted/40 px-5 py-4 text-sm leading-relaxed text-muted-foreground shadow-sm">
             <p className="font-semibold text-foreground mb-1">
               ✨ Lord Krishna says in Bhagavad-Gita 9.27
             </p>
@@ -171,6 +171,7 @@ const CampaignDonatePanel = ({ details, sevas = [], sevaLoading }) => {
             </p>
           </div>
         </div>
+
         {/* BOTTOM SECTION */}
         <div className="flex flex-col gap-5 px-6 py-8 mt-auto">
           {/* NOTICE */}

@@ -25,12 +25,12 @@ export default function MajesticAltarsBanner() {
           </p>
 
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            Three Majestic Altars
+            Two Majestic Altars
           </h2>
 
           <p className="max-w-2xl mx-auto text-white/80 text-sm md:text-base">
-            Home to Sri Sri Rukmini Dwarkadisha, Sri Narasimha, and Sri Sri
-            Gaura Nitai — creating a powerful spiritual epicenter.
+            Home to Sri Sri Radha Madan Mohan and Sri Srinivasa Govinda —
+            creating a powerful spiritual epicenter.
           </p>
 
           <p className="mt-6 text-primary font-semibold">
