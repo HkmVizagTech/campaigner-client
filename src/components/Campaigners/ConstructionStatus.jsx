@@ -43,6 +43,7 @@ const ConstructionStatus = () => {
             src={images[activeIndex]}
             alt="construction"
             className="w-full h-55 sm:h-87.5 lg:h-170 object-cover object-center transition-all duration-500"
+            loading="lazy"
           />
         </div>
 
