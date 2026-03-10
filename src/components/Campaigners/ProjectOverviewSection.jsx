@@ -5,7 +5,7 @@ export default function ProjectOverviewSection() {
   const [expanded, setExpanded] = useState(false);
 
   return (
-    <section className="py-20 px-4">
+    <section className="py-20">
       <div className="max-w-4xl mx-auto  space-y-6">
         <div className="text-center">
           <h2 className="text-2xl md:text-3xl font-bold">

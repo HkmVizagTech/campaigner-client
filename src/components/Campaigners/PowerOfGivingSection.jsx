@@ -56,7 +56,7 @@ export default function PowerOfGivingSection() {
   return (
     <section className="space-y-14">
       {/* ================= POWER OF GIVING ================= */}
-      <div className="text-center space-y-4 px-4">
+      <div className="text-center space-y-4">
         <h2 className="text-3xl md:text-4xl font-bold">
           The Power of{" "}
           <span className="bg-linear-to-r from-yellow-300 via-yellow-400 to-amber-500 bg-clip-text text-transparent font-semibold">
@@ -172,7 +172,7 @@ export default function PowerOfGivingSection() {
         )}
       </div>
 
-      <section className="px-4 md:px-10">
+      <section className="md:px-10">
         <div
           className="
           relative
@@ -212,7 +212,7 @@ export default function PowerOfGivingSection() {
             <div
               className="
               inline-flex items-center gap-2
-              px-4 py-1.5
+              py-1.5
               rounded-full
               border border-primary/50
               bg-black/40
@@ -255,7 +255,7 @@ export default function PowerOfGivingSection() {
       </section>
 
       {/* ================= FOUNDER ================= */}
-      <div className="text-center px-4 space-y-6">
+      <div className="text-center space-y-6">
         <h2 className="text-3xl font-bold">Our Founder & Acharya</h2>
 
         <img
@@ -273,7 +273,7 @@ export default function PowerOfGivingSection() {
       </div>
 
       {/* ================= DARK CTA ================= */}
-      <div className="relative bg-[#071f2f] rounded-3xl mx-4 md:mx-12 overflow-hidden">
+      <div className="relative bg-[#071f2f] rounded-3xl md:mx-12 overflow-hidden">
         <div className="relative z-10 text-center py-20 px-6 text-white space-y-6">
           <p className="text-lg md:text-xl italic max-w-3xl mx-auto leading-relaxed">
             “We are trying to give human society an opportunity for happiness,

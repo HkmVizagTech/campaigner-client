@@ -3,7 +3,7 @@ import { Box } from "lucide-react";
 
 export default function ArchitecturalVisionGallery() {
   return (
-    <section className="py-24 px-6 bg-background">
+    <section className="py-24 bg-background">
       {/* HEADER */}
       <div className="text-center max-w-3xl mx-auto mb-20">
         <h2 className="text-5xl font-bold tracking-tight">

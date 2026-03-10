@@ -2,7 +2,7 @@ export default function TempleVisionSection() {
   return (
     <div
       id="temple-section"
-      className="w-full flex flex-col items-center gap-8 md:gap-10 py-8 md:py-10 px-4"
+      className="w-full flex flex-col items-center gap-8 md:gap-10 py-8 md:py-10"
     >
       {/* ===== TOP BANNER ===== */}
       <div className="w-full max-w-6xl rounded-xl overflow-hidden relative">

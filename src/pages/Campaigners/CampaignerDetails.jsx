@@ -173,8 +173,8 @@ const CampaignerDetails = () => {
             <MajesticAltarsBanner />
             <DonorPrivileges />
             <PowerOfGivingSection />
-            <Footer />
           </div>
+          <Footer />
         </>
       )}
     </>

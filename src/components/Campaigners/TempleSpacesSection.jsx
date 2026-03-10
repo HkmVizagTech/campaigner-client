@@ -69,7 +69,7 @@ const positionImageArr = [
 ];
 export default function TempleSpacesSection() {
   return (
-    <section className="py-14 px-4">
+    <section className="py-14">
       <div className="max-w-5xl mx-auto text-center mb-14">
         <h2 className="text-3xl md:text-4xl font-bold">
           Inside Hare Krishna{" "}

@@ -42,7 +42,7 @@ export default function RecentContributors() {
   const donorsArr = (tab === "top" ? topDonorsArr : lastestDonorsArr) || [];
 
   return (
-    <section className="py-16 sm:py-24 px-4">
+    <section className="py-16 sm:py-24">
       <div className="text-center max-w-2xl mx-auto space-y-4">
         <h2 className="text-2xl sm:text-4xl font-bold">
           Recent{" "}

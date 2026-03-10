@@ -1,6 +1,6 @@
 export default function MajesticAltarsBanner() {
   return (
-    <section className="px-4 pb-14">
+    <section className="pb-14">
       <div
         className="
           relative
