@@ -32,7 +32,8 @@ const TempleHighlights = () => {
           relative 
           w-full 
           md:w-[70%] 
-          lg:w-[50%] 
+          lg:w-[65%]
+          xl:w-[50%]
           mx-auto 
           px-4 sm:px-6
           max-w-6xl
