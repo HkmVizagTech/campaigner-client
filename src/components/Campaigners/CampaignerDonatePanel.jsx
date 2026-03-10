@@ -121,8 +121,8 @@ const CampaignDonatePanel = ({ details, sevas = [], sevaLoading }) => {
       border border-white/50
       shadow-inner
       [&>div]:bg-linear-to-r
-      [&>div]:from-white
-      [&>div]:to-yellow-400
+      [&>div]:from-yellow-500
+      [&>div]:to-amber-400
     "
               />
 

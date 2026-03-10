@@ -135,9 +135,9 @@ const CustomCard = ({ campainer, index }) => {
 
             {/* PROGRESS */}
             <div className="space-y-2">
-              <div className="h-3.5 w-full rounded-full bg-white/35 backdrop-blur-md border border-white/40 shadow-inner overflow-hidden">
+              <div className="h-3.5 w-full rounded-full bg-white/40 border border-white/50 shadow-inner overflow-hidden">
                 <div
-                  className="h-full rounded-full bg-linear-to-r from-white to-yellow-400 transition-all duration-700 ease-out"
+                  className="h-full rounded-full bg-linear-to-r from-yellow-600 to-amber-400 transition-all duration-700 ease-out"
                   style={{ width: `${campainer?.percentage || 0}%` }}
                 />
               </div>
