@@ -113,7 +113,7 @@ export default function Footer() {
 
         {/* Bottom */}
         <p className="text-center text-sm text-white/60 mt-6">
-          © {new Date().getFullYear()} Hare Krishna Vaikuntam Cultural Center.
+          © {new Date().getFullYear()} Hare Krishna Vaikuntam Cultural Centre.
           All Rights Reserved.
         </p>
       </div>
