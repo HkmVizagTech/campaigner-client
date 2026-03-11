@@ -14,6 +14,8 @@ import { useState } from "react";
 import api from "@/api/api";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
+import { Loader2 } from "lucide-react";
+import { toast } from "react-toastify";
 
 const states = [
   "Andhra Pradesh",
@@ -69,15 +71,23 @@ const loadRazorpay = () => {
     document.body.appendChild(script);
   });
 };
-const openRazorPay = async (payload, navigate) => {
+const openRazorPay = async (payload, navigate, setLoading) => {
   const isLoaded = await loadRazorpay();
 
   if (!isLoaded) {
     alert("Payment service failed to load");
     return;
   }
+  setLoading(true);
+  let res;
 
-  const res = await api.post("/donations/create-order", payload);
+  try {
+    res = await api.post("/donations/create-order", payload);
+  } catch (error) {
+    toast.error("Payment initialization failed. Please try again.");
+    setLoading(false);
+    return;
+  }
 
   const { orderId, amount, currency, key, donationId } = res.data.data;
 
@@ -97,14 +107,19 @@ const openRazorPay = async (payload, navigate) => {
       donationId,
     },
     handler: async function (res) {
-      const result = await api.post("/payment/verify", {
-        razorpay_order_id: res?.razorpay_order_id,
-        razorpay_payment_id: res?.razorpay_payment_id,
-        razorpay_signature: res?.razorpay_signature,
-      });
+      try {
+        const result = await api.post("/payment/verify", {
+          razorpay_order_id: res?.razorpay_order_id,
+          razorpay_payment_id: res?.razorpay_payment_id,
+          razorpay_signature: res?.razorpay_signature,
+        });
 
-      if (result?.status === 200) {
-        navigate(`/thankyou/${donationId}`);
+        if (result?.status === 200) {
+          toast.success("Payment successful. Thank you for your donation!");
+          navigate(`/thankyou/${donationId}`);
+        }
+      } finally {
+        setLoading(false);
       }
     },
     theme: {
@@ -114,13 +129,21 @@ const openRazorPay = async (payload, navigate) => {
 
   const rzp = new window.Razorpay(options);
   rzp.on("payment.failed", function (response) {
-    alert("Payment failed. Please try again.");
+    setLoading(false);
+    toast.error("Payment service failed to load");
   });
 
   rzp.open();
 };
 
-export function DonationDialog({ open, onOpenChange, inputValue, sevaId }) {
+export function DonationDialog({
+  open,
+  onOpenChange,
+  inputValue,
+  sevaId,
+  loading,
+  setLoading,
+}) {
   const [formData, setFormData] = useState({
     name: "",
     phoneNumber: "",
@@ -138,7 +161,7 @@ export function DonationDialog({ open, onOpenChange, inputValue, sevaId }) {
   const [error, setError] = useState({});
 
   const { currentCampaign } = useSelector((state) => state.campaign);
-  const { id: campaignerId } = useParams();
+  const { slug } = useParams();
   const navigate = useNavigate();
 
   const handleChange = (key, value) => {
@@ -151,6 +174,7 @@ export function DonationDialog({ open, onOpenChange, inputValue, sevaId }) {
   };
 
   const handleSubmit = async () => {
+    if (loading) return;
     const newErrors = {};
 
     if (!formData?.anonymous && !formData.name.trim()) {
@@ -192,7 +216,7 @@ export function DonationDialog({ open, onOpenChange, inputValue, sevaId }) {
     setError(newErrors);
 
     if (Object.keys(newErrors).length > 0) return;
-
+    toast.info("Processing payment. Please don't refresh or close the page.");
     onOpenChange(false);
 
     const payload = {
@@ -200,7 +224,7 @@ export function DonationDialog({ open, onOpenChange, inputValue, sevaId }) {
       donorPhone: formData.phoneNumber,
       amount: inputValue,
       campaignId: currentCampaign?._id,
-      campaignerId,
+      slug,
       isAnonymous: formData.anonymous,
       sevaId,
       prasadam: formData.prasadam,
@@ -218,7 +242,7 @@ export function DonationDialog({ open, onOpenChange, inputValue, sevaId }) {
       };
     }
 
-    await openRazorPay(payload, navigate);
+    await openRazorPay(payload, navigate, setLoading);
   };
 
   return (
@@ -235,7 +259,7 @@ export function DonationDialog({ open, onOpenChange, inputValue, sevaId }) {
           </p>
         </DialogHeader>
 
-     <div className="px-2 py-6 pb-10 space-y-6 overflow-y-auto max-h-130 pr-2 custom-scroll">
+        <div className="px-2 py-6 pb-10 space-y-6 overflow-y-auto max-h-130 pr-2 custom-scroll">
           {/* Personal Info */}
           <div className="space-y-3">
             <Input
@@ -367,9 +391,22 @@ export function DonationDialog({ open, onOpenChange, inputValue, sevaId }) {
               shadow-md hover:shadow-lg
             "
             onClick={handleSubmit}
+            disabled={loading}
           >
-            🔒 Pay Securely
+            {loading ? (
+              <>
+                <Loader2 className="animate-spin mr-2 h-4 w-4" />
+                Processing...
+              </>
+            ) : (
+              "🔒 Pay Securely"
+            )}
           </Button>
+          {loading && (
+            <p className="text-xs text-muted-foreground text-center mt-2">
+              Processing payment... please do not refresh or close this page
+            </p>
+          )}
 
           <p className="text-xs text-muted-foreground text-center">
             100% secure payments

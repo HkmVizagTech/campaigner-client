@@ -180,7 +180,12 @@ export default function ThankYouPage() {
                 value={donation?.paymentGateway}
               />
 
-              <DetailRow label="Date" value={donation?.createdAt} />
+              <DetailRow
+                label="Date"
+                value={new Date(donation?.createdAt)?.toLocaleDateString(
+                  "en-IN",
+                )}
+              />
 
               {donation?.address && <AddressRow address={donation?.address} />}
             </div>

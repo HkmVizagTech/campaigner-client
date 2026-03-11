@@ -5,12 +5,14 @@ import { DonationDialog } from "./DonationDialog";
 import { useRef, useState, useMemo } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Command, CommandGroup, CommandItem } from "../ui/command";
+import { Loader2 } from "lucide-react";
 
 const CampaignDonatePanel = ({ details, sevas = [], sevaLoading }) => {
   const [open, setOpen] = useState(false);
   const [inputValue, setInputValue] = useState(null);
   const [openPopover, setOpenPopover] = useState(false);
   const [selectedSeva, setSelectedSeva] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const inputRef = useRef(null);
 
@@ -234,11 +236,24 @@ const CampaignDonatePanel = ({ details, sevas = [], sevaLoading }) => {
           <Button
             onClick={() => setOpen(true)}
             size="lg"
-            disabled={numericValue < 100}
+            disabled={numericValue < 100 || loading}
             className="w-full h-14 text-lg font-semibold rounded-xl bg-linear-to-r from-primary via-primary to-yellow-400 text-primary-foreground shadow-lg hover:shadow-xl transition-all"
           >
-            🙏 Contribute Now
+            {loading ? (
+              <>
+                <Loader2 className="animate-spin mr-2 h-4 w-4" />
+                Processing...
+              </>
+            ) : (
+              "🙏 Contribute Now"
+            )}
           </Button>
+
+          {loading && (
+            <p className="text-xs text-muted-foreground text-center mt-2">
+              Processing payment... please do not refresh or close this page
+            </p>
+          )}
         </div>
       </div>
 
@@ -249,6 +264,8 @@ const CampaignDonatePanel = ({ details, sevas = [], sevaLoading }) => {
           onOpenChange={setOpen}
           inputValue={numericValue}
           sevaId={selectedSeva?._id}
+          loading={loading}
+          setLoading={setLoading}
         />
       )}
     </>
