@@ -154,7 +154,7 @@ export default function RecentContributors() {
                   <div className="flex items-center gap-4">
                     <div
                       className={cn(
-                        "relative h-12 w-12 rounded-full flex items-center justify-center bg-muted font-semibold ring-1 shrink-0",
+                        "relative h-12 w-12 rounded-full flex items-center justify-center bg-muted font-semibold ring-1 shrink-0 capitalize",
                         isTop ? style.ring : "ring-border",
                       )}
                     >
@@ -174,8 +174,8 @@ export default function RecentContributors() {
                       <p className="text-sm text-muted-foreground flex items-center gap-1">
                         <Heart className="h-4 w-4 text-primary" />
                         Donated{" "}
-                        <span className="font-medium text-foreground">
-                          {item.amount}
+                        <span className="font-medium text-foreground capitalize">
+                          ₹{item.amount?.toLocaleString("en-IN")}
                         </span>
                       </p>
                     </div>
