@@ -195,7 +195,7 @@ const CampaignDonatePanel = ({ details, sevas = [], sevaLoading }) => {
               />
             </PopoverTrigger>
 
-            {filteredSevas.length > 0 && (
+            {openPopover && filteredSevas.length > 0 && (
               <PopoverContent
                 className="p-0 w-full"
                 onOpenAutoFocus={(e) => e.preventDefault()}

@@ -3,6 +3,7 @@ import Banner from "@/components/Campaigners/Banner";
 import CampaignSideBySide from "@/components/Campaigners/CampaignSideBySide";
 import ConstructionStatus from "@/components/Campaigners/ConstructionStatus";
 import DidYouKnowBanner from "@/components/Campaigners/DidYouKnowBanner";
+import DonationPopup from "@/components/Campaigners/DonationPopup";
 import DonorPrivileges from "@/components/Campaigners/DonorPrivileges";
 import Footer from "@/components/Campaigners/Footer";
 import InitialLoader from "@/components/Campaigners/InitialLoader";
@@ -30,6 +31,7 @@ const CampaignerDetails = () => {
   const dispatch = useDispatch();
   const { slug } = useParams();
   const { currentCampaign } = useSelector((state) => state.campaign);
+  const { lastestDonorsArr } = useSelector((state) => state.campaginer);
   const navigate = useNavigate();
 
   const [imagesLoaded, setImagesLoaded] = useState(false);
@@ -129,7 +131,7 @@ const CampaignerDetails = () => {
       .catch((err) => {
         console.log(err);
         if (err === "Campaigner not found") {
-          navigate("/404");
+          navigate("*");
         }
       });
   }, [slug, dispatch]);
@@ -156,6 +158,7 @@ const CampaignerDetails = () => {
       <InitialLoader visible={showLoader} />
       {!showLoader && (
         <>
+          <DonationPopup donors={lastestDonorsArr} />
           <Banner />
 
           <div className="container mx-auto px-2 pt-8 space-y-1">
