@@ -98,6 +98,12 @@ const openRazorPay = async (payload, navigate, setLoading) => {
     order_id: orderId,
     name: "ISKCON VIZAG CAMPAIGN",
     description: "Donation",
+    modal: {
+      ondismiss: function () {
+        setLoading(false);
+        toast.info("Payment cancelled.");
+      },
+    },
     prefill: {
       name: payload.donorName,
       contact: payload.donorPhone,
@@ -130,7 +136,7 @@ const openRazorPay = async (payload, navigate, setLoading) => {
   const rzp = new window.Razorpay(options);
   rzp.on("payment.failed", function (response) {
     setLoading(false);
-    toast.error("Payment service failed to load");
+    toast.error("Payment failed. Please try again.");
   });
 
   rzp.open();
