@@ -68,6 +68,7 @@ export default function DevoteeList() {
                 <TableHead>#</TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>Phone Number</TableHead>
+                <TableHead>Email</TableHead>
                 <TableHead className="text-right">Action</TableHead>
               </TableRow>
             </TableHeader>
@@ -95,6 +96,7 @@ export default function DevoteeList() {
                     </TableCell>
 
                     <TableCell>{item?.phoneNumber}</TableCell>
+                    <TableCell>{item?.email}</TableCell>
 
                     <TableCell className="text-right">
                       <Button
