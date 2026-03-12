@@ -49,6 +49,7 @@ export default function CampaignersTable() {
   const { campaginers, campaginerTotalPages, campainerLoading } = useSelector(
     (state) => state.campaginer,
   );
+  const { details } = useSelector((state) => state.auth);
   const { currentCampaign } = useSelector((state) => state.campaign);
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -69,7 +70,7 @@ export default function CampaignersTable() {
   }, [search]);
   useEffect(() => {
     if (!currentCampaign?._id) return;
-
+    const isDevotee = details?.role === "admin" || details?.role === "devotee";
     dispatch(
       getCampainer({
         id: currentCampaign?._id,
@@ -79,9 +80,10 @@ export default function CampaignersTable() {
         pageSize,
         sort,
         search: debouncedSearch,
+        isDevotee,
       }),
     );
-  }, [currentCampaign?._id, debouncedSearch, sort, page, dispatch]);
+  }, [currentCampaign?._id, debouncedSearch, sort, page, details, dispatch]);
 
   const CAMPAIGN_SORT_OPTIONS = [
     {
@@ -278,7 +280,11 @@ export default function CampaignersTable() {
                               </AlertDialogHeader>
 
                               <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogCancel
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  Cancel
+                                </AlertDialogCancel>
 
                                 <AlertDialogAction
                                   onClick={async (e) => {

@@ -38,13 +38,14 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 
 export default function Dashboard() {
-  const [summary, setSummary] = useState(null);
+  const [summary, setSummary] = useState({});
   const [trend, setTrend] = useState([]);
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
 
   const { campaginers } = useSelector((state) => state.campaginer);
   const { currentCampaign } = useSelector((state) => state.campaign);
+  const { details } = useSelector((state) => state.auth);
 
   useEffect(() => {
     dispatch(getCurrentCampaign());
@@ -61,9 +62,10 @@ export default function Dashboard() {
         page: 1,
         pageSize: 10,
         sort: "raised_desc",
+        isDevotee: details?.role === "admin" || details?.role === "devotee",
       }),
     );
-  }, [currentCampaign?._id, dispatch]);
+  }, [currentCampaign?._id, details, dispatch]);
   useEffect(() => {
     loadDashboard();
   }, []);
@@ -104,6 +106,16 @@ export default function Dashboard() {
     "text-amber-700", // 🥉 Bronze
   ];
 
+  const icons = {
+    "Target Amount": <Target className="h-4 w-4 text-muted-foreground" />,
+    "Total Raised": <Wallet className="h-4 w-4 text-muted-foreground" />,
+    "Total Donations": (
+      <HeartHandshake className="h-4 w-4 text-muted-foreground" />
+    ),
+    "Active Campaigners": <Users className="h-4 w-4 text-muted-foreground" />,
+    "Pending Campaigners": <Users className="h-4 w-4 text-muted-foreground" />,
+  };
+
   return (
     <div className="space-y-6 p-6">
       {/* PAGE TITLE */}
@@ -118,73 +130,24 @@ export default function Dashboard() {
       {/* CARDS */}
 
       <div className="grid gap-3 md:grid-cols-3 xl:grid-cols-5">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-sm">Target Amount</CardTitle>
-            <Target className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
+        {Object.keys(summary)?.map((item) => (
+          <Card key={item}>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle className="text-sm">{item}</CardTitle>
+              {icons?.[item]}
+            </CardHeader>
 
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {loading
-                ? "..."
-                : `₹${summary?.targetAmount?.toLocaleString("en-IN") || 0}`}
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-sm">Total Raised</CardTitle>
-            <Wallet className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {loading
-                ? "..."
-                : `₹${summary?.totalRaised?.toLocaleString("en-IN") || 0}`}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-sm">Total Donations</CardTitle>
-            <HeartHandshake className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {loading ? "..." : summary?.totalDonations || 0}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-sm">Active Campaigners</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {loading ? "..." : summary?.activeCampaigners || 0}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-sm">Pending Campaigners</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {loading ? "..." : summary?.pendingCampaigners || 0}
-            </div>
-          </CardContent>
-        </Card>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {loading
+                  ? "..."
+                  : item === "Target Amount" || item === "Total Raised"
+                    ? `₹${summary?.[item]?.toLocaleString("en-IN") || 0}`
+                    : `${summary?.[item]?.toLocaleString("en-IN") || 0}`}
+              </div>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
       {/* DONATION TREND CHART */}
@@ -226,7 +189,11 @@ export default function Dashboard() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Top Campaigners</CardTitle>
+          <CardTitle>
+            {details?.role === "admin" || details?.role === "devotee"
+              ? "Top Campaigners"
+              : "Top Donors"}
+          </CardTitle>
         </CardHeader>
 
         <CardContent>

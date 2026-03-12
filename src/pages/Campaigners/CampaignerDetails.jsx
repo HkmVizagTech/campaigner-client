@@ -37,7 +37,16 @@ const CampaignerDetails = () => {
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const [minTimeDone, setMinTimeDone] = useState(false);
   const [showLoader, setShowLoader] = useState(true);
+  useEffect(() => {
+    if (slug) {
+      const formattedSlug = slug
+        .split("-")
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ");
 
+      document.title = `${formattedSlug} | ISKCON Vizag`;
+    }
+  }, [slug]);
   useEffect(() => {
     const images = document.images;
     let loadedCount = 0;

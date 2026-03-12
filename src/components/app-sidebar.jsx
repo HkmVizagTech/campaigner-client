@@ -20,13 +20,8 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 
-const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  navMain: [
+const navMain = {
+  admin: [
     {
       title: "Dashboard",
       url: "/admin/dashboard",
@@ -102,6 +97,37 @@ const data = {
       icon: Wallet,
     },
   ],
+  devotee: [
+    {
+      title: "Dashboard",
+      url: "/admin/dashboard",
+      icon: LayoutDashboard,
+    },
+    {
+      title: "My Donors",
+      url: "/admin/funders",
+      icon: Wallet,
+    },
+    {
+      title: "Campaigners",
+      url: "#",
+      icon: UserCog,
+      items: [
+        {
+          title: "Create Campaigner",
+          url: "/admin/create-campaigner",
+        },
+        {
+          title: "All Campaigners",
+          url: "/admin/campaigners",
+        },
+        {
+          title: "Registration Requests",
+          url: "/admin/campaigner/registrations",
+        },
+      ],
+    },
+  ],
 };
 
 export function AppSidebar({ ...props }) {
@@ -125,7 +151,7 @@ export function AppSidebar({ ...props }) {
       </SidebarHeader>
 
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMain items={navMain?.[props?.details?.role]} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={props?.details} />

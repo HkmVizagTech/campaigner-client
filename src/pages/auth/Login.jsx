@@ -57,7 +57,11 @@ const LoginPage = () => {
     if (!validate()) return;
 
     const result = await dispatch(adminLogin(form)).unwrap();
-
+    console.log(result);
+    if (!result?.data?.isPasswordChanged) {
+      navigate("/auth/reset-password");
+      return;
+    }
     if (result?.success) {
       toast.success("Welcome Back!");
       navigate("/admin/dashboard");

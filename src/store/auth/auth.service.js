@@ -7,8 +7,8 @@ export const adminLogin = createAsyncThunk(
   async (formData, { rejectWithValue }) => {
     try {
       const response = await api.post(`/login`, formData);
-      if (response?.data?.data) {
-        sessionStorage.setItem("token", response?.data?.data);
+      if (response?.data?.data?.token) {
+        sessionStorage.setItem("token", response?.data?.data?.token);
       }
       return response?.data;
     } catch (error) {
@@ -20,14 +20,32 @@ export const adminLogin = createAsyncThunk(
   },
 );
 
-export const adminDetails = createAsyncThunk("details", async () => {
-  try {
-    const response = await api.get("/");
-    return response?.data?.data;
-  } catch (error) {
-    toast.error(error.response?.data?.message || "Internal Server Error");
-    return rejectWithValue(
-      error.response?.data?.message || "Internal Server error",
-    );
-  }
-});
+export const adminDetails = createAsyncThunk(
+  "details",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await api.get("/");
+      return response?.data?.data;
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Internal Server Error");
+      return rejectWithValue(
+        error.response?.data?.message || "Internal Server error",
+      );
+    }
+  },
+);
+
+export const resetPassword = createAsyncThunk(
+  "reset-password",
+  async (formData, { rejectWithValue }) => {
+    try {
+      const response = await api.post("/reset-password", formData);
+      return response?.data;
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Internal Server Error");
+      return rejectWithValue(
+        error.response?.data?.message || "Internal Server error",
+      );
+    }
+  },
+);

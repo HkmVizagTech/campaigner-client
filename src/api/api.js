@@ -19,7 +19,7 @@ const handleUnauthorized = () => {
   sessionStorage.removeItem("token");
 
   setTimeout(() => {
-    window.location.replace("/signin");
+    window.location.replace("/admin/login");
   }, 1500);
 };
 

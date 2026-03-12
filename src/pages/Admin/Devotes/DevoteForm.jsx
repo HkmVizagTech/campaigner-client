@@ -11,6 +11,7 @@ export default function DevoteForm() {
   const [formData, setFormData] = useState({
     name: "",
     phoneNumber: "",
+    email: "",
   });
   const dispatch = useDispatch();
 
@@ -28,7 +29,7 @@ export default function DevoteForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!formData.name || !formData.phoneNumber) {
+    if (!formData.name || !formData.phoneNumber || !formData.email) {
       alert("Please fill all fields");
       return;
     }
@@ -42,6 +43,7 @@ export default function DevoteForm() {
     setFormData({
       name: "",
       phoneNumber: "",
+      email : ""
     });
   };
 
@@ -64,6 +66,18 @@ export default function DevoteForm() {
                 placeholder="Enter devotee name"
                 value={formData.name}
                 onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Devotee Email</Label>
+              <Input
+                type="email"
+                name="email"
+                placeholder="Enter devotee name"
+                value={formData.email}
+                onChange={handleChange}
+                required
               />
             </div>
 
@@ -76,6 +90,7 @@ export default function DevoteForm() {
                 placeholder="Enter phone number"
                 value={formData.phoneNumber}
                 onChange={handleChange}
+                required
               />
             </div>
 

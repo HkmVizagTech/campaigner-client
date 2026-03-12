@@ -5,10 +5,16 @@ import { toast } from "react-toastify";
 export const getCampainer = createAsyncThunk(
   "getCampaigner",
   async (
-    { id, page, pageSize, search, sort, status, campStatus },
+    { id, page, pageSize, search, sort, status, campStatus, isDevotee = false },
     { rejectWithValue },
   ) => {
-    let url = `/campaigner/${id}?status=${status}&page=${page}&pageSize=${pageSize}`;
+    let url;
+    console.log(isDevotee)
+    if (isDevotee) {
+      url = `/campaigner/admin/${id}?status=${status}&page=${page}&pageSize=${pageSize}`;
+    } else {
+      url = `/campaigner/${id}?status=${status}&page=${page}&pageSize=${pageSize}`;
+    }
 
     if (search) url += `&search=${search}`;
     if (sort) url += `&sort=${sort}`;

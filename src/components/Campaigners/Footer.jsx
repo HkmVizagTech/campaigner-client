@@ -134,6 +134,27 @@ export default function Footer() {
           </div>
         </div>
 
+        <div className="flex justify-center mt-12">
+          <a
+            href="/campaigner/register"
+            className="
+    px-8 py-3
+    rounded-full
+    text-sm font-semibold
+    text-black
+    bg-linear-to-r from-yellow-400 via-yellow-300 to-yellow-500
+    hover:from-yellow-300 hover:via-yellow-200 hover:to-yellow-400
+    transition-all duration-300
+    shadow-lg shadow-yellow-500/20
+    hover:shadow-yellow-400/40
+    hover:scale-105
+    tracking-wide
+    "
+          >
+            Register as Campaigner
+          </a>
+        </div>
+
         {/* Divider */}
         <div className="mt-10 border-t border-white/10" />
 

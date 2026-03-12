@@ -38,6 +38,7 @@ export default function CreateCampaigner() {
     singleCampaignerDetails,
   } = useSelector((state) => state.campaginer);
   const { currentCampaign } = useSelector((state) => state.campaign);
+  const { details } = useSelector((state) => state.auth);
   const { campaignerId } = useParams();
   const { pathname } = useLocation();
   const [formData, setFormData] = useState({
@@ -116,6 +117,17 @@ export default function CreateCampaigner() {
 
       if (currentCampaign?._id) {
         data.append("campaignId", currentCampaign._id);
+      }
+
+      if (details?.role === "devotee") {
+        const single = templeDevotesList?.find(
+          (item) => item?.userId?.toString() === details?._id,
+        );
+        if (!single) {
+          toast.error("Devotee profile not found");
+          return;
+        }
+        data.append("templeDevoteInTouch", single?._id);
       }
 
       if (image) {
@@ -228,36 +240,48 @@ export default function CreateCampaigner() {
 
             {/* Row 3 */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label>Select Devote In Touch</Label>
-                <Select
-                  value={formData.templeDevoteInTouch}
-                  required
-                  onValueChange={(value) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      templeDevoteInTouch: value,
-                    }))
-                  }
-                >
-                  <SelectTrigger className="w-full h-10">
-                    <SelectValue
-                      placeholder={
-                        templeDevotesLoading
-                          ? "Loading devotes..."
-                          : "Choose devote"
-                      }
-                    />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {templeDevotesList?.map((d) => (
-                      <SelectItem key={d._id} value={d._id}>
-                        {d.devoteName}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+              {details?.role === "admin" ? (
+                <div className="space-y-2">
+                  <Label>Select Devote In Touch</Label>
+                  <Select
+                    value={formData.templeDevoteInTouch}
+                    required
+                    onValueChange={(value) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        templeDevoteInTouch: value,
+                      }))
+                    }
+                  >
+                    <SelectTrigger className="w-full h-10">
+                      <SelectValue
+                        placeholder={
+                          templeDevotesLoading
+                            ? "Loading devotes..."
+                            : "Choose devote"
+                        }
+                      />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {templeDevotesList?.map((d) => (
+                        <SelectItem key={d._id} value={d._id}>
+                          {d.devoteName}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <Label>Touch With Devote</Label>
+                  <Input
+                    name="templeDevoteInTouch"
+                    placeholder="Enter temple Devote in touch"
+                    value={details?.name || ""}
+                    disabled
+                  />
+                </div>
+              )}
 
               {/* Recent Images */}
               <div className="space-y-2">
@@ -266,14 +290,21 @@ export default function CreateCampaigner() {
                   value={formData.imageId}
                   disabled={!!image || isEdit}
                   onValueChange={(value) => {
-                    setFormData({ ...formData, imageId: value });
-                    setSelectedImg(value);
+                    const finalValue = value === "none" ? "" : value;
+
+                    setFormData((prev) => ({
+                      ...prev,
+                      imageId: finalValue,
+                    }));
+
+                    setSelectedImg(finalValue);
                   }}
                 >
                   <SelectTrigger className="w-full h-10">
                     <SelectValue placeholder="Select recent image" />
                   </SelectTrigger>
                   <SelectContent>
+                    <SelectItem value="none">None</SelectItem>
                     {mediaList.map((img) => (
                       <SelectItem key={img._id} value={img._id}>
                         {img.name}

@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { adminDetails, adminLogin } from "./auth.service";
+import { adminDetails, adminLogin, resetPassword } from "./auth.service";
 
 const initialState = {
   loginLoading: false,
@@ -33,6 +33,16 @@ const authReducer = createSlice({
       })
       .addCase(adminDetails.rejected, (state, { payload }) => {
         state.detailsLoading = false;
+        state.error = payload;
+      })
+      .addCase(resetPassword.pending, (state) => {
+        state.loginLoading = true;
+      })
+      .addCase(resetPassword.fulfilled, (state) => {
+        state.loginLoading = false;
+      })
+      .addCase(resetPassword.rejected, (state, { payload }) => {
+        state.loginLoading = false;
         state.error = payload;
       }),
 });

@@ -19,20 +19,19 @@ import ProtectedRoute from "./ProtectedRoute";
 import CampaignListPage from "@/pages/Admin/Campaigns/CampaignListPage";
 import DevoteForm from "@/pages/Admin/Devotes/DevoteForm";
 import DevoteeList from "@/pages/Admin/Devotes/DevoteList";
+import ResetPasswordPage from "@/pages/auth/ResetPasswordForm";
 
 const AllRoutes = () => {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
-      <Route
-        path="/:slug"
-        element={<CampaignerDetails />}
-      />
+      <Route path="/:slug" element={<CampaignerDetails />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/campaigner/register" element={<CampaignerRegister />} />
       <Route path="/thankyou/:id" element={<ThankYouPage />} />
 
       <Route path="/admin/login" element={<LoginPage />} />
+      <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
 
       <Route
         element={

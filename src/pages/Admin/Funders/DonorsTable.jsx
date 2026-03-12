@@ -44,6 +44,7 @@ export default function DonorsTable() {
   } = useSelector((state) => state?.donation);
   const { campaginListArr } = useSelector((state) => state.campaign);
   const { sevaList, sevaLoading } = useSelector((state) => state.seva);
+  const { details } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -124,25 +125,27 @@ export default function DonorsTable() {
           </Select>
 
           {/* Campaign Dropdown */}
-          <Select
-            value={selectedCampaign}
-            onValueChange={(value) => {
-              setPage(1);
-              setSelectedCampaign(value);
-            }}
-          >
-            <SelectTrigger className="w-48">
-              <SelectValue placeholder="Filter by Campaign" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Campaigns</SelectItem>
-              {campaginListArr?.map((item) => (
-                <SelectItem value={item?._id} key={item?._id}>
-                  {item?.title}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          {details?.role === "admin" && (
+            <Select
+              value={selectedCampaign}
+              onValueChange={(value) => {
+                setPage(1);
+                setSelectedCampaign(value);
+              }}
+            >
+              <SelectTrigger className="w-48">
+                <SelectValue placeholder="Filter by Campaign" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Campaigns</SelectItem>
+                {campaginListArr?.map((item) => (
+                  <SelectItem value={item?._id} key={item?._id}>
+                    {item?.title}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
 
           <Select
             value={isPrasadam}
