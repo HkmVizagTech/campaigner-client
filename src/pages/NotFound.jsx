@@ -38,7 +38,7 @@ const NotFound = () => {
             {/* Button */}
             <div className="pt-4">
               <Button
-                onClick={() => navigate(-1)}
+                onClick={() => navigate("/")}
                 className="h-11 px-6 text-base font-medium shadow-md"
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />

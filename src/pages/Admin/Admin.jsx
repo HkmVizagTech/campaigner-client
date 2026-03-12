@@ -12,14 +12,14 @@ import { Outlet } from "react-router-dom";
 
 const Admin = () => {
   const dispatch = useDispatch();
-  const { details } = useSelector((state) => state.auth);
+  const { details, detailsLoading } = useSelector((state) => state.auth);
   useEffect(() => {
     dispatch(adminDetails());
   }, [dispatch]);
 
   return (
     <SidebarProvider>
-      <AppSidebar details={details} />
+      <AppSidebar details={details} loading={detailsLoading} />
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
           <div className="flex items-center gap-2 px-4">

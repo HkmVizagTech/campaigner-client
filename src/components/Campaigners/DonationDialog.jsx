@@ -114,6 +114,8 @@ const openRazorPay = async (payload, navigate, setLoading) => {
     },
     handler: async function (res) {
       try {
+        toast.info("Processing your payment. Please wait...");
+
         const result = await api.post("/payment/verify", {
           razorpay_order_id: res?.razorpay_order_id,
           razorpay_payment_id: res?.razorpay_payment_id,
@@ -121,9 +123,20 @@ const openRazorPay = async (payload, navigate, setLoading) => {
         });
 
         if (result?.status === 200) {
-          toast.success("Payment successful. Thank you for your donation!");
+          toast.success(
+            "Payment successful! Thank you for supporting the temple.",
+          );
+
           navigate(`/thankyou/${donationId}`);
+        } else {
+          toast.warning(
+            "Payment received, but verification is in progress. You will receive confirmation shortly.",
+          );
         }
+      } catch (err) {
+        toast.error(
+          "Payment verification failed. If the amount was deducted, it will be confirmed shortly.",
+        );
       } finally {
         setLoading(false);
       }

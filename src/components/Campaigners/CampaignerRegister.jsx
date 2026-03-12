@@ -107,7 +107,9 @@ const CampaignerRegister = () => {
       ).unwrap();
 
       if (result?.success) {
-        toast.success("Campaigner Created Successfully!");
+        toast.success(
+          "Hare Krishna 🙏 Your seva as a campaigner has been registered successfully. Please wait for the temple administration to review and approve your request.",
+        );
       }
     } catch (error) {
       console.log(error);

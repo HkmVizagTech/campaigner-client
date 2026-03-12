@@ -1,11 +1,29 @@
 import { Link } from "react-router-dom";
-import { Card, CardContent, CardFooter } from "../ui/card";
-import { MapPin } from "lucide-react";
+import { Trophy, Clock } from "lucide-react";
+import { Card } from "../ui/card";
+
+const sevaBadges = [
+  "SEVA SHIROMANI",
+  "SEVA RATNA",
+  "SEVA BHUSHAN",
+  "SEVA VIBHUSHAN",
+  "SEVA VIBHAVA",
+  "SEVA SHRESHTA",
+  "SEVA PRAMUKH",
+  "SEVA SAMARPIT",
+  "SEVA SADHAK",
+  "SEVA BANDHU",
+];
 
 const CustomCard = ({ campainer, index }) => {
+  const raised = campainer?.raisedAmount || 0;
+  const goal = campainer?.targetAmount || 0;
+
+  const percentage = goal ? (raised / goal) * 100 : 0;
+
   const today = new Date();
 
-  const diffDays = campainer?.campaignId?.endDate
+  const daysLeft = campainer?.campaignId?.endDate
     ? Math.max(
         Math.ceil(
           (new Date(campainer.campaignId.endDate) - today) /
@@ -15,151 +33,160 @@ const CustomCard = ({ campainer, index }) => {
       )
     : 0;
 
-  const sevaBadges = [
-    "SEVA SHIROMANI",
-    "SEVA RATNA",
-    "SEVA BHUSHAN",
-    "SEVA VIBHUSHAN",
-    "SEVA VIBHAVA",
-    "SEVA SHRESHTA",
-    "SEVA PRAMUKH",
-    "SEVA SAMARPIT",
-    "SEVA SADHAK",
-    "SEVA BANDHU",
-  ];
-
   return (
     <Link to={`/${campainer?.slug}`}>
-      <Card className="relative flex flex-col h-full rounded-2xl bg-card shadow-md transition-all duration-300 hover:shadow-[0_15px_40px_rgba(0,0,0,0.15)] hover:-translate-y-1 py-0">
+      <Card
+        className="
+        relative
+        h-full
+        flex flex-col
+        rounded-3xl
+        border border-yellow-200
+        bg-linear-to-r from-[#faf6e6] via-[#f6eed2] to-[#f2e6b8]
+        shadow-lg
+        hover:shadow-xl
+        transition
+        py-0
+      "
+      >
         {/* IMAGE */}
-        <div className="relative w-[96%] mx-auto mt-3 aspect-4/4 rounded-xl overflow-hidden bg-muted">
-          {/* RANK BADGE */}
-          {index < 10 && campainer?.raisedAmount >= 100 && (
-            <div className="absolute top-3 left-4 z-10 h-12 w-12 rounded-lg bg-primary flex items-center justify-center shadow-lg">
-              <span className="text-primary-foreground text-lg font-bold">
-                {index + 1}
-              </span>
-            </div>
-          )}
-
+        <div className="relative p-4">
           {/* SEVA BADGE */}
-          {index < 10 && campainer?.raisedAmount >= 100 && (
+          {index < 10 && (
             <div
               className="
-              absolute top-3 right-3 z-10
+              absolute
+              top-6
+              left-6
+              z-10
+              px-3
+              py-1.5
               rounded-full
-              bg-linear-to-r
-              from-yellow-400
-              via-amber-400
-              to-orange-400
-              px-4 py-1.5
-              text-xs font-bold
+              text-[10px]
+              font-bold
+              tracking-wide
               text-black
+              bg-linear-to-r
+              from-[#fde68a]
+              via-[#facc15]
+              to-[#f59e0b]
               shadow-md
+              backdrop-blur
             "
             >
-              {sevaBadges[index]}
+              #{index + 1} {sevaBadges[index]}
             </div>
           )}
 
-          {/* IMAGE */}
           <img
-            src={
-              campainer?.image?.url ||
-              "https://images.unsplash.com/photo-1500648767791-00dcc994a43e"
-            }
-            alt={`Campaigner-${campainer?.image?.filename}`}
-            className="h-full w-full object-cover object-center transition-transform duration-500 hover:scale-105"
+            src={campainer?.image?.url}
+            alt={campainer?.name}
+            className="w-full aspect-3/3 object-cover rounded-xl"
           />
-
-          <div className="absolute inset-x-0 bottom-0 h-16 bg-linear-to-t from-card to-transparent" />
         </div>
 
         {/* CONTENT */}
-        <CardContent className="flex flex-col flex-1 px-5 py-2 space-y-2">
-          <h3 className="text-sm font-medium leading-relaxed text-foreground">
-            <span className="font-bold uppercase tracking-wide">
-              {campainer?.name}&apos;S
-            </span>{" "}
+        <div className="flex flex-col flex-1 px-5 pb-5 space-y-4">
+          {/* TITLE */}
+          <h3 className="text-sm leading-relaxed font-medium">
+            <span className="font-bold uppercase">{campainer?.name}'s</span>{" "}
             campaign to build a magnificent{" "}
-            <span className="font-semibold bg-linear-to-r from-yellow-400 via-[#E6C200] to-amber-500 bg-clip-text text-transparent">
+            <span className="font-semibold text-amber-600">
               Sri Srinivasa Govinda Temple
             </span>{" "}
-            and cultural complex in Visakhapatnam
+            in Visakhapatnam
           </h3>
 
-          <div className="flex items-center gap-2 text-sm">
-            <span className="font-bold bg-linear-to-r from-yellow-400 via-[#E6C200] to-amber-500 bg-clip-text text-transparent">
-              ISKCON VIZAG
+          {/* LOCATION + DAYS */}
+          <div className="flex items-center justify-between text-xs text-gray-600">
+            <span className="font-semibold text-amber-600">
+              ISKCON Gambiram
             </span>
-            <span className="text-muted-foreground">•</span>
-            <div className="flex items-center gap-1 text-muted-foreground">
-              <MapPin className="h-4 w-4" />
-              Gambiram
+
+            <div className="flex items-center gap-1">
+              <Clock size={14} className="text-amber-600" />
+              {daysLeft} Days left
             </div>
           </div>
-        </CardContent>
 
-        {/* FOOTER */}
-        <CardFooter className="relative px-5 pt-6 pb-7 rounded-b-2xl overflow-hidden border-t border-border">
-          {/* GOLD GRADIENT BACKGROUND */}
-          <div className="absolute inset-0 bg-linear-to-br from-yellow-300 via-yellow-400 to-amber-400 shadow-[0_10px_40px_rgba(250,204,21,0.35)]" />
+          {/* RAISED */}
+          <div className="space-y-2">
+            <p className="text-sm font-semibold">
+              ₹{raised.toLocaleString("en-IN")}
+              <span className="text-gray-600 font-normal">
+                {" "}
+                raised of ₹{goal.toLocaleString("en-IN")}
+              </span>
+            </p>
 
-          {/* SOFT DEPTH */}
-          <div className="absolute inset-0 bg-black/5 pointer-events-none" />
-
-          {/* LIGHT SHINE */}
-          <div className="absolute inset-0 bg-linear-to-t from-black/10 via-transparent to-white/20 pointer-events-none" />
-
-          <div className="relative z-10 w-full space-y-6 text-black">
-            {/* RAISED + GOAL */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="rounded-xl bg-white/35 border border-white/50 px-4 py-3 backdrop-blur-md shadow-md">
-                <p className="text-xs uppercase tracking-wide text-black/70">
-                  Raised
-                </p>
-
-                <p className="text-xl font-bold mt-1">
-                  ₹{campainer?.raisedAmount?.toLocaleString("en-IN")}
-                </p>
-              </div>
-
-              <div className="rounded-xl bg-white/35 border border-white/50 px-4 py-3 text-right backdrop-blur-md shadow-md">
-                <p className="text-xs uppercase tracking-wide text-black/70">
-                  Goal
-                </p>
-
-                <p className="text-lg font-semibold mt-1">
-                  ₹{campainer?.targetAmount?.toLocaleString("en-IN")}
-                </p>
-              </div>
-            </div>
-
-            {/* PROGRESS */}
-            <div className="space-y-2">
-              <div className="h-3.5 w-full rounded-full bg-white/40 border border-white/50 shadow-inner overflow-hidden">
+            <div className="flex items-center gap-3">
+              <div className="flex-1 h-2.5 rounded-full bg-white/70 overflow-hidden">
                 <div
-                  className="h-full rounded-full bg-linear-to-r from-yellow-600 to-amber-400 transition-all duration-700 ease-out"
-                  style={{ width: `${campainer?.percentage || 0}%` }}
+                  className="h-full bg-linear-to-r from-[#facc15] via-[#fbbf24] to-[#f59e0b]"
+                  style={{ width: `${percentage}%` }}
                 />
               </div>
 
-              <p className="text-xs text-black/70">
-                {campainer?.percentage?.toFixed(2) || "0.00"}% achieved
-              </p>
-            </div>
-            {/* DAYS + PERCENTAGE */}
-            <div className="flex justify-between items-center">
-              <div className="rounded-lg bg-white/40 border border-white/50 px-3 py-1.5 backdrop-blur-md shadow-md text-xs font-semibold">
-                {campainer?.percentage?.toFixed(2)}%
-              </div>
-
-              <div className="rounded-lg bg-white/40 border border-white/50 px-3 py-1.5 backdrop-blur-md shadow-md text-xs font-semibold">
-                {diffDays} Days
-              </div>
+              <span className="text-xs font-semibold text-amber-700">
+                {percentage.toFixed(0)}%
+              </span>
             </div>
           </div>
-        </CardFooter>
+
+          {/* TOP DEVOTEES */}
+          <div className="space-y-2 flex flex-col">
+            {campainer?.topDonors?.length > 0 && (
+              <div className="flex items-center gap-2 text-sm font-semibold">
+                <Trophy size={16} className="text-amber-500" />
+                Top Devotees
+              </div>
+            )}
+
+            {campainer?.topDonors?.length > 0 ? (
+              campainer.topDonors.map((donor, i) => (
+                <div key={i} className="flex justify-between text-sm">
+                  <div className="flex items-center gap-2">
+                    {i === 0 && <span>🥇</span>}
+                    {i === 1 && <span>🥈</span>}
+                    {i === 2 && <span>🥉</span>}
+                    <span>{donor.name}</span>
+                  </div>
+
+                  <span className="font-semibold text-amber-700">
+                    ₹{donor.amount.toLocaleString("en-IN")}
+                  </span>
+                </div>
+              ))
+            ) : (
+              <div className="text-xs text-gray-600 leading-relaxed pt-1">
+                🙏 Be the first devotee to support this campaign
+                <div className="text-gray-500">
+                  Your contribution can inspire others.
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* BUTTON */}
+          <div className="mt-auto pt-2">
+            <button
+              className="
+              w-full
+              py-3
+              rounded-xl
+              text-sm
+              font-semibold
+              text-black
+              bg-linear-to-r from-[#facc15] via-[#fbbf24] to-[#f59e0b]
+              shadow-md
+              hover:shadow-lg
+              transition
+            "
+            >
+              Donate Now
+            </button>
+          </div>
+        </div>
       </Card>
     </Link>
   );

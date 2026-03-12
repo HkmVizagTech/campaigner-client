@@ -16,6 +16,17 @@ import { useDispatch, useSelector } from "react-redux";
 import { deleteDevote, getDevoteList } from "@/store/devotees/devote.service";
 import { Input } from "@/components/ui/input";
 import { toast } from "react-toastify";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export default function DevoteeList() {
   const dispatch = useDispatch();
@@ -99,18 +110,40 @@ export default function DevoteeList() {
                     <TableCell>{item?.email}</TableCell>
 
                     <TableCell className="text-right">
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        disabled={deleteDevoteLoading}
-                        onClick={() => handleDelete(item?._id)}
-                      >
-                        {deleteDevoteLoading ? (
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                        ) : (
-                          <Trash2 />
-                        )}
-                      </Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="destructive" size="sm">
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </AlertDialogTrigger>
+
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Delete Devotee?</AlertDialogTitle>
+
+                            <AlertDialogDescription>
+                              This action cannot be undone. This will
+                              permanently remove the devotee from the temple
+                              list.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+
+                            <AlertDialogAction
+                              className="bg-destructive text-white hover:bg-destructive/90"
+                              onClick={() => handleDelete(item?._id)}
+                            >
+                              {deleteDevoteLoading ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                              ) : (
+                                "Delete"
+                              )}
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </TableCell>
                   </TableRow>
                 ))

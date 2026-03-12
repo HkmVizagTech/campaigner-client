@@ -130,8 +130,35 @@ const navMain = {
   ],
 };
 
-export function AppSidebar({ ...props }) {
+export function AppSidebar({ loading, ...props }) {
   const { state } = useSidebar();
+
+  if (loading) {
+    return (
+      <Sidebar collapsible="icon" {...props}>
+        <SidebarHeader>
+          <div className="flex items-center justify-center p-3">
+            <div className="w-16 h-16 rounded-md bg-gray-200 animate-pulse" />
+          </div>
+        </SidebarHeader>
+
+        <SidebarContent>
+          <div className="space-y-3 p-4">
+            <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
+            <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
+            <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
+          </div>
+        </SidebarContent>
+
+        <SidebarFooter>
+          <div className="p-4">
+            <div className="h-8 bg-gray-200 rounded animate-pulse"></div>
+          </div>
+        </SidebarFooter>
+      </Sidebar>
+    );
+  }
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -153,9 +180,11 @@ export function AppSidebar({ ...props }) {
       <SidebarContent>
         <NavMain items={navMain?.[props?.details?.role]} />
       </SidebarContent>
+
       <SidebarFooter>
         <NavUser user={props?.details} />
       </SidebarFooter>
+
       <SidebarRail />
     </Sidebar>
   );
