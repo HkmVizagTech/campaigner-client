@@ -84,7 +84,12 @@ const openRazorPay = async (payload, navigate, setLoading) => {
   try {
     res = await api.post("/donations/create-order", payload);
   } catch (error) {
-    toast.error("Payment initialization failed. Please try again.");
+    const message =
+      error?.response?.status === 400
+        ? error?.response?.data?.message || "Invalid request"
+        : "Payment initialization failed. Please try again.";
+
+    toast.error(message);
     setLoading(false);
     return;
   }
@@ -199,7 +204,7 @@ export function DonationDialog({
     if (loading) return;
     const newErrors = {};
 
-    if (!formData?.anonymous && !formData.name.trim()) {
+    if (!formData.name.trim()) {
       newErrors.name = "Name is required";
     }
 

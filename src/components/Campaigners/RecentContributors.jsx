@@ -162,6 +162,8 @@ export default function RecentContributors() {
                         <style.icon
                           className={`h-6 w-6 text-primary ${style.textColor}`}
                         />
+                      ) : item?.isAnonymous ? (
+                        "A"
                       ) : (
                         item?.donorName?.charAt(0) || "?"
                       )}
@@ -169,7 +171,9 @@ export default function RecentContributors() {
 
                     <div>
                       <p className="font-semibold leading-tight">
-                        {item?.donorName}
+                        {item?.isAnonymous
+                          ? "Anonymous Donor"
+                          : item?.donorName}
                       </p>
                       <p className="text-sm text-muted-foreground flex items-center gap-1">
                         <Heart className="h-4 w-4 text-primary" />

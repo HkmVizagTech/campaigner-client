@@ -52,13 +52,15 @@ export default function DonationPopup({ donors }) {
       >
         {/* Avatar */}
         <Avatar className="bg-yellow-400 text-black font-bold h-9 w-9 sm:h-10 sm:w-10">
-          <AvatarFallback>{donor?.donorName?.charAt(0)}</AvatarFallback>
+          <AvatarFallback>
+            {donor?.isAnonymous ? "A" : donor?.donorName?.charAt(0) || "?"}
+          </AvatarFallback>
         </Avatar>
 
         {/* Donor Info */}
         <div className="flex flex-col leading-tight flex-1 min-w-0">
           <span className="font-semibold text-sm sm:text-base truncate">
-            {donor?.donorName}
+            {donor?.isAnonymous ? "Anonymous Donor" : donor?.donorName}
           </span>
 
           <span className="text-xs sm:text-sm text-gray-300">

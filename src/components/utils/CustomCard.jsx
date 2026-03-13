@@ -149,7 +149,9 @@ const CustomCard = ({ campainer, index }) => {
                     {i === 0 && <span>🥇</span>}
                     {i === 1 && <span>🥈</span>}
                     {i === 2 && <span>🥉</span>}
-                    <span>{donor.name}</span>
+                    <span>
+                      {donor?.isAnonymous ? "Anonymous Donor" : donor.name}
+                    </span>
                   </div>
 
                   <span className="font-semibold text-amber-700">
