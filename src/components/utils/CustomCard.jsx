@@ -52,7 +52,7 @@ const CustomCard = ({ campainer, index }) => {
         {/* IMAGE */}
         <div className="relative p-4">
           {/* SEVA BADGE */}
-          {index < 10 && campainer?.amount > 100 && (
+          {index < 10 && raised > 100 && (
             <div
               className="
               absolute
