@@ -104,6 +104,14 @@ export default function CampaignersTable() {
       label: "Lowest Target",
       value: "target_asc",
     },
+    {
+      label: "Newest First",
+      value: "createdAt_desc",
+    },
+    {
+      label: "Oldest First",
+      value: "createdAt_asc",
+    },
   ];
 
   const handleCategoryChange = (id, checked) => {
