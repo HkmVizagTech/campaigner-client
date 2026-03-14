@@ -316,7 +316,7 @@ const CampaignerRegister = () => {
 
             <Button
               type="submit"
-              disabled={createCampaignerLoading}
+              disabled={createCampaignerLoading || campaignLoading}
               className="w-full text-base font-semibold py-6"
             >
               {createCampaignerLoading ? (

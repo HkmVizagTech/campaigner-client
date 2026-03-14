@@ -37,7 +37,9 @@ export default function CreateCampaigner() {
     createCampaignerLoading,
     singleCampaignerDetails,
   } = useSelector((state) => state.campaginer);
-  const { currentCampaign } = useSelector((state) => state.campaign);
+  const { currentCampaign, campainLoading } = useSelector(
+    (state) => state.campaign,
+  );
   const { details } = useSelector((state) => state.auth);
   const { campaignerId } = useParams();
   const { pathname } = useLocation();
@@ -386,7 +388,7 @@ export default function CreateCampaigner() {
 
               <Button
                 type="submit"
-                disabled={createCampaignerLoading}
+                disabled={createCampaignerLoading || campainLoading}
                 className="w-full sm:w-auto"
               >
                 {createCampaignerLoading
