@@ -45,7 +45,7 @@ const CampaignerDetails = () => {
         .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
         .join(" ");
 
-      document.title = `${formattedSlug} | ISKCON Vizag`;
+      document.title = `${formattedSlug} | ISKCON Gambiram`;
     }
   }, [slug]);
   useEffect(() => {
