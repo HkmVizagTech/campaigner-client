@@ -353,8 +353,18 @@ export default function CreateCampaigner() {
             </div>
 
             <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
-              {!isEdit && (
+              {isEdit ? (
                 <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full sm:w-auto"
+                  onClick={() => navigate("/admin/campaigners")}
+                >
+                  Back to Campaigners
+                </Button>
+              ) : (
+                <Button
+                  type="button"
                   variant="outline"
                   className="w-full sm:w-auto"
                   onClick={() => {

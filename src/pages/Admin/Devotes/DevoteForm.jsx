@@ -151,19 +151,31 @@ export default function DevoteForm() {
               </div>
             </div>
 
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={loading || singleDevoteeLoading}
-            >
-              {loading
-                ? isEdit
-                  ? "Updating..."
-                  : "Saving..."
-                : isEdit
-                  ? "Update"
-                  : "Submit"}
-            </Button>
+            <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
+              {isEdit && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full sm:w-auto"
+                  onClick={() => navigate("/admin/devotees")}
+                >
+                  Back to Devotees
+                </Button>
+              )}
+              <Button
+                type="submit"
+                className="w-full sm:w-auto"
+                disabled={loading || singleDevoteeLoading}
+              >
+                {loading
+                  ? isEdit
+                    ? "Updating..."
+                    : "Saving..."
+                  : isEdit
+                    ? "Update"
+                    : "Submit"}
+              </Button>
+            </div>
           </form>
         </CardContent>
       </Card>

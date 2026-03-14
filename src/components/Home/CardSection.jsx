@@ -61,6 +61,7 @@ const CardSection = ({ currentCampaign }) => {
   const [query, dispatchQuery] = useReducer(queryReducer, INITIAL_QUERY);
 
   const loaderRef = useRef(null);
+  const isFetchingNextPageRef = useRef(false);
 
   const hasMoreCampaigners = useMemo(() => {
     if (campaginerTotalPages > 0) {
@@ -86,6 +87,10 @@ const CardSection = ({ currentCampaign }) => {
   useEffect(() => {
     dispatchQuery({ type: "RESET_PAGE" });
   }, [currentCampaign?._id]);
+
+  useEffect(() => {
+    isFetchingNextPageRef.current = campainerLoading;
+  }, [campainerLoading]);
 
   useEffect(() => {
     if (!currentCampaign?._id) return undefined;
@@ -118,12 +123,13 @@ const CardSection = ({ currentCampaign }) => {
       (entries) => {
         const [entry] = entries;
 
-        if (!entry?.isIntersecting || campainerLoading) return;
+        if (!entry?.isIntersecting || isFetchingNextPageRef.current) return;
 
         if (campaginerTotalPages > 0 && query.page >= campaginerTotalPages) {
           return;
         }
 
+        isFetchingNextPageRef.current = true;
         dispatchQuery({ type: "LOAD_NEXT_PAGE" });
       },
       {
@@ -139,7 +145,6 @@ const CardSection = ({ currentCampaign }) => {
       observer.disconnect();
     };
   }, [
-    campainerLoading,
     campaginerTotalPages,
     currentCampaign?._id,
     hasMoreCampaigners,

@@ -204,7 +204,16 @@ export default function CreateCampaign() {
 
             {/* Buttons */}
             <div className="flex flex-col gap-3 pt-4 sm:flex-row sm:items-center sm:justify-between">
-              {!isEdit && (
+              {isEdit ? (
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full sm:w-auto"
+                  onClick={() => navigate("/admin/campaigns")}
+                >
+                  Back to Campaigns
+                </Button>
+              ) : (
                 <Button
                   type="button"
                   variant="outline"

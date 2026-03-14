@@ -40,6 +40,11 @@ const CampaignDonatePanel = ({ details, sevas = [], sevaLoading }) => {
       .filter((s) => s.sevaAmount >= num);
   }, [inputValue, sevas]);
 
+  const shouldShowSuggestions =
+    openPopover &&
+    filteredSevas.length > 0 &&
+    Number(inputValue) !== Number(selectedSeva?.sevaAmount);
+
   const handleInputChange = (value) => {
     const num = Number(value);
 
@@ -76,6 +81,9 @@ const CampaignDonatePanel = ({ details, sevas = [], sevaLoading }) => {
     setInputValue(seva.sevaAmount);
     setSelectedSeva(seva);
     setOpenPopover(false);
+    requestAnimationFrame(() => {
+      inputRef.current?.blur();
+    });
   };
 
   return (
@@ -190,12 +198,19 @@ const CampaignDonatePanel = ({ details, sevas = [], sevaLoading }) => {
                 placeholder="Enter Amount (Min ₹100)"
                 className="h-12 text-base"
                 value={inputValue || ""}
-                onFocus={() => setOpenPopover(true)}
+                onFocus={() => {
+                  if (
+                    filteredSevas.length > 0 &&
+                    Number(inputValue) !== Number(selectedSeva?.sevaAmount)
+                  ) {
+                    setOpenPopover(true);
+                  }
+                }}
                 onChange={(e) => handleInputChange(e.target.value)}
               />
             </PopoverTrigger>
 
-            {openPopover && filteredSevas.length > 0 && (
+            {shouldShowSuggestions && (
               <PopoverContent
                 className="p-0 w-full"
                 onOpenAutoFocus={(e) => e.preventDefault()}
