@@ -40,20 +40,34 @@ const campaginersReducer = createSlice({
     builder
       .addCase(getCampainer.pending, (state, action) => {
         state.campainerLoading = true;
-        state.currentCampainerRequestId = action.meta.requestId;
         state.error = null;
+
+        const { infiniteScroll = false, page = 1 } = action.meta.arg || {};
+
+        if (!infiniteScroll || page === 1) {
+          state.currentCampainerRequestId = action.meta.requestId;
+        }
       })
       .addCase(getCampainer.fulfilled, (state, action) => {
-        if (state.currentCampainerRequestId !== action.meta.requestId) return;
-
-        state.campainerLoading = false;
-        state.currentCampainerRequestId = null;
-
         const { payload } = action;
         const { campaigners, totalPages, count, page, infiniteScroll } =
           payload;
+        const isInfiniteAppend = infiniteScroll && page !== 1;
 
-        if (infiniteScroll && page !== 1) {
+        if (
+          !isInfiniteAppend &&
+          state.currentCampainerRequestId !== action.meta.requestId
+        ) {
+          return;
+        }
+
+        state.campainerLoading = false;
+
+        if (!isInfiniteAppend) {
+          state.currentCampainerRequestId = null;
+        }
+
+        if (isInfiniteAppend) {
           const mergedCampaigners = [...state.campaginers, ...campaigners];
           const uniqueCampaigners = Array.from(
             new Map(
@@ -73,10 +87,21 @@ const campaginersReducer = createSlice({
         state.campainersCount = count;
       })
       .addCase(getCampainer.rejected, (state, action) => {
-        if (state.currentCampainerRequestId !== action.meta.requestId) return;
+        const { infiniteScroll = false, page = 1 } = action.meta.arg || {};
+        const isInfiniteAppend = infiniteScroll && page !== 1;
+
+        if (
+          !isInfiniteAppend &&
+          state.currentCampainerRequestId !== action.meta.requestId
+        ) {
+          return;
+        }
 
         state.campainerLoading = false;
-        state.currentCampainerRequestId = null;
+
+        if (!isInfiniteAppend) {
+          state.currentCampainerRequestId = null;
+        }
 
         if (!action.meta.aborted) {
           state.error = action.payload;
