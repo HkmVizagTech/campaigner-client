@@ -122,7 +122,7 @@ export const updateCampaigner = createAsyncThunk(
   "updateCampaigner",
   async ({ id, formData }, { rejectWithValue }) => {
     try {
-      const response = await api.put(`/campaigner/${id}`, formData);
+      const response = await api.patch(`/campaigner/${id}`, formData);
       return response?.data;
     } catch (error) {
       toast.error(error.response?.data?.message || "Internal Server Error");

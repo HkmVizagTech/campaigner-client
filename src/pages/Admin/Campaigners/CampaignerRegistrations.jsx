@@ -47,6 +47,7 @@ import {
 import { Field, FieldGroup } from "@/components/ui/field";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const CampaignerRegistrations = () => {
   const { campaginers, campaginerTotalPages, campainerLoading } = useSelector(
@@ -194,7 +195,18 @@ const CampaignerRegistrations = () => {
                     key={item._id}
                     className="hover:bg-muted/50 transition"
                   >
-                    <TableCell className="font-medium">{item.name}</TableCell>
+                    <TableCell className="font-medium">
+                      {" "}
+                      <div className="flex items-center gap-3">
+                        <Avatar className="h-8 w-8">
+                          <AvatarImage src={item?.image?.url} />
+                          <AvatarFallback>
+                            {item?.name?.charAt(0)}
+                          </AvatarFallback>
+                        </Avatar>
+                        {item?.name}
+                      </div>
+                    </TableCell>
 
                     <TableCell className="text-center">
                       {item.phoneNumber}
@@ -282,8 +294,9 @@ const CampaignerRegistrations = () => {
                         <AlertDialog>
                           <AlertDialogTrigger asChild>
                             <Button
-                              size="icon-sm"
-                              variant="destructive"
+                              variant="ghost"
+                              size="icon"
+                              className="text-destructive cursor-pointer"
                               onClick={(e) => e.stopPropagation()}
                             >
                               <Trash2 size={16} />

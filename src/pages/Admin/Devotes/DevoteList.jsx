@@ -10,7 +10,7 @@ import {
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 import { Button } from "@/components/ui/button";
-import { Loader2, Trash2 } from "lucide-react";
+import { Loader2, Pencil, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteDevote, getDevoteList } from "@/store/devotees/devote.service";
@@ -80,7 +80,7 @@ export default function DevoteeList() {
                 <TableHead>Name</TableHead>
                 <TableHead>Phone Number</TableHead>
                 <TableHead>Email</TableHead>
-                <TableHead className="text-right">Action</TableHead>
+                <TableHead className="text-center">Action</TableHead>
               </TableRow>
             </TableHeader>
 
@@ -109,10 +109,21 @@ export default function DevoteeList() {
                     <TableCell>{item?.phoneNumber}</TableCell>
                     <TableCell>{item?.email}</TableCell>
 
-                    <TableCell className="text-right">
+                    <TableCell className="text-center">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="cursor-pointer"
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </Button>
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
-                          <Button variant="destructive" size="sm">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="text-destructive cursor-pointer"
+                          >
                             <Trash2 className="h-4 w-4" />
                           </Button>
                         </AlertDialogTrigger>

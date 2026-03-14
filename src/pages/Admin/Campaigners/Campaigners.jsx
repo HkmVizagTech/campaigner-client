@@ -42,6 +42,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import CampaignerDetailsModal from "@/components/utils/CampaignerDetailsModal";
 import { toast } from "@/utils/toast";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function CampaignersTable() {
   const navigate = useNavigate();
@@ -180,6 +181,7 @@ export default function CampaignersTable() {
               <TableHead className="w-[10%] text-center">
                 View Funders
               </TableHead>
+              <TableHead className="w-[10%] text-center">Actions</TableHead>
             </TableRow>
           </TableHeader>
 
@@ -204,7 +206,17 @@ export default function CampaignersTable() {
                     className="cursor-pointer hover:bg-muted/50 transition"
                     onClick={() => setSelectedCampaigner(item)}
                   >
-                    <TableCell className="font-medium">{item.name}</TableCell>
+                    <TableCell className="font-medium">
+                      <div className="flex items-center gap-3">
+                        <Avatar className="h-8 w-8">
+                          <AvatarImage src={item?.image?.url} />
+                          <AvatarFallback>
+                            {item?.name?.charAt(0)}
+                          </AvatarFallback>
+                        </Avatar>
+                        {item?.name}
+                      </div>
+                    </TableCell>
 
                     <TableCell>{item.phoneNumber}</TableCell>
 
@@ -244,8 +256,9 @@ export default function CampaignersTable() {
                       <div className="flex justify-center gap-2">
                         {/* EDIT */}
                         <Button
-                          size="icon-sm"
-                          variant="outline"
+                          variant="ghost"
+                          size="icon"
+                          className="cursor-pointer"
                           onClick={(e) => {
                             e.stopPropagation();
                             navigate(`/admin/campaigner/edit/${item._id}`);
@@ -259,8 +272,9 @@ export default function CampaignersTable() {
                           <AlertDialog>
                             <AlertDialogTrigger asChild>
                               <Button
-                                size="icon-sm"
-                                variant="destructive"
+                                variant="ghost"
+                                size="icon"
+                                className="text-destructive cursor-pointer"
                                 onClick={(e) => e.stopPropagation()}
                               >
                                 <Trash2 size={16} />

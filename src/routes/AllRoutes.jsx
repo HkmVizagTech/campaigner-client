@@ -42,6 +42,7 @@ const AllRoutes = () => {
       >
         <Route path="/admin/dashboard" element={<Dashboard />} />
         <Route path="/admin/create-campaign" element={<CreateCampaign />} />
+        <Route path="/admin/campaign/:id/edit" element={<CreateCampaign />} />
         <Route path="/admin/campaigns" element={<CampaignListPage />} />
         <Route path="/admin/create-campaigner" element={<CreateCampaigner />} />
         <Route path="/admin/campaigners" element={<Campaigners />} />

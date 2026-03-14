@@ -65,3 +65,48 @@ export const createCampaign = createAsyncThunk(
     }
   },
 );
+
+export const updateCampaign = createAsyncThunk(
+  "updateCampaign",
+  async ({ id, formData }, { rejectWithValue }) => {
+    try {
+      const response = await api.patch(`/campaign/${id}`, formData);
+      return response?.data;
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Internal Server Error");
+      return rejectWithValue(
+        error.response?.data?.message || "Internal Server error",
+      );
+    }
+  },
+);
+
+export const getSingleCampaign = createAsyncThunk(
+  "singleCampaign",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await api.get(`/campaign/${id}`);
+      return response?.data?.data;
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Internal Server Error");
+      return rejectWithValue(
+        error.response?.data?.message || "Internal Server error",
+      );
+    }
+  },
+);
+
+export const deleteCampaign = createAsyncThunk(
+  "deleteCampaign",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await api.delete(`/campaign/${id}`);
+      return response?.data;
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Internal Server Error");
+      return rejectWithValue(
+        error.response?.data?.message || "Internal Server error",
+      );
+    }
+  },
+);

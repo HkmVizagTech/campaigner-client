@@ -28,9 +28,15 @@ import {
 } from "@/components/ui/select";
 
 import { useDispatch, useSelector } from "react-redux";
-import { getCampaignsList } from "@/store/campaign/campaign.service";
+import {
+  deleteCampaign,
+  getCampaignsList,
+} from "@/store/campaign/campaign.service";
 import CustomPagination from "@/components/utils/CustomPagination";
 import { Progress } from "@/components/ui/progress";
+import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 
 const PAGE_SIZE = 10;
 
@@ -39,6 +45,7 @@ const CampaignListPage = () => {
 
   const {
     campaginListArr: campaigns,
+    deleteCampaignLoading,
     total,
     totalPages,
   } = useSelector((state) => state.campaign);
@@ -176,6 +183,7 @@ const CampaignListPage = () => {
               <TableHead>Status</TableHead>
               <TableHead>Start Date</TableHead>
               <TableHead>End Date</TableHead>
+              <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
 
@@ -225,13 +233,79 @@ const CampaignListPage = () => {
                 </TableCell>
                 <TableCell>
                   <div className="flex gap-2.5">
-                    <Button variant="outline">
-                      <Pen />
-                    </Button>
-                    {campaign?.raisedAmount <= 0 && (
-                      <Button variant="destructive">
-                        <Trash2 />
+                    <Link to={`/admin/campaign/${campaign?._id}/edit`}>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="cursor-pointer"
+                      >
+                        <Pen />
                       </Button>
+                    </Link>
+                    {campaign?.raisedAmount <= 0 && (
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="text-destructive cursor-pointer"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <Trash2 size={16} />
+                          </Button>
+                        </AlertDialogTrigger>
+
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>
+                              Delete Campaigner
+                            </AlertDialogTitle>
+
+                            <AlertDialogDescription>
+                              This action cannot be undone. This will
+                              permanently delete the campaigner and their data.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+
+                          <AlertDialogFooter>
+                            <AlertDialogCancel
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              Cancel
+                            </AlertDialogCancel>
+
+                            <AlertDialogAction
+                              onClick={async (e) => {
+                                e.stopPropagation();
+                                try {
+                                  const result = await dispatch(
+                                    deleteCampaign(campaign?._id),
+                                  ).unwrap();
+
+                                  if (result?.success) {
+                                    toast.success(
+                                      "Campaign Deleted Successfully",
+                                    );
+
+                                    dispatch(
+                                      getCampaignsList({
+                                        page: 1,
+                                        pageSize: PAGE_SIZE,
+                                      }),
+                                    );
+                                  }
+                                } catch (error) {
+                                  toast.error(
+                                    error || "Failed to delete campaigner",
+                                  );
+                                }
+                              }}
+                            >
+                              Delete
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     )}
                   </div>
                 </TableCell>

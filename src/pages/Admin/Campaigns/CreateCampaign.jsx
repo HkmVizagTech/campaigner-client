@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
   Card,
   CardHeader,
@@ -10,21 +10,52 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useDispatch, useSelector } from "react-redux";
-import { createCampaign } from "@/store/campaign/campaign.service";
+import {
+  createCampaign,
+  getSingleCampaign,
+  updateCampaign,
+} from "@/store/campaign/campaign.service";
 import { toast } from "@/utils/toast";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 export default function CreateCampaign() {
+  const { pathname } = useLocation();
+  const { id } = useParams();
   const [formData, setFormData] = useState({
     title: "",
     targetAmount: "",
     startDate: "",
     endDate: "",
   });
-
-  const { createCampaignLoading: loading } = useSelector(
-    (state) => state.campaign,
-  );
+  const {
+    createCampaignLoading: loading,
+    singleCampaignLoading,
+    singleCampaignDetails,
+  } = useSelector((state) => state.campaign);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const isEdit = pathname.includes("edit");
+
+  useEffect(() => {
+    if (!id || !isEdit) return;
+
+    dispatch(getSingleCampaign(id));
+  }, [id, isEdit, dispatch]);
+  useEffect(() => {
+    if (!Object.keys(singleCampaignDetails ?? {}).length || !isEdit || !id)
+      return;
+    setFormData({
+      title: singleCampaignDetails?.title,
+      targetAmount: singleCampaignDetails?.targetAmount,
+      startDate: new Date(singleCampaignDetails?.startDate)
+        .toISOString()
+        .split("T")[0],
+      endDate: new Date(singleCampaignDetails?.endDate)
+        .toISOString()
+        .split("T")[0],
+    });
+  }, [singleCampaignDetails, isEdit, id, dispatch]);
 
   const handleChange = (e) => {
     setFormData((prev) => ({
@@ -48,17 +79,28 @@ export default function CreateCampaign() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const result = await dispatch(createCampaign(formData)).unwrap();
 
-    if (result?.success) {
-      toast.success("Campaign created successfully");
+    if (id && isEdit) {
+      const result = await dispatch(updateCampaign({ id, formData })).unwrap();
+      if (result?.success) {
+        toast.success("Campaign updated successfully");
+        navigate("/admin/campaigns");
+      }
     }
-    setFormData({
-      title: "",
-      targetAmount: "",
-      startDate: "",
-      endDate: "",
-    });
+
+    if (!isEdit) {
+      const result = await dispatch(createCampaign(formData)).unwrap();
+
+      if (result?.success) {
+        toast.success("Campaign created successfully");
+      }
+      setFormData({
+        title: "",
+        targetAmount: "",
+        startDate: "",
+        endDate: "",
+      });
+    }
   };
 
   return (
@@ -130,6 +172,7 @@ export default function CreateCampaign() {
                 <Input
                   name="startDate"
                   type="date"
+                  disabled={isEdit}
                   value={formData.startDate}
                   onChange={handleChange}
                   className="focus-visible:ring-2 focus-visible:ring-primary"
@@ -161,23 +204,31 @@ export default function CreateCampaign() {
 
             {/* Buttons */}
             <div className="flex justify-between items-center pt-4">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() =>
-                  setFormData({
-                    title: "",
-                    targetAmount: "",
-                    startDate: "",
-                    endDate: "",
-                  })
-                }
-              >
-                Reset Form
-              </Button>
+              {!isEdit && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() =>
+                    setFormData({
+                      title: "",
+                      targetAmount: "",
+                      startDate: "",
+                      endDate: "",
+                    })
+                  }
+                >
+                  Reset Form
+                </Button>
+              )}
 
-              <Button type="submit" disabled={loading} className="px-6">
-                {loading ? "Creating..." : "Create Campaign"}
+              <Button
+                type="submit"
+                disabled={loading || singleCampaignLoading}
+                className="px-6"
+              >
+                {loading || singleCampaignLoading
+                  ? "Creating..."
+                  : "Create Campaign"}
               </Button>
             </div>
           </form>

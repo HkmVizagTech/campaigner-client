@@ -1,14 +1,20 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
   createCampaign,
+  deleteCampaign,
   getCampaignsList,
   getCurrentCampaign,
+  getSingleCampaign,
+  updateCampaign,
 } from "./campaign.service";
 
 const initialState = {
   campainLoading: false,
   campaginListLoading: false,
   createCampaignLoading: false,
+  singleCampaignLoading: false,
+  deleteCampaignLoading: false,
+  singleCampaignDetails: {},
   campaginListArr: [],
   currentCampaign: {},
   total: 0,
@@ -54,6 +60,37 @@ const campaignReducer = createSlice({
       })
       .addCase(createCampaign.rejected, (state, { payload }) => {
         state.createCampaignLoading = false;
+        state.error = payload;
+      })
+      .addCase(getSingleCampaign.pending, (state) => {
+        state.singleCampaignLoading = true;
+      })
+      .addCase(getSingleCampaign.fulfilled, (state, { payload }) => {
+        state.singleCampaignLoading = false;
+        state.singleCampaignDetails = payload;
+      })
+      .addCase(getSingleCampaign.rejected, (state, { payload }) => {
+        state.singleCampaignLoading = false;
+        state.error = payload;
+      })
+      .addCase(updateCampaign.pending, (state) => {
+        state.createCampaignLoading = true;
+      })
+      .addCase(updateCampaign.fulfilled, (state) => {
+        state.createCampaignLoading = false;
+      })
+      .addCase(updateCampaign.rejected, (state, { payload }) => {
+        state.createCampaignLoading = false;
+        state.error = payload;
+      })
+      .addCase(deleteCampaign.pending, (state) => {
+        state.deleteCampaignLoading = true;
+      })
+      .addCase(deleteCampaign.fulfilled, (state) => {
+        state.deleteCampaignLoading = false;
+      })
+      .addCase(deleteCampaign.rejected, (state, { payload }) => {
+        state.deleteCampaignLoading = false;
         state.error = payload;
       }),
 });
