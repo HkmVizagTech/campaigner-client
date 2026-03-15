@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
+import { Loader2 } from "lucide-react";
 import { getCampainer } from "@/store/campaigners/campaigners.service";
 import CustomCard from "../utils/CustomCard";
 import CustomCardSkeleton from "../utils/CustomCardSkeleton";
@@ -9,6 +10,13 @@ const PAGE_SIZE = 15;
 const INITIAL_QUERY = {
   page: 1,
   search: "",
+};
+
+const INITIAL_LIST_STATE = {
+  campaigners: [],
+  campainersCount: 0,
+  campaginerTotalPages: 0,
+  campainerLoading: false,
 };
 
 const queryReducer = (state, action) => {
@@ -47,17 +55,77 @@ const queryReducer = (state, action) => {
   }
 };
 
+const listReducer = (state, action) => {
+  switch (action.type) {
+    case "RESET":
+      return INITIAL_LIST_STATE;
+
+    case "REQUEST_START":
+      return {
+        ...state,
+        campainerLoading: true,
+      };
+
+    case "REQUEST_SUCCESS": {
+      const { queryPage, payload } = action;
+      const nextCampaigners = payload?.campaigners ?? [];
+      const totalPages = payload?.totalPages ?? 0;
+      const count = payload?.count ?? 0;
+
+      if (queryPage === 1) {
+        return {
+          campaigners: nextCampaigners,
+          campainersCount: count,
+          campaginerTotalPages: totalPages,
+          campainerLoading: false,
+        };
+      }
+
+      const mergedCampaigners = [...state.campaigners, ...nextCampaigners];
+      const uniqueCampaigners = Array.from(
+        new Map(
+          mergedCampaigners.map((campaigner, index) => [
+            campaigner?._id ?? `${queryPage}-${index}`,
+            campaigner,
+          ]),
+        ).values(),
+      );
+
+      return {
+        campaigners: uniqueCampaigners,
+        campainersCount: count,
+        campaginerTotalPages: totalPages,
+        campainerLoading: false,
+      };
+    }
+
+    case "REQUEST_FINISH":
+      return {
+        ...state,
+        campainerLoading: false,
+      };
+
+    default:
+      return state;
+  }
+};
+
 const CardSection = ({ currentCampaign }) => {
   const dispatch = useDispatch();
   const [searchInput, setSearchInput] = useState("");
   const [query, dispatchQuery] = useReducer(queryReducer, INITIAL_QUERY);
-  const [campaigners, setCampaigners] = useState([]);
-  const [campainersCount, setCampainersCount] = useState(0);
-  const [campaginerTotalPages, setCampaginerTotalPages] = useState(0);
-  const [campainerLoading, setCampainerLoading] = useState(false);
+  const [listState, dispatchList] = useReducer(listReducer, INITIAL_LIST_STATE);
 
   const loaderRef = useRef(null);
   const isFetchingNextPageRef = useRef(false);
+  const lastTriggeredPageRef = useRef(INITIAL_QUERY.page);
+
+  const {
+    campaigners,
+    campainersCount,
+    campaginerTotalPages,
+    campainerLoading,
+  } = listState;
 
   const hasMoreCampaigners = useMemo(() => {
     if (campaginerTotalPages > 0) {
@@ -79,9 +147,7 @@ const CardSection = ({ currentCampaign }) => {
   }, [searchInput]);
 
   useEffect(() => {
-    setCampaigners([]);
-    setCampainersCount(0);
-    setCampaginerTotalPages(0);
+    dispatchList({ type: "RESET" });
     dispatchQuery({ type: "RESET_PAGE" });
   }, [currentCampaign?._id]);
 
@@ -90,10 +156,14 @@ const CardSection = ({ currentCampaign }) => {
   }, [campainerLoading]);
 
   useEffect(() => {
+    lastTriggeredPageRef.current = query.page;
+  }, [query.page]);
+
+  useEffect(() => {
     if (!currentCampaign?._id) return undefined;
 
     let isActive = true;
-    setCampainerLoading(true);
+    dispatchList({ type: "REQUEST_START" });
 
     const request = dispatch(
       getCampainer({
@@ -112,27 +182,10 @@ const CardSection = ({ currentCampaign }) => {
       .then((payload) => {
         if (!isActive) return;
 
-        const nextCampaigners = payload?.campaigners ?? [];
-        const totalPages = payload?.totalPages ?? 0;
-        const count = payload?.count ?? 0;
-
-        setCampaginerTotalPages(totalPages);
-        setCampainersCount(count);
-        setCampaigners((prev) => {
-          if (query.page === 1) {
-            return nextCampaigners;
-          }
-
-          const mergedCampaigners = [...prev, ...nextCampaigners];
-
-          return Array.from(
-            new Map(
-              mergedCampaigners.map((campaigner, index) => [
-                campaigner?._id ?? `${query.page}-${index}`,
-                campaigner,
-              ]),
-            ).values(),
-          );
+        dispatchList({
+          type: "REQUEST_SUCCESS",
+          queryPage: query.page,
+          payload,
         });
       })
       .catch(() => {
@@ -141,7 +194,7 @@ const CardSection = ({ currentCampaign }) => {
       .finally(() => {
         if (!isActive) return;
 
-        setCampainerLoading(false);
+        dispatchList({ type: "REQUEST_FINISH" });
       });
 
     return () => {
@@ -167,7 +220,12 @@ const CardSection = ({ currentCampaign }) => {
           return;
         }
 
+        if (lastTriggeredPageRef.current !== query.page) {
+          return;
+        }
+
         isFetchingNextPageRef.current = true;
+        lastTriggeredPageRef.current = query.page + 1;
         dispatchQuery({ type: "LOAD_NEXT_PAGE" });
       },
       {
@@ -188,6 +246,9 @@ const CardSection = ({ currentCampaign }) => {
     hasMoreCampaigners,
     query.page,
   ]);
+
+  const isInitialLoading = campainerLoading && campaigners.length === 0;
+  const isLoadingMore = campainerLoading && campaigners.length > 0;
 
   return (
     <section className="mt-10" id="card-sections">
@@ -213,11 +274,18 @@ const CardSection = ({ currentCampaign }) => {
           />
         ))}
 
-        {campainerLoading &&
+        {isInitialLoading &&
           Array.from({ length: Math.min(PAGE_SIZE, 4) }).map((_, i) => (
             <CustomCardSkeleton key={i} />
           ))}
       </div>
+
+      {isLoadingMore && (
+        <div className="mb-4 flex items-center justify-center gap-2 text-sm text-amber-700">
+          <Loader2 className="h-4 w-4 animate-spin" />
+          <span>Loading more campaigners...</span>
+        </div>
+      )}
 
       {hasMoreCampaigners && <div ref={loaderRef} className="h-10" />}
 

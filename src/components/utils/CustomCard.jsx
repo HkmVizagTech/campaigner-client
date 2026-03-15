@@ -81,6 +81,8 @@ const CustomCard = ({ campainer, index }) => {
           <img
             src={campainer?.image?.url}
             alt={campainer?.name}
+            loading="lazy"
+            decoding="async"
             className="w-full aspect-3/3 object-cover rounded-xl"
           />
         </div>
