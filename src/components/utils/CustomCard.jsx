@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Link } from "react-router-dom";
 import { Trophy, Clock } from "lucide-react";
 import { Card } from "../ui/card";
@@ -33,8 +34,17 @@ const CustomCard = ({ campainer, index }) => {
       )
     : 0;
 
+  const topDonors = campainer?.topDonors ?? [];
+
   return (
-    <Link to={`/${campainer?.slug}`}>
+    <Link
+      to={`/${campainer?.slug}`}
+      className="block h-full"
+      style={{
+        contentVisibility: "auto",
+        containIntrinsicSize: "520px",
+      }}
+    >
       <Card
         className="
         relative
@@ -83,6 +93,7 @@ const CustomCard = ({ campainer, index }) => {
             alt={campainer?.name}
             loading="lazy"
             decoding="async"
+            fetchPriority={index < 4 ? "high" : "low"}
             className="w-full aspect-3/3 object-cover rounded-xl"
           />
         </div>
@@ -137,15 +148,15 @@ const CustomCard = ({ campainer, index }) => {
 
           {/* TOP DEVOTEES */}
           <div className="space-y-2 flex flex-col">
-            {campainer?.topDonors?.length > 0 && (
+            {topDonors.length > 0 && (
               <div className="flex items-center gap-2 text-sm font-semibold">
                 <Trophy size={16} className="text-amber-500" />
                 Top Donors
               </div>
             )}
 
-            {campainer?.topDonors?.length > 0 ? (
-              campainer.topDonors.map((donor, i) => (
+            {topDonors.length > 0 ? (
+              topDonors.map((donor, i) => (
                 <div key={i} className="flex justify-between text-sm">
                   <div className="flex items-center gap-2">
                     {i === 0 && <span>🥇</span>}
@@ -196,4 +207,4 @@ const CustomCard = ({ campainer, index }) => {
   );
 };
 
-export default CustomCard;
+export default memo(CustomCard);

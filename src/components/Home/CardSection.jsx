@@ -268,7 +268,7 @@ const CardSection = ({ currentCampaign }) => {
       <div className="mb-3 grid grid-cols-1 items-stretch gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {campaigners?.map((campaginer, index) => (
           <CustomCard
-            key={campaginer?._id}
+            key={campaginer?._id ?? campaginer?.slug ?? `${index}-${query.search}`}
             campainer={campaginer}
             index={index}
           />
