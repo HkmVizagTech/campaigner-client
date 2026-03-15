@@ -196,14 +196,12 @@ const CardSection = ({ currentCampaign }) => {
           Campaigners Supporting This Seva ({campainersCount})
         </h2>
 
-        {campaigners?.length > 5 && (
-          <Input
-            placeholder="Search campaigner..."
-            value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
-            className="max-w-sm"
-          />
-        )}
+        <Input
+          placeholder="Search campaigner..."
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
+          className="max-w-sm"
+        />
       </div>
 
       <div className="mb-3 grid grid-cols-1 items-stretch gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
