@@ -24,6 +24,9 @@ import {
 } from "@/components/ui/select";
 import { getSevaList } from "@/store/seva/seva.service";
 import { getCampaignsList } from "@/store/campaign/campaign.service";
+import { Download, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import api from "@/api/api";
 
 export default function DonorsTable() {
   const [search, setSearch] = useState("");
@@ -46,6 +49,10 @@ export default function DonorsTable() {
   const { sevaList, sevaLoading } = useSelector((state) => state.seva);
   const { details } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  const [downloading, setDownloading] = useState({
+    id: null,
+    val: false,
+  });
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -84,6 +91,40 @@ export default function DonorsTable() {
   useEffect(() => {
     dispatch(getCampaignsList({ page: 1 }));
   }, [dispatch]);
+
+  const handleDownloadReceipt = async (donor) => {
+    try {
+      setDownloading({
+        id: donor?._id,
+        val: true,
+      });
+
+      const response = await api.get(`/receipt/${donor?._id}`, {
+        responseType: "blob",
+      });
+
+      const url = window.URL.createObjectURL(response.data);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute(
+        "download",
+        `receipt-${donor?.receiptNumber || donor?._id}.pdf`,
+      );
+
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Failed to download receipt", error);
+    } finally {
+      setDownloading({
+        id: null,
+        val: false,
+      });
+    }
+  };
 
   return (
     <div className="min-w-0 space-y-6">
@@ -170,8 +211,12 @@ export default function DonorsTable() {
               <TableHead>Donor</TableHead>
               <TableHead>Campaign</TableHead>
               <TableHead>Campaigner</TableHead>
-              <TableHead className="text-center w-40">Amount</TableHead>
-              <TableHead className="w-40 text-center">Status</TableHead>
+              <TableHead className="text-center w-40">Donation Date</TableHead>
+              <TableHead className="text-center w-70">Amount</TableHead>
+              <TableHead className="w-50 text-center">Status</TableHead>
+              <TableHead className="w-10 text-center">
+                Receipt Download
+              </TableHead>
             </TableRow>
           </TableHeader>
 
@@ -219,13 +264,35 @@ export default function DonorsTable() {
                       {donor.campaigner?.name}
                     </div>
                   </TableCell>
-
+                  <TableCell className="text-center font-semibold">
+                    {new Date(donor.createdAt).toLocaleDateString("en-GB", {
+                      day: "numeric",
+                      month: "long",
+                      year: "numeric",
+                    })}
+                  </TableCell>
                   <TableCell className="text-center font-semibold text-primary">
                     ₹{donor.amount.toLocaleString()}
                   </TableCell>
 
                   <TableCell className="text-center">
                     <Badge variant="default">{donor.status}</Badge>
+                  </TableCell>
+                  <TableCell className="text-center">
+                    <Button
+                      variant="ghost"
+                      disabled={downloading?.val}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDownloadReceipt(donor);
+                      }}
+                    >
+                      {downloading?.id === donor?._id && downloading?.val ? (
+                        <Loader2 />
+                      ) : (
+                        <Download />
+                      )}
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))

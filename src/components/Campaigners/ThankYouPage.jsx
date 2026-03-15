@@ -70,7 +70,7 @@ export default function ThankYouPage() {
         responseType: "blob",
       });
 
-      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const url = window.URL.createObjectURL(response.data);
 
       const link = document.createElement("a");
       link.href = url;
@@ -82,6 +82,7 @@ export default function ThankYouPage() {
       document.body.appendChild(link);
       link.click();
       link.remove();
+      window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Failed to download receipt", error);
     } finally {

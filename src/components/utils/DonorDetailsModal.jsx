@@ -17,6 +17,14 @@ export default function DonorDetailsModal({ donor, onClose }) {
           <Detail label="Donor Name" value={donor?.donorName ?? "N/A"} />
           <Detail label="Phone" value={donor?.donorPhone ?? "N/A"} />
           <Detail
+            label="Donation Date"
+            value={new Date(donor.createdAt).toLocaleDateString("en-GB", {
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+            })}
+          />
+          <Detail
             label="Amount"
             value={`₹${donor?.amount?.toLocaleString("en-IN")}`}
           />
