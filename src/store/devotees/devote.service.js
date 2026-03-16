@@ -58,7 +58,11 @@ export const updateDevotee = createAsyncThunk(
   "updateDevotee",
   async ({ id, formData }, { rejectWithValue }) => {
     try {
-      const response = await api.patch(`/devote/${id}`, formData);
+      const response = await api.patch(`/devote/${id}`, {
+        devoteName: formData?.name,
+        phoneNumber: formData?.phoneNumber,
+        shortForm: formData?.shortForm,
+      });
       return response?.data;
     } catch (error) {
       toast.error(error.response?.data?.message || "Internal Server Error");

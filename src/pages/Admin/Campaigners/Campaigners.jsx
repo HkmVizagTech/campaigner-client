@@ -168,8 +168,6 @@ export default function CampaignersTable() {
               </PopoverHeader>
             </PopoverContent>
           </Popover>
-
-          {/* <Button variant="outline">Export CSV</Button> */}
         </div>
       </div>
       <div className="min-w-0 rounded-2xl border shadow-sm">

@@ -73,7 +73,7 @@ export default function DevoteForm() {
     if (isEdit && id) {
       const result = await dispatch(updateDevotee({ id, formData })).unwrap();
       if (result?.success) {
-        toast.success("Devote Added Successfully");
+        toast.success("Devotee Updated Successfully");
         navigate("/admin/devotees");
       }
     }
@@ -82,7 +82,7 @@ export default function DevoteForm() {
       const result = await dispatch(addDevote(formData)).unwrap();
 
       if (result?.success) {
-        toast.success("Devote Added Successfully");
+        toast.success("Devotee Added Successfully");
       }
 
       setFormData({
