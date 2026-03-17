@@ -7,6 +7,7 @@ import Home from "@/pages/Home/Home";
 import { Route, Routes } from "react-router-dom";
 import CreateCampaigner from "@/pages/Admin/Campaigners/CreateCampaigner";
 import ThankYouPage from "@/components/Campaigners/ThankYouPage";
+import PaymentErrorPage from "@/components/Campaigners/PaymentErrorPage";
 import AddNewSeva from "@/pages/Admin/Seva/AddNewSeva";
 import SevaList from "@/pages/Admin/Seva/SevaList";
 import NotFound from "@/pages/NotFound";
@@ -29,6 +30,7 @@ const AllRoutes = () => {
       <Route path="/contact" element={<Contact />} />
       <Route path="/campaigner/register" element={<CampaignerRegister />} />
       <Route path="/thankyou/:id" element={<ThankYouPage />} />
+      <Route path="/payment-error" element={<PaymentErrorPage />} />
 
       <Route path="/admin/login" element={<LoginPage />} />
       <Route path="/auth/reset-password" element={<ResetPasswordPage />} />

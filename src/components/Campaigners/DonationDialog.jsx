@@ -71,7 +71,20 @@ const loadRazorpay = () => {
     document.body.appendChild(script);
   });
 };
-const openRazorPay = async (payload, navigate, setLoading, onOpenChange) => {
+
+const navigateToPaymentError = (navigate, message) => {
+  navigate("/payment-error", {
+    state: { message },
+  });
+};
+
+const openRazorPay = async (
+  payload,
+  navigate,
+  setLoading,
+  setIsProcessingPayment,
+  onOpenChange,
+) => {
   const isLoaded = await loadRazorpay();
 
   if (!isLoaded) {
@@ -95,6 +108,7 @@ const openRazorPay = async (payload, navigate, setLoading, onOpenChange) => {
   }
 
   const { orderId, amount, currency, key, donationId } = res.data.data;
+  setLoading(false);
   onOpenChange(false);
 
   const options = {
@@ -107,6 +121,7 @@ const openRazorPay = async (payload, navigate, setLoading, onOpenChange) => {
     modal: {
       ondismiss: function () {
         setLoading(false);
+        setIsProcessingPayment(false);
         toast.info("Payment cancelled.");
       },
     },
@@ -119,11 +134,9 @@ const openRazorPay = async (payload, navigate, setLoading, onOpenChange) => {
       donationId,
     },
     handler: async function (res) {
-      try {
-        toast.info(
-          "Payment is being processed. Your transaction is under verification and confirmation will be updated shortly.",
-        );
+      setIsProcessingPayment(true);
 
+      try {
         const result = await api.post("/payment/verify", {
           razorpay_order_id: res?.razorpay_order_id,
           razorpay_payment_id: res?.razorpay_payment_id,
@@ -139,15 +152,21 @@ const openRazorPay = async (payload, navigate, setLoading, onOpenChange) => {
           ].includes(result?.data?.message);
 
         if (isVerified) {
-          toast.dismiss();
           navigate(`/thankyou/${donationId}`);
+          return;
         }
+
+        navigateToPaymentError(
+          navigate,
+          "Your payment was received, but we could not confirm it immediately. If the amount was debited, the donation status will be updated shortly.",
+        );
       } catch (err) {
-        toast.error(
+        navigateToPaymentError(
+          navigate,
           "We could not confirm your payment immediately. If the amount was debited, the status will be updated shortly.",
         );
       } finally {
-        setLoading(false);
+        setIsProcessingPayment(false);
       }
     },
     theme: {
@@ -158,7 +177,11 @@ const openRazorPay = async (payload, navigate, setLoading, onOpenChange) => {
   const rzp = new window.Razorpay(options);
   rzp.on("payment.failed", function (response) {
     setLoading(false);
-    toast.error("Payment failed. Please try again.");
+    setIsProcessingPayment(false);
+    navigateToPaymentError(
+      navigate,
+      response?.error?.description || "Payment failed. Please try again.",
+    );
   });
 
   rzp.open();
@@ -171,6 +194,7 @@ export function DonationDialog({
   sevaId,
   loading,
   setLoading,
+  setIsProcessingPayment,
 }) {
   const [formData, setFormData] = useState({
     name: "",
@@ -267,7 +291,13 @@ export function DonationDialog({
       };
     }
 
-    await openRazorPay(payload, navigate, setLoading, onOpenChange);
+    await openRazorPay(
+      payload,
+      navigate,
+      setLoading,
+      setIsProcessingPayment,
+      onOpenChange,
+    );
   };
 
   return (

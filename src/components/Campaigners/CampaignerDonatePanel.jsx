@@ -2,6 +2,7 @@ import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { DonationDialog } from "./DonationDialog";
+import PaymentProcessingOverlay from "./PaymentProcessingOverlay";
 import { useRef, useState, useMemo } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Command, CommandGroup, CommandItem } from "../ui/command";
@@ -13,6 +14,7 @@ const CampaignDonatePanel = ({ details, sevas = [], sevaLoading }) => {
   const [openPopover, setOpenPopover] = useState(false);
   const [selectedSeva, setSelectedSeva] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
 
   const inputRef = useRef(null);
 
@@ -88,6 +90,8 @@ const CampaignDonatePanel = ({ details, sevas = [], sevaLoading }) => {
 
   return (
     <>
+      {isProcessingPayment && <PaymentProcessingOverlay />}
+
       <div
         id="donation-card"
         className="h-full w-full flex flex-col rounded-3xl overflow-hidden bg-card shadow-xl border border-border"
@@ -281,6 +285,7 @@ const CampaignDonatePanel = ({ details, sevas = [], sevaLoading }) => {
           sevaId={selectedSeva?._id}
           loading={loading}
           setLoading={setLoading}
+          setIsProcessingPayment={setIsProcessingPayment}
         />
       )}
     </>
