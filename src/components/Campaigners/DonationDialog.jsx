@@ -71,11 +71,11 @@ const loadRazorpay = () => {
     document.body.appendChild(script);
   });
 };
-const openRazorPay = async (payload, navigate, setLoading) => {
+const openRazorPay = async (payload, navigate, setLoading, onOpenChange) => {
   const isLoaded = await loadRazorpay();
 
   if (!isLoaded) {
-    alert("Payment service failed to load");
+    toast.error("Payment service failed to load");
     return;
   }
   setLoading(true);
@@ -95,6 +95,7 @@ const openRazorPay = async (payload, navigate, setLoading) => {
   }
 
   const { orderId, amount, currency, key, donationId } = res.data.data;
+  onOpenChange(false);
 
   const options = {
     key,
@@ -243,8 +244,6 @@ export function DonationDialog({
     setError(newErrors);
 
     if (Object.keys(newErrors).length > 0) return;
-    onOpenChange(false);
-
     const payload = {
       donorName: formData.name,
       donorPhone: formData.phoneNumber,
@@ -268,7 +267,7 @@ export function DonationDialog({
       };
     }
 
-    await openRazorPay(payload, navigate, setLoading);
+    await openRazorPay(payload, navigate, setLoading, onOpenChange);
   };
 
   return (
@@ -397,6 +396,9 @@ export function DonationDialog({
                   ))}
                 </select>
               </div>
+              {error.state && (
+                <p className="text-destructive text-sm">{error.state}</p>
+              )}
 
               <Input
                 placeholder="Pincode *"
