@@ -16,7 +16,7 @@ const Banner = () => {
     <section className="relative w-full min-h-130 sm:min-h-155 lg:min-h-205 overflow-hidden">
       {/* Background Image */}
       <img
-        src="https://storage.googleapis.com/campaigners-images/Temple%20Images/topview.jpg"
+        src="https://storage.googleapis.com/campaigners-images/Temple%20Images/Header.jpg"
         alt="Temple"
         className="absolute inset-0 w-full h-full object-cover object-top"
         loading="lazy"
