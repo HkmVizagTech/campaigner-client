@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import CircularProgress from "./CircularProgress";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 const ProgressBanner = () => {
   const { currentCampaign } = useSelector((state) => state.campaign);
@@ -27,11 +28,6 @@ const ProgressBanner = () => {
 
     requestAnimationFrame(animate);
   }, [currentCampaign]);
-
-  const handleClick = () => {
-    const el = document.getElementById("card-sections");
-    el?.scrollIntoView({ behavior: "smooth", block: "center" });
-  };
 
   return (
     <section className="my-5">
@@ -92,9 +88,9 @@ const ProgressBanner = () => {
               generations to come.
             </p>
 
-            <button
-              onClick={handleClick}
-              className="
+            <Link to={"/campaigner/register"}>
+              <button
+                className="
                 mt-4
                 px-6 py-2.5
                 rounded-full
@@ -104,9 +100,10 @@ const ProgressBanner = () => {
                 hover:shadow-md
                 transition
               "
-            >
-              Donate Now
-            </button>
+              >
+                Register as Campaigner
+              </button>
+            </Link>
           </div>
         </div>
       </div>

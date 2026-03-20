@@ -321,7 +321,12 @@ export function DonationDialog({
             <Input
               placeholder="Full Name *"
               value={formData.name}
-              onChange={(e) => handleChange("name", e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (/^[A-Za-z\s]*$/.test(value)) {
+                  handleChange("name", value);
+                }
+              }}
             />
             {error.name && (
               <p className="text-destructive text-sm">{error.name}</p>
