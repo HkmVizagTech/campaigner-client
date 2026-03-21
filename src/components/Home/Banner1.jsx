@@ -28,6 +28,7 @@ const Banner1 = () => {
                 src="https://storage.googleapis.com/campaigners-images/Temple%20Images/hkmlogopng-blackfont.jpg"
                 alt="Hare Krishna Movement Vizag"
                 className="h-20 md:h-24 object-contain"
+                loading="lazy"
               />
             </div>
           </div>
