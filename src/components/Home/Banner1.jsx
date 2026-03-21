@@ -25,7 +25,7 @@ const Banner1 = () => {
           <div className="shrink-0">
             <div className="bg-white rounded-xl shadow-md p-4">
               <img
-                src="https://storage.googleapis.com/campaigners-images/Temple%20Images/hkm%20logo%20png%20-%20black%20font.jpg"
+                src="https://storage.googleapis.com/campaigners-images/Temple%20Images/hkmlogopng-blackfont.jpg"
                 alt="Hare Krishna Movement Vizag"
                 className="h-20 md:h-24 object-contain"
               />
