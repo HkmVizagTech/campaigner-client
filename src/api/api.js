@@ -49,7 +49,10 @@ api.interceptors.response.use(
       });
     }
 
-    if (error.response.status === 401) {
+    if (
+      error.response.status === 401 &&
+      window.location.pathname !== "/admin/login"
+    ) {
       handleUnauthorized();
       return Promise.reject(error);
     }

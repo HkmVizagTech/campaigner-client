@@ -44,6 +44,11 @@ const SevaList = () => {
     }
   };
 
+  const getSevaCode = (seva) => seva?.sevaCode || seva?.SevaCode || "-";
+
+  const getSevaSubCode = (seva) =>
+    seva?.sevaSubCode || seva?.SevaSubCode || "-";
+
   return (
     <section className="w-full">
       <div className="mx-auto w-full max-w-7xl">
@@ -71,7 +76,9 @@ const SevaList = () => {
             <Table className="min-w-160">
               <TableHeader>
                 <TableRow>
-                  <TableHead>Seva Name</TableHead>
+                  <TableHead>Category</TableHead>
+                  <TableHead>Sub Category</TableHead>
+                  <TableHead>Codes</TableHead>
                   <TableHead>Amount (₹)</TableHead>
                   <TableHead>Benefits</TableHead>
                   <TableHead className="text-center w-40">Actions</TableHead>
@@ -82,7 +89,30 @@ const SevaList = () => {
                 {sevaList?.map((seva) => (
                   <TableRow key={seva?._id}>
                     <TableCell className="font-medium">
-                      {seva?.sevaName}
+                      <div className="space-y-1">
+                        <p className="font-medium">{seva?.sevaCategory || "-"}</p>
+                        <p className="text-xs text-muted-foreground">
+                          ID: {seva?.sevaCategoryId || "-"}
+                        </p>
+                      </div>
+                    </TableCell>
+
+                    <TableCell>
+                      <div className="space-y-1">
+                        <p>{seva?.sevaSubCategory || "-"}</p>
+                        <p className="text-xs text-muted-foreground">
+                          ID: {seva?.sevaSubCategoryId || "-"}
+                        </p>
+                      </div>
+                    </TableCell>
+
+                    <TableCell>
+                      <div className="space-y-1 text-sm">
+                        <p>Category: {getSevaCode(seva)}</p>
+                        <p className="text-muted-foreground">
+                          Sub: {getSevaSubCode(seva)}
+                        </p>
+                      </div>
                     </TableCell>
 
                     <TableCell>
@@ -109,7 +139,7 @@ const SevaList = () => {
 
                         {/* Edit */}
                         <Link
-                          to={`/admin/seva/${seva?._id}/${seva?.sevaName}/edit`}
+                          to={`/admin/seva/${seva?._id}/${seva?.sevaCategory || "seva"}/edit`}
                         >
                           <Button
                             variant="ghost"
@@ -148,10 +178,42 @@ const SevaList = () => {
           >
             <DialogContent className="max-w-lg">
               <DialogHeader>
-                <DialogTitle>{selectedSeva?.sevaName}</DialogTitle>
+                <DialogTitle>{selectedSeva?.sevaCategory || "Seva Details"}</DialogTitle>
               </DialogHeader>
 
               <div className="space-y-6 mt-4">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div>
+                    <p className="text-sm text-muted-foreground">Category</p>
+                    <p className="font-semibold">{selectedSeva?.sevaCategory || "-"}</p>
+                    <p className="text-xs text-muted-foreground">
+                      ID: {selectedSeva?.sevaCategoryId || "-"}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className="text-sm text-muted-foreground">Sub Category</p>
+                    <p className="font-semibold">
+                      {selectedSeva?.sevaSubCategory || "-"}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      ID: {selectedSeva?.sevaSubCategoryId || "-"}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div>
+                    <p className="text-sm text-muted-foreground">Seva Code</p>
+                    <p className="font-medium">{getSevaCode(selectedSeva)}</p>
+                  </div>
+
+                  <div>
+                    <p className="text-sm text-muted-foreground">Seva Sub Code</p>
+                    <p className="font-medium">{getSevaSubCode(selectedSeva)}</p>
+                  </div>
+                </div>
+
                 {/* Amount */}
                 <div>
                   <p className="text-sm text-muted-foreground">Amount</p>
@@ -167,15 +229,21 @@ const SevaList = () => {
                   </p>
 
                   <div className="space-y-3">
-                    {selectedSeva?.sevaPoints?.map((point, index) => (
-                      <div
-                        key={index}
-                        className="flex items-start gap-2 text-sm bg-muted/40 px-3 py-2 rounded-md"
-                      >
-                        <span className="mt-1 h-2 w-2 rounded-full bg-primary" />
-                        <span>{point}</span>
-                      </div>
-                    ))}
+                    {selectedSeva?.sevaPoints?.length ? (
+                      selectedSeva?.sevaPoints?.map((point, index) => (
+                        <div
+                          key={index}
+                          className="flex items-start gap-2 text-sm bg-muted/40 px-3 py-2 rounded-md"
+                        >
+                          <span className="mt-1 h-2 w-2 rounded-full bg-primary" />
+                          <span>{point}</span>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-sm text-muted-foreground">
+                        No benefits added.
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>

@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Edit, Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addNewSeva,
@@ -15,7 +15,12 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 const AddNewSeva = () => {
   const [formData, setFormData] = useState({
-    sevaName: "",
+    sevaCategory: "",
+    sevaSubCategory: "",
+    sevaCode: "",
+    sevaSubCode: "",
+    sevaCategoryId: "",
+    sevaSubCategoryId: "",
     sevaAmount: "",
     sevaPoints: [""],
   });
@@ -27,6 +32,8 @@ const AddNewSeva = () => {
 
   const isEdit = pathname.includes("edit");
 
+  const getTrimmedValue = (value) => String(value ?? "").trim();
+
   useEffect(() => {
     if (!id || !isEdit) return;
 
@@ -37,9 +44,19 @@ const AddNewSeva = () => {
     if (!Object.keys(getSingleSeva).length || !id) return;
 
     setFormData({
-      sevaAmount: getSingleSeva?.sevaAmount,
-      sevaName: getSingleSeva?.sevaName,
-      sevaPoints: getSingleSeva?.sevaPoints,
+      sevaCategory: getSingleSeva?.sevaCategory ?? "",
+      sevaSubCategory: getSingleSeva?.sevaSubCategory ?? "",
+      sevaCode: getSingleSeva?.sevaCode ?? getSingleSeva?.SevaCode ?? "",
+      sevaSubCode:
+        getSingleSeva?.sevaSubCode ?? getSingleSeva?.SevaSubCode ?? "",
+      sevaCategoryId: String(getSingleSeva?.sevaCategoryId ?? ""),
+      sevaSubCategoryId: String(getSingleSeva?.sevaSubCategoryId ?? ""),
+      sevaAmount: getSingleSeva?.sevaAmount ?? "",
+      sevaPoints:
+        Array.isArray(getSingleSeva?.sevaPoints) &&
+        getSingleSeva.sevaPoints.length
+          ? getSingleSeva.sevaPoints
+          : [""],
     });
   }, [getSingleSeva, id]);
 
@@ -77,10 +94,14 @@ const AddNewSeva = () => {
   };
 
   const isFormValid =
-    formData.sevaName.trim() !== "" &&
+    getTrimmedValue(formData.sevaCategory) !== "" &&
+    getTrimmedValue(formData.sevaSubCategory) !== "" &&
+    getTrimmedValue(formData.sevaCode) !== "" &&
+    getTrimmedValue(formData.sevaCategoryId) !== "" &&
+    getTrimmedValue(formData.sevaSubCategoryId) !== "" &&
     formData.sevaAmount !== "" &&
     Number(formData.sevaAmount) > 0 &&
-    formData.sevaPoints.every((point) => point.trim() !== "");
+    formData.sevaPoints.every((point) => getTrimmedValue(point) !== "");
 
   const handleSubmit = async () => {
     if (!isFormValid) return;
@@ -97,7 +118,12 @@ const AddNewSeva = () => {
         toast.success("Seva Added Successfully");
 
         setFormData({
-          sevaName: "",
+          sevaCategory: "",
+          sevaSubCategory: "",
+          sevaCode: "",
+          sevaSubCode: "",
+          sevaCategoryId: "",
+          sevaSubCategoryId: "",
           sevaAmount: "",
           sevaPoints: [""],
         });
@@ -122,13 +148,67 @@ const AddNewSeva = () => {
             </p>
           </div>
 
-          {/* Seva Name */}
+          {/* Seva Category */}
           <div className="space-y-2">
-            <Label>Seva Name</Label>
+            <Label>Seva Category</Label>
             <Input
               placeholder="e.g. Dharma Sevak Seva (Life Patron)"
-              value={formData.sevaName}
-              onChange={(e) => handleChange("sevaName", e.target.value)}
+              value={formData.sevaCategory}
+              onChange={(e) => handleChange("sevaCategory", e.target.value)}
+            />
+          </div>
+
+          {/* Seva Category ID */}
+          <div className="space-y-2">
+            <Label>Seva Category ID</Label>
+            <Input
+              placeholder="e.g. 1"
+              type="number"
+              value={formData.sevaCategoryId}
+              onChange={(e) => handleChange("sevaCategoryId", e.target.value)}
+            />
+          </div>
+
+          {/* Seva Code */}
+          <div className="space-y-2">
+            <Label>Seva Code</Label>
+            <Input
+              placeholder="e.g. DSS"
+              value={formData.sevaCode}
+              onChange={(e) => handleChange("sevaCode", e.target.value)}
+            />
+          </div>
+
+          {/* Seva Sub Category */}
+          <div className="space-y-2">
+            <Label>Seva Sub Category</Label>
+            <Input
+              placeholder="e.g. Dharma Sevak Seva (Life Patron)"
+              value={formData.sevaSubCategory}
+              onChange={(e) => handleChange("sevaSubCategory", e.target.value)}
+            />
+          </div>
+
+          {/* Seva Sub Category ID */}
+          <div className="space-y-2">
+            <Label>Seva Sub Category ID</Label>
+            <Input
+              placeholder="e.g. 1"
+              type="number"
+              value={formData.sevaSubCategoryId}
+              onChange={(e) =>
+                handleChange("sevaSubCategoryId", e.target.value)
+              }
+            />
+          </div>
+
+          {/* Seva Sub Code */}
+          <div className="space-y-2">
+            <Label>Seva Sub Code</Label>
+            <Input
+              placeholder="e.g. DSS"
+              value={formData.sevaSubCode}
+              onChange={(e) => handleChange("sevaSubCode", e.target.value)}
             />
           </div>
 
