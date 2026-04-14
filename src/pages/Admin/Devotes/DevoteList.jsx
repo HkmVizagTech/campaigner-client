@@ -89,7 +89,9 @@ export default function DevoteeList() {
                 <TableHead>Name</TableHead>
                 <TableHead>Phone Number</TableHead>
                 <TableHead>Email</TableHead>
-                <TableHead>Short Form</TableHead>
+                <TableHead className="text-center">Total Campaigners</TableHead>
+                <TableHead className="text-center">Short Form</TableHead>
+                <TableHead className="text-center">Devotee ID</TableHead>
                 <TableHead className="text-center">Action</TableHead>
               </TableRow>
             </TableHeader>
@@ -118,7 +120,15 @@ export default function DevoteeList() {
 
                     <TableCell>{item?.phoneNumber}</TableCell>
                     <TableCell>{item?.email}</TableCell>
-                    <TableCell>{item?.shortForm}</TableCell>
+                    <TableCell className="text-center">
+                      {item?.totalCampaigners}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {item?.shortForm}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {item?.devoteeID}
+                    </TableCell>
 
                     <TableCell className="text-center">
                       <Link to={`/admin/devotee/${item?._id}/edit`}>

@@ -62,6 +62,7 @@ export const updateDevotee = createAsyncThunk(
         devoteName: formData?.name,
         phoneNumber: formData?.phoneNumber,
         shortForm: formData?.shortForm,
+        devoteeID: formData?.devoteeID,
       });
       return response?.data;
     } catch (error) {

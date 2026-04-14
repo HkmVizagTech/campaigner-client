@@ -18,6 +18,7 @@ export default function DevoteForm() {
     phoneNumber: "",
     email: "",
     shortForm: "",
+    devoteeID: null,
   });
   const { pathname } = useLocation();
   const { id } = useParams();
@@ -45,6 +46,7 @@ export default function DevoteForm() {
       phoneNumber: singleDevoteeDetails?.phoneNumber ?? "",
       email: singleDevoteeDetails?.email ?? "",
       shortForm: singleDevoteeDetails?.shortForm ?? "",
+      devoteeID: singleDevoteeDetails?.devoteeID ?? null,
     });
   }, [singleDevoteeDetails, id, isEdit, dispatch]);
 
@@ -64,7 +66,8 @@ export default function DevoteForm() {
       !formData.name.trim() ||
       !formData.phoneNumber.trim() ||
       !formData.email.trim() ||
-      !formData.shortForm.trim()
+      !formData.shortForm.trim() ||
+      !formData.devoteeID
     ) {
       alert("Please fill all fields");
       return;
@@ -90,6 +93,7 @@ export default function DevoteForm() {
         phoneNumber: "",
         email: "",
         shortForm: "",
+        devoteeID: null,
       });
     }
   };
@@ -135,6 +139,17 @@ export default function DevoteForm() {
                   type="tel"
                   placeholder="Enter phone number"
                   value={formData.phoneNumber}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Devotee ID</Label>
+                <Input
+                  name="devoteeID"
+                  type="number"
+                  placeholder="Enter devotee ID"
+                  value={formData.devoteeID || ""}
                   onChange={handleChange}
                   required
                 />
