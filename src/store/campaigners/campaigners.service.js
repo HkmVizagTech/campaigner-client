@@ -54,9 +54,11 @@ export const getCampainer = createAsyncThunk(
 
 export const getSingleCampaignerDetails = createAsyncThunk(
   "singleDetails",
-  async ({slugId, campaignId}, { rejectWithValue }) => {
+  async ({ slugId, campaignId }, { rejectWithValue }) => {
     try {
-      const response = await api.get(`/campaigner/details/${slugId}/${campaignId}`);
+      const response = await api.get(
+        `/campaigner/details/${slugId}/${campaignId}`,
+      );
       return response?.data?.data;
     } catch (error) {
       toast.error(error.response?.data?.message || "Internal Server Error");
@@ -120,11 +122,16 @@ export const createCampaigner = createAsyncThunk(
   },
 );
 
+// ✅ FIXED: Added Content-Type header
 export const updateCampaigner = createAsyncThunk(
   "updateCampaigner",
   async ({ id, formData }, { rejectWithValue }) => {
     try {
-      const response = await api.patch(`/campaigner/${id}`, formData);
+      const response = await api.patch(`/campaigner/${id}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data", // ✅ This was missing
+        },
+      });
       return response?.data;
     } catch (error) {
       toast.error(error.response?.data?.message || "Internal Server Error");
