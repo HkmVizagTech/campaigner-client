@@ -62,6 +62,7 @@ export default function CreateCampaigner() {
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
   const [selectedImage, setSelectedImg] = useState(null);
+  const [isImageChanged, setIsImageChanged] = useState(false); // Track if image was changed
   const isEdit = pathname.includes("edit");
   const navigate = useNavigate();
 
@@ -77,7 +78,7 @@ export default function CreateCampaigner() {
     dispatch(getMediaList());
   }, [dispatch]);
 
-   useEffect(() => {
+  useEffect(() => {
     const effectiveSlugId = slug || campaignerId;
     const effectiveCampaignId = campaignId || currentCampaign?._id;
 
@@ -122,7 +123,17 @@ export default function CreateCampaigner() {
     if (file) {
       setImage(file);
       setPreview(URL.createObjectURL(file));
+      setIsImageChanged(true); // Mark that image was changed
+      setSelectedImg(null); // Clear selected recent image if any
     }
+  };
+
+  const handleRemoveImage = () => {
+    setImage(null);
+    setPreview(null);
+    setIsImageChanged(true);
+    // If you want to allow removing the image completely, you can add a flag
+    // to indicate that the image should be deleted
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -130,8 +141,10 @@ export default function CreateCampaigner() {
     try {
       const data = new FormData();
 
+      // Add all text fields
       Object.entries(formData).forEach(([key, value]) => {
-        if (value) {
+        if (value && key !== "imageId") {
+          // Skip imageId as it's handled separately
           data.append(key, value);
         }
       });
@@ -151,30 +164,46 @@ export default function CreateCampaigner() {
         data.append("templeDevoteInTouch", single?._id);
       }
 
-      if (image) {
-        data.append("image", image);
+      // ✅ KEY FIX: Handle image for edit mode
+      if (isEdit) {
+        // Check if there's a new file selected (File object)
+        if (image instanceof File) {
+          data.append("image", image);
+          console.log("Adding new image file for edit:", image.name);
+        }
+        // If image was removed (set to null and no preview)
+        else if (image === null && !preview) {
+          data.append("removeImage", "true");
+          console.log("Removing image");
+        }
+        // If image hasn't changed, don't append anything
+      } else {
+        // Create mode
+        if (image instanceof File) {
+          data.append("image", image);
+        }
+      }
+
+      // ✅ IMPORTANT: Log what's being sent
+      console.log("=== Edit Mode FormData ===");
+      for (let pair of data.entries()) {
+        if (pair[1] instanceof File) {
+          console.log(`${pair[0]}: [FILE] ${pair[1].name}`);
+        } else {
+          console.log(`${pair[0]}: ${pair[1]}`);
+        }
       }
 
       if (!isEdit) {
         const result = await dispatch(
           createCampaigner({ formData: data, skipAuth: false }),
         ).unwrap();
-
         if (result?.success) {
           toast.success("Campaigner Created Successfully!");
+          // Reset form...
         }
-
-        setFormData({
-          name: "",
-          phoneNumber: "",
-          templeDevoteInTouch: "",
-          imageId: "",
-          targetAmount: 0,
-        });
-        setImage(null);
-        setPreview(null);
-        setSelectedImg(null);
-      } else if (campaignerId && isEdit) {
+      } else {
+        // ✅ For edit, make sure we're sending FormData, not JSON
         const result = await dispatch(
           updateCampaigner({ id: campaignerId, formData: data }),
         ).unwrap();
@@ -185,6 +214,7 @@ export default function CreateCampaigner() {
       }
     } catch (error) {
       console.error(error);
+      toast.error(error.message || "Something went wrong");
     }
   };
 
@@ -305,36 +335,38 @@ export default function CreateCampaigner() {
                 </div>
               )}
 
-              {/* Recent Images */}
-              <div className="space-y-2">
-                <Label>Recent Images</Label>
-                <Select
-                  value={formData.imageId}
-                  disabled={!!image || isEdit}
-                  onValueChange={(value) => {
-                    const finalValue = value === "none" ? "" : value;
+              {/* Recent Images - Only show in create mode */}
+              {!isEdit && (
+                <div className="space-y-2">
+                  <Label>Recent Images</Label>
+                  <Select
+                    value={formData.imageId}
+                    disabled={!!image || isEdit}
+                    onValueChange={(value) => {
+                      const finalValue = value === "none" ? "" : value;
 
-                    setFormData((prev) => ({
-                      ...prev,
-                      imageId: finalValue,
-                    }));
+                      setFormData((prev) => ({
+                        ...prev,
+                        imageId: finalValue,
+                      }));
 
-                    setSelectedImg(finalValue);
-                  }}
-                >
-                  <SelectTrigger className="w-full h-10">
-                    <SelectValue placeholder="Select recent image" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="none">None</SelectItem>
-                    {mediaList.map((img) => (
-                      <SelectItem key={img._id} value={img._id}>
-                        {img.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+                      setSelectedImg(finalValue);
+                    }}
+                  >
+                    <SelectTrigger className="w-full h-10">
+                      <SelectValue placeholder="Select recent image" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">None</SelectItem>
+                      {mediaList.map((img) => (
+                        <SelectItem key={img._id} value={img._id}>
+                          {img.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -345,25 +377,27 @@ export default function CreateCampaigner() {
                   type="file"
                   accept="image/*"
                   onChange={handleImageChange}
-                  className={`absolute inset-0 opacity-0 ${
-                    selectedImage || isEdit
-                      ? "cursor-not-allowed"
-                      : "cursor-pointer"
-                  } z-10`}
-                  disabled={selectedImage || isEdit}
+                  className="absolute inset-0 opacity-0 cursor-pointer z-10"
                 />
 
-                <div
-                  className={`border-2 border-dashed border-border rounded-lg p-6 text-center transition-all duration-200 ${
-                    selectedImage || isEdit ? "opacity-60" : "hover:bg-muted"
-                  }`}
-                >
+                <div className="border-2 border-dashed border-border rounded-lg p-6 text-center transition-all duration-200 hover:bg-muted">
                   {preview ? (
-                    <img
-                      src={preview}
-                      alt="Preview"
-                      className="mx-auto h-28 object-cover rounded-md"
-                    />
+                    <div className="relative inline-block">
+                      <img
+                        src={preview}
+                        alt="Preview"
+                        className="mx-auto h-28 object-cover rounded-md"
+                      />
+                      {isEdit && (
+                        <button
+                          type="button"
+                          onClick={handleRemoveImage}
+                          className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600 transition-colors"
+                        >
+                          ×
+                        </button>
+                      )}
+                    </div>
                   ) : (
                     <span className="text-muted-foreground">
                       Click to upload or drag image
@@ -371,6 +405,12 @@ export default function CreateCampaigner() {
                   )}
                 </div>
               </div>
+              {isEdit && preview && (
+                <p className="text-xs text-muted-foreground mt-1">
+                  Click on the image to change it, or click the × button to
+                  remove it
+                </p>
+              )}
             </div>
 
             <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
@@ -399,6 +439,7 @@ export default function CreateCampaigner() {
                     setImage(null);
                     setSelectedImg(null);
                     setPreview(null);
+                    setIsImageChanged(false);
                   }}
                 >
                   Reset Form
