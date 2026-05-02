@@ -113,7 +113,7 @@ const CustomCard = ({ campainer, index }) => {
           {/* LOCATION + DAYS */}
           <div className="flex items-center justify-between text-xs text-gray-600">
             <span className="font-semibold text-amber-600">
-              ISKCON Visakhapatnam
+              Hare Krishna Vaikuntham
             </span>
 
             <div className="flex items-center gap-1">
