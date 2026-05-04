@@ -17,7 +17,8 @@ const CampaignDonatePanel = ({ details, sevas = [], sevaLoading }) => {
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
 
   const today = new Date();
-  const quickAmounts = [501, 1001, 2501, 5001];
+  // const quickAmounts = [501, 1001, 2501, 5001];
+  const quickAmounts = [3016, 6016, 1116, 25116];
 
   const diffDays = details?.campaginers?.campaignId?.endDate
     ? Math.max(
