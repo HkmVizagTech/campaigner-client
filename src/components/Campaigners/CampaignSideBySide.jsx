@@ -62,7 +62,7 @@ const CampaignSideBySide = forwardRef((props, ref) => {
               </h3>
 
               <p className="text-sm font-semibold mt-1 bg-linear-to-r from-yellow-400 via-[#E6C200] to-amber-500 bg-clip-text text-transparent">
-                ISKCON • DEVOTEE
+                CAMPAIGNER
               </p>
             </div>
 
