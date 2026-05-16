@@ -117,7 +117,7 @@ const openRazorPay = async (
     amount,
     currency,
     order_id: orderId,
-    name: "HARE KRISHNA MOMENT",
+    name: "HARE KRISHNA MOVEMENT",
     description: "Donation",
     modal: {
       ondismiss: function () {

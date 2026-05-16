@@ -45,7 +45,7 @@ const CampaignerDetails = () => {
         .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
         .join(" ");
 
-      document.title = `${formattedSlug} | ISKCON Visakhapatnam`;
+      document.title = `${formattedSlug} | Hare Krishna Vaikuntham`;
     }
   }, [slug]);
   useEffect(() => {
