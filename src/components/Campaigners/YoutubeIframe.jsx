@@ -75,7 +75,7 @@ const YoutubeIframe = () => {
             <div className="relative aspect-video">
               <iframe
                 key={play ? "play" : "pause"}
-                src={`https://www.youtube.com/embed/7I-zT8P7QB8?autoplay=${
+                src={`https://www.youtube.com/embed/IJTMCgGBriw?autoplay=${
                   play ? 1 : 0
                 }&mute=1&rel=0`}
                 className="absolute inset-0 w-full h-full rounded-2xl sm:rounded-3xl"
