@@ -23,6 +23,7 @@ import {
   getTopDonors,
 } from "@/store/campaigners/campaigners.service";
 import { getSevaList } from "@/store/seva/seva.service";
+import { adminDetails } from "@/store/auth/auth.service";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
@@ -31,9 +32,23 @@ const CampaignerDetails = () => {
   const dispatch = useDispatch();
   const { slug } = useParams();
   const { currentCampaign } = useSelector((state) => state.campaign);
-  const { lastestDonorsArr } = useSelector((state) => state.campaginer);
+  const { lastestDonorsArr, singleCampaignerDetails } = useSelector((state) => state.campaginer);
+  const { details } = useSelector((state) => state.auth);
   const sidbysideRef = useRef();
   const navigate = useNavigate();
+
+  // Show edit button if logged-in devotee owns this campaigner
+  const token = sessionStorage.getItem("token");
+  const isOwnCampaigner =
+    token &&
+    details?.role === "devotee" &&
+    singleCampaignerDetails?.createdBy?._id?.toString() === details?._id?.toString();
+
+  useEffect(() => {
+    if (token) {
+      dispatch(adminDetails());
+    }
+  }, [dispatch, token]);
 
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const [minTimeDone, setMinTimeDone] = useState(false);
@@ -180,6 +195,21 @@ const CampaignerDetails = () => {
         <>
           <DonationPopup donors={lastestDonorsArr} />
           <Banner />
+
+          {isOwnCampaigner && (
+            <div className="fixed bottom-6 right-6 z-50">
+              <button
+                onClick={() =>
+                  navigate(
+                    `/admin/campaigner/edit/${singleCampaignerDetails._id}?slug=${singleCampaignerDetails.slug}&campaignId=${singleCampaignerDetails.campaignId?._id ?? singleCampaignerDetails.campaignId}`,
+                  )
+                }
+                className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-full shadow-lg hover:opacity-90 transition text-sm font-medium"
+              >
+                ✏️ Edit My Page
+              </button>
+            </div>
+          )}
 
           <div className="container mx-auto px-2 pt-8 space-y-1">
             <CampaignSideBySide ref={sidbysideRef} />
