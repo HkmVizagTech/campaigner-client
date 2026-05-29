@@ -163,6 +163,12 @@ const CampaignerDetails = () => {
       }),
     )
       .unwrap()
+      .then((data) => {
+        // If the slug has changed (name was renamed), silently redirect to new URL
+        if (data?.redirectTo && data.redirectTo !== slug) {
+          navigate(`/${data.redirectTo}`, { replace: true });
+        }
+      })
       .catch((err) => {
         console.log(err);
         if (err === "Campaigner not found") {
