@@ -42,7 +42,7 @@ const CampaignerDetails = () => {
   const isOwnCampaigner =
     token &&
     details?.role === "devotee" &&
-    singleCampaignerDetails?.createdBy?._id?.toString() === details?._id?.toString();
+    singleCampaignerDetails?.templeDevoteInTouch?.userId?.toString() === details?._id?.toString();
 
   useEffect(() => {
     if (token) {
