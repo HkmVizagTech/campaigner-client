@@ -10,6 +10,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Check, ChevronsUpDown } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useDispatch, useSelector } from "react-redux";
 import { getCampainer } from "@/store/campaigners/campaigners.service";
@@ -33,9 +48,11 @@ const AddCashDonation = () => {
   const { campaginers } = useSelector((state) => state.campaginer);
   const { details } = useSelector((state) => state.auth);
 
-  const isDevotee = details?.role === "devotee";
-
   const [submitting, setSubmitting] = useState(false);
+  const [comboOpen, setComboOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [selectedCampaigner, setSelectedCampaigner] = useState(null);
   const [formData, setFormData] = useState({
     campaignerId: "",
     donorName: "",
@@ -46,6 +63,11 @@ const AddCashDonation = () => {
     paymentMode: "cash",
     isAnonymous: false,
   });
+
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(search), 400);
+    return () => clearTimeout(timer);
+  }, [search]);
 
   useEffect(() => {
     dispatch(getCurrentCampaign());
@@ -59,11 +81,12 @@ const AddCashDonation = () => {
         id: currentCampaign._id,
         status: "active",
         page: 1,
-        pageSize: 100,
-        isDevotee,
+        pageSize: 50,
+        search: debouncedSearch,
+        isDevotee: true, // authed route — devotees get own, admins get all
       }),
     );
-  }, [currentCampaign?._id, details?.role, dispatch, isDevotee]);
+  }, [currentCampaign?._id, details?.role, debouncedSearch, dispatch]);
 
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -120,6 +143,8 @@ const AddCashDonation = () => {
         paymentMode: "cash",
         isAnonymous: false,
       });
+      setSelectedCampaigner(null);
+      setSearch("");
       navigate("/admin/funders");
     } catch {
       // toast already shown by the thunk
@@ -143,21 +168,83 @@ const AddCashDonation = () => {
           <Label>
             Campaigner <span className="text-red-500">*</span>
           </Label>
-          <Select
-            value={formData.campaignerId}
-            onValueChange={(value) => handleChange("campaignerId", value)}
-          >
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select campaigner" />
-            </SelectTrigger>
-            <SelectContent>
-              {(campaginers || []).map((c) => (
-                <SelectItem key={c._id} value={c._id}>
-                  {c.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <Popover open={comboOpen} onOpenChange={setComboOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                role="combobox"
+                aria-expanded={comboOpen}
+                className="w-full justify-between h-12"
+              >
+                {selectedCampaigner ? (
+                  <span className="flex items-center gap-2 min-w-0">
+                    <Avatar className="h-7 w-7">
+                      <AvatarImage
+                        src={selectedCampaigner.image?.url}
+                        alt={selectedCampaigner.name}
+                      />
+                      <AvatarFallback>
+                        {selectedCampaigner.name?.charAt(0)?.toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <span className="truncate">{selectedCampaigner.name}</span>
+                    <span className="text-xs text-muted-foreground shrink-0">
+                      {selectedCampaigner.phoneNumber}
+                    </span>
+                  </span>
+                ) : (
+                  <span className="text-muted-foreground">
+                    Search campaigner by name or phone
+                  </span>
+                )}
+                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+              <Command shouldFilter={false}>
+                <CommandInput
+                  placeholder="Type name or phone number..."
+                  value={search}
+                  onValueChange={setSearch}
+                />
+                <CommandList>
+                  <CommandEmpty>No campaigner found.</CommandEmpty>
+                  <CommandGroup>
+                    {(campaginers || []).map((c) => (
+                      <CommandItem
+                        key={c._id}
+                        value={c._id}
+                        onSelect={() => {
+                          setSelectedCampaigner(c);
+                          handleChange("campaignerId", c._id);
+                          setComboOpen(false);
+                        }}
+                        className="flex items-center gap-3 py-2"
+                      >
+                        <Avatar className="h-9 w-9">
+                          <AvatarImage src={c.image?.url} alt={c.name} />
+                          <AvatarFallback>
+                            {c.name?.charAt(0)?.toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <span className="flex flex-col min-w-0">
+                          <span className="font-medium truncate">
+                            {c.name}
+                          </span>
+                          <span className="text-xs text-muted-foreground">
+                            {c.phoneNumber}
+                          </span>
+                        </span>
+                        {formData.campaignerId === c._id && (
+                          <Check className="ml-auto h-4 w-4" />
+                        )}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
         </div>
 
         <div className="space-y-2">
