@@ -80,6 +80,7 @@ const AddCashDonation = () => {
       getCampainer({
         id: currentCampaign._id,
         status: "active",
+        campStatus: "active",
         page: 1,
         pageSize: 50,
         search: debouncedSearch,
