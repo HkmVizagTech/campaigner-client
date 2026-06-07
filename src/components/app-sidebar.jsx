@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  ChartBar,
   HandCoins,
   HeartHandshake,
   LayoutDashboard,
@@ -96,6 +97,11 @@ const navMain = {
       title: "Funders",
       url: "/admin/funders",
       icon: Wallet,
+    },
+    {
+      title: "Reports",
+      url: "/admin/reports",
+      icon: ChartBar,
     },
     {
       title: "Add Cash Donation",
