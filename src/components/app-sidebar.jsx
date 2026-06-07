@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  HandCoins,
   HeartHandshake,
   LayoutDashboard,
   Megaphone,
@@ -96,6 +97,11 @@ const navMain = {
       url: "/admin/funders",
       icon: Wallet,
     },
+    {
+      title: "Add Cash Donation",
+      url: "/admin/add-donation",
+      icon: HandCoins,
+    },
   ],
   devotee: [
     {
@@ -107,6 +113,11 @@ const navMain = {
       title: "My Donors",
       url: "/admin/funders",
       icon: Wallet,
+    },
+    {
+      title: "Add Cash Donation",
+      url: "/admin/add-donation",
+      icon: HandCoins,
     },
     {
       title: "Campaigners",

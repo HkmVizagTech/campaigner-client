@@ -57,3 +57,19 @@ export const getDonorDetailsObj = createAsyncThunk(
     }
   },
 );
+
+export const addOfflineDonation = createAsyncThunk(
+  "donations/addOfflineDonation",
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await api.post("/donations/offline", payload);
+      toast.success(response?.data?.message || "Donation added successfully");
+      return response?.data?.data;
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Internal Server Error");
+      return rejectWithValue(
+        error.response?.data?.message || "Internal Server Error",
+      );
+    }
+  },
+);
