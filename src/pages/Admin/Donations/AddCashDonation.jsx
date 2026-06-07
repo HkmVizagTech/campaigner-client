@@ -82,9 +82,10 @@ const AddCashDonation = () => {
         status: "active",
         campStatus: "active",
         page: 1,
-        pageSize: 50,
+        pageSize: 15,
         search: debouncedSearch,
         isDevotee: true, // authed route — devotees get own, admins get all
+        lite: true, // fast single-query mode for the dropdown
       }),
     );
   }, [currentCampaign?._id, details?.role, debouncedSearch, dispatch]);

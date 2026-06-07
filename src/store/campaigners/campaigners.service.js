@@ -16,6 +16,7 @@ export const getCampainer = createAsyncThunk(
       devoteeId,
       isDevotee = false,
       infiniteScroll = false,
+      lite = false,
     },
     { rejectWithValue, signal },
   ) => {
@@ -30,6 +31,7 @@ export const getCampainer = createAsyncThunk(
     if (sort) url += `&sort=${sort}`;
     if (campStatus) url += `&campStatus=${campStatus}`;
     if (devoteeId && devoteeId !== "all") url += `&devoteeId=${devoteeId}`;
+    if (lite) url += `&lite=true`;
 
     try {
       const response = await api.get(url, { signal });
