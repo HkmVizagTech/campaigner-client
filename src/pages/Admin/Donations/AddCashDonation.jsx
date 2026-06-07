@@ -62,6 +62,8 @@ const AddCashDonation = () => {
     pan: "",
     paymentMode: "cash",
     isAnonymous: false,
+    hasReceipt: false,
+    receiptNumber: "",
   });
 
   useEffect(() => {
@@ -120,6 +122,11 @@ const AddCashDonation = () => {
       return;
     }
 
+    if (formData.hasReceipt && !formData.receiptNumber.trim()) {
+      toast.error("Please enter the existing receipt number");
+      return;
+    }
+
     setSubmitting(true);
     try {
       await dispatch(
@@ -132,6 +139,9 @@ const AddCashDonation = () => {
           pan: formData.pan.trim() || undefined,
           paymentMode: formData.paymentMode,
           isAnonymous: formData.isAnonymous,
+          receiptNumber: formData.hasReceipt
+            ? formData.receiptNumber.trim()
+            : undefined,
         }),
       ).unwrap();
 
@@ -144,6 +154,8 @@ const AddCashDonation = () => {
         pan: "",
         paymentMode: "cash",
         isAnonymous: false,
+        hasReceipt: false,
+        receiptNumber: "",
       });
       setSelectedCampaigner(null);
       setSearch("");
@@ -330,6 +342,39 @@ const AddCashDonation = () => {
               handleChange("pan", e.target.value.toUpperCase())
             }
           />
+        </div>
+
+        <div className="space-y-3 rounded-md border p-3">
+          <div className="flex items-center gap-2">
+            <Checkbox
+              id="hasReceipt"
+              checked={formData.hasReceipt}
+              onCheckedChange={(checked) =>
+                handleChange("hasReceipt", Boolean(checked))
+              }
+            />
+            <Label htmlFor="hasReceipt" className="cursor-pointer">
+              Receipt already generated (skip DCC &amp; WhatsApp)
+            </Label>
+          </div>
+          {formData.hasReceipt && (
+            <div className="space-y-2">
+              <Label>
+                Existing Receipt Number <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                placeholder="e.g. HKMI|2025|D/VSP|18770"
+                value={formData.receiptNumber}
+                onChange={(e) =>
+                  handleChange("receiptNumber", e.target.value)
+                }
+              />
+              <p className="text-xs text-muted-foreground">
+                Use this only when the receipt was already issued through DCC.
+                No new receipt will be created and no WhatsApp will be sent.
+              </p>
+            </div>
+          )}
         </div>
 
         <div className="flex items-center gap-2">
