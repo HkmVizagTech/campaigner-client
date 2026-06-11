@@ -27,6 +27,7 @@ const PrasadamReport = () => {
   const [toDate, setToDate] = useState("");
   const [campaignId, setCampaignId] = useState("all");
   const [loading, setLoading] = useState(false);
+  const [exporting, setExporting] = useState(false);
   const [donors, setDonors] = useState([]);
   const [pagination, setPagination] = useState(null);
   const [page, setPage] = useState(1);
@@ -80,40 +81,60 @@ const PrasadamReport = () => {
     fetchReport({ page: newPage });
   };
 
-  const handleExport = () => {
-    if (!donors.length) return;
+  const handleExport = async () => {
+    setExporting(true);
+    try {
+      const query = new URLSearchParams();
+      query.set("page", 1);
+      query.set("pageSize", 10000); // fetch all
+      if (fromDate) query.set("fromDate", fromDate);
+      if (toDate) query.set("toDate", toDate);
+      if (campaignId !== "all") query.set("campaignId", campaignId);
 
-    const rows = [
-      ["#", "Donor Name", "Phone", "Email", "Amount (₹)", "Campaigner", "Address", "City", "State", "Pincode", "Receipt No.", "Date"],
-    ];
+      const res = await api.get(`/dashboard/reports/prasadam?${query.toString()}`);
+      const allDonors = res.data?.data?.donors || [];
 
-    donors.forEach((d, i) => {
-      rows.push([
-        i + 1,
-        d.donorName,
-        d.donorPhone,
-        d.donorEmail || "",
-        d.amount,
-        d.campaigner?.name || "",
-        d.address?.fullAddress || "",
-        d.address?.city || "",
-        d.address?.state || "",
-        d.address?.pincode || "",
-        d.receiptNumber || "",
-        new Date(d.createdAt).toLocaleDateString("en-IN"),
-      ]);
-    });
+      if (!allDonors.length) {
+        toast.error("No data to export");
+        return;
+      }
 
-    const csv = rows
-      .map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(","))
-      .join("\n");
-    const blob = new Blob([csv], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `prasadam-donors-${new Date().toISOString().slice(0, 10)}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
+      const rows = [
+        ["#", "Donor Name", "Phone", "Email", "Amount (₹)", "Campaigner", "Address", "City", "State", "Pincode", "Receipt No.", "Date"],
+      ];
+
+      allDonors.forEach((d, i) => {
+        rows.push([
+          i + 1,
+          d.donorName,
+          d.donorPhone,
+          d.donorEmail || "",
+          d.amount,
+          d.campaigner?.name || "",
+          d.address?.fullAddress || "",
+          d.address?.city || "",
+          d.address?.state || "",
+          d.address?.pincode || "",
+          d.receiptNumber || "",
+          new Date(d.createdAt).toLocaleDateString("en-IN"),
+        ]);
+      });
+
+      const csv = rows
+        .map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(","))
+        .join("\n");
+      const blob = new Blob([csv], { type: "text/csv" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `prasadam-donors-${new Date().toISOString().slice(0, 10)}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      toast.error("Export failed. Please try again.");
+    } finally {
+      setExporting(false);
+    }
   };
 
   return (
@@ -167,11 +188,11 @@ const PrasadamReport = () => {
         <Button
           variant="outline"
           onClick={handleExport}
-          disabled={!donors.length}
+          disabled={!donors.length || exporting}
           className="flex items-center gap-2"
         >
           <Download className="h-4 w-4" />
-          Export CSV
+          {exporting ? "Exporting..." : "Export CSV"}
         </Button>
       </div>
 
