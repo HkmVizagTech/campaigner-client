@@ -5,7 +5,7 @@ import { useState } from "react";
 
 const tabs = [
   { id: "devotee", label: "Devotee Summary", roles: ["admin", "superAdmin"] },
-  { id: "prasadam", label: "Prasadam Donors", roles: ["superAdmin"] },
+  { id: "prasadam", label: "Prasadam Donors", roles: ["admin", "superAdmin"] },
 ];
 
 const Reports = () => {
