@@ -354,3 +354,5 @@ const DevoteeReport = () => {
 };
 
 export default DevoteeReport;
+
+// Tab wrapper — exported as default from Reports/index.jsx
