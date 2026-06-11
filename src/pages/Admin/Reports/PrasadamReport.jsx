@@ -90,7 +90,7 @@ const PrasadamReport = () => {
     donors.forEach((d, i) => {
       rows.push([
         i + 1,
-        d.isAnonymous ? "Anonymous" : d.donorName,
+        d.donorName,
         d.donorPhone,
         d.donorEmail || "",
         d.amount,
@@ -212,9 +212,7 @@ const PrasadamReport = () => {
                       {((page - 1) * 50) + i + 1}
                     </td>
                     <td className="px-4 py-3">
-                      <p className="font-medium">
-                        {d.isAnonymous ? "Anonymous" : d.donorName}
-                      </p>
+                      <p className="font-medium">{d.donorName}</p>
                       {d.donorEmail && (
                         <p className="text-xs text-muted-foreground">{d.donorEmail}</p>
                       )}
