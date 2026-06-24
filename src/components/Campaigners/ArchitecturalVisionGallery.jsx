@@ -25,7 +25,7 @@ export default function ArchitecturalVisionGallery() {
         {/* LEFT LARGE IMAGE */}
         <Card className="relative lg:col-span-2 h-130 overflow-hidden rounded-3xl shadow-xl group py-0">
           <img
-            src="https://storage.googleapis.com/campaigners-images/Temple%20Images/govindaFrontView.jpg"
+            src="https://pub-f62a54aab54448388c9e16334109aea9.r2.dev/Temple%2520Images/govindaFrontView.jpg"
             alt="Grand Front View"
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
             loading="lazy"
@@ -48,7 +48,7 @@ export default function ArchitecturalVisionGallery() {
           {/* TOP RIGHT WIDE */}
           <Card className="relative h-62.5 overflow-hidden rounded-3xl shadow-xl group py-0">
             <img
-              src="https://storage.googleapis.com/campaigners-images/Temple%20Images/govindaAerialview.jpg"
+              src="https://pub-f62a54aab54448388c9e16334109aea9.r2.dev/Temple%2520Images/govindaAerialview.jpg"
               alt="Aerial"
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               loading="lazy"
@@ -67,7 +67,7 @@ export default function ArchitecturalVisionGallery() {
           </Card>
           <Card className="relative h-62.5 overflow-hidden rounded-3xl shadow-xl group py-0">
             <img
-              src="https://storage.googleapis.com/campaigners-images/Temple%20Images/govindaSideView.jpg"
+              src="https://pub-f62a54aab54448388c9e16334109aea9.r2.dev/Temple%2520Images/govindaSideView.jpg"
               alt="Side View"
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               loading="lazy"

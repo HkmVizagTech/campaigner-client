@@ -76,7 +76,7 @@ const LoginPage = () => {
             <div className="overflow-hidden rounded-3xl border bg-card shadow-xl">
               <div className="relative h-60 sm:h-72 lg:h-[620px]">
                 <img
-                  src="https://storage.googleapis.com/campaigners-images/Temple%20Images/govindaFrontView.jpg"
+                  src="https://pub-f62a54aab54448388c9e16334109aea9.r2.dev/Temple%2520Images/govindaFrontView.jpg"
                   alt="ISKCON temple"
                   className="h-full w-full object-cover"
                 />
@@ -88,10 +88,12 @@ const LoginPage = () => {
                       ISKCON Visakhapatnam
                     </p>
                     <h1 className="text-2xl font-semibold leading-tight sm:text-3xl lg:text-4xl">
-                      Support the sacred mission with a clear and secure admin workspace.
+                      Support the sacred mission with a clear and secure admin
+                      workspace.
                     </h1>
                     <p className="max-w-lg text-sm text-white/80 sm:text-base">
-                      Manage campaigners, funders, sevas, and temple outreach from one place.
+                      Manage campaigners, funders, sevas, and temple outreach
+                      from one place.
                     </p>
                   </div>
                 </div>
@@ -99,7 +101,8 @@ const LoginPage = () => {
 
               <div className="border-t bg-card px-5 py-4 sm:px-6">
                 <p className="text-sm italic text-muted-foreground">
-                  “By serving the Lord and helping others serve Him, one attains the highest perfection.”
+                  “By serving the Lord and helping others serve Him, one attains
+                  the highest perfection.”
                 </p>
                 <p className="mt-2 text-sm font-semibold text-primary">
                   Srila Prabhupada
@@ -119,7 +122,8 @@ const LoginPage = () => {
                     Access Campaign Dashboard
                   </h2>
                   <p className="mt-2 text-sm text-muted-foreground sm:text-base">
-                    Access your campaigns, donations, and temple operations securely.
+                    Access your campaigns, donations, and temple operations
+                    securely.
                   </p>
                 </div>
 
@@ -173,7 +177,9 @@ const LoginPage = () => {
                     </div>
 
                     {errors.password && (
-                      <p className="text-destructive text-xs">{errors.password}</p>
+                      <p className="text-destructive text-xs">
+                        {errors.password}
+                      </p>
                     )}
                   </div>
 
@@ -195,7 +201,8 @@ const LoginPage = () => {
 
                 <div className="mt-6 rounded-2xl border bg-muted/30 px-4 py-3 text-center lg:text-left">
                   <p className="text-xs text-muted-foreground">
-                    Hare Krishna. Safe and secure access for campaign operations.
+                    Hare Krishna. Safe and secure access for campaign
+                    operations.
                   </p>
                 </div>
               </CardContent>

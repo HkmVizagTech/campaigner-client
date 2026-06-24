@@ -47,7 +47,7 @@ export default function TempleVisionSection() {
       {/* ===== TEMPLE HERO IMAGE ===== */}
       <div className="relative w-full max-w-6xl rounded-2xl overflow-hidden shadow-xl">
         <img
-          src="https://storage.googleapis.com/campaigners-images/Temple%20Images/govindaFrontView.jpg"
+          src="https://pub-f62a54aab54448388c9e16334109aea9.r2.dev/Temple%2520Images/govindaFrontView.jpg"
           alt="ISKCON Vizag Temple"
           className="w-full h-150 sm:h-105 md:h-130 object-cover zoom-soft"
           loading="lazy"

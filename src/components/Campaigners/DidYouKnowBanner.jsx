@@ -6,7 +6,7 @@ export default function DidYouKnowBanner() {
       <div
         className="relative max-w-5xl mx-auto rounded-3xl overflow-hidden"
         style={{
-          backgroundImage: `url(https://storage.googleapis.com/campaigners-images/Temple%20Images/vedic.jpg)`,
+          backgroundImage: `url(https://pub-f62a54aab54448388c9e16334109aea9.r2.dev/Temple%2520Images/vedic.jpg)`,
         }}
       >
         <div className="absolute inset-0 bg-black/30" />

@@ -73,17 +73,17 @@ export default function PowerOfGivingSection() {
             {
               title: "Garuda Purana",
               text: "One who contributes to building a temple attains heaven and is honored by all.",
-              img: "https://storage.googleapis.com/campaigners-images/Temple%20Images/garuda_purana.mp4",
+              img: "https://pub-f62a54aab54448388c9e16334109aea9.r2.dev/Temple%2520Images/garuda_purana.mp4",
             },
             {
               title: "Vishnu Purana (3.8.27)",
               text: "One who donates towards the construction of a temple is liberated from all sins and attains the heavenly realms.",
-              img: "https://storage.googleapis.com/campaigners-images/Temple%20Images/vishnu_purana.mp4",
+              img: "https://pub-f62a54aab54448388c9e16334109aea9.r2.dev/Temple%2520Images/vishnu_purana.mp4",
             },
             {
               title: "Vamana Purana",
               text: "One can attain the spiritual world (Vaikuntha) by helping construct or renovate a temple.",
-              img: "https://storage.googleapis.com/campaigners-images/Temple%20Images/vamana_purana.mp4",
+              img: "https://pub-f62a54aab54448388c9e16334109aea9.r2.dev/Temple%2520Images/vamana_purana.mp4",
             },
           ].map((item, i) => (
             <Card
@@ -101,7 +101,7 @@ export default function PowerOfGivingSection() {
                 loading="lazy"
               />
               <div
-                className="absolute inset-x-0 bottom-0 h-[55%] 
+                className="absolute inset-x-0 bottom-0 h-[55%]
                   bg-linear-to-t from-black/90 via-black/90 to-transparent"
               />
               <div className="relative z-10 text-left p-6 flex flex-col justify-end h-full text-white">
@@ -185,7 +185,7 @@ export default function PowerOfGivingSection() {
         >
           {/* Background Image */}
           <img
-            src="https://storage.googleapis.com/campaigners-images/Temple%20Images/education_wing.jpg"
+            src="https://pub-f62a54aab54448388c9e16334109aea9.r2.dev/Temple%2520Images/education_wing.jpg"
             alt="Building Character"
             className="absolute inset-0 w-full h-full object-cover zoom-medium"
             loading="lazy"
@@ -260,7 +260,7 @@ export default function PowerOfGivingSection() {
         <h2 className="text-3xl font-bold">Our Founder & Acharya</h2>
 
         <img
-          src="https://storage.googleapis.com/campaigners-images/Temple%20Images/prabhupada.jpg"
+          src="https://pub-f62a54aab54448388c9e16334109aea9.r2.dev/Temple%2520Images/prabhupada.jpg"
           alt="Srila Prabhupada"
           className="h-40 w-40 rounded-full mx-auto object-cover shadow-lg"
           loading="lazy"

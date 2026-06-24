@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 
 const images = [
-  "https://storage.googleapis.com/campaigners-images/Temple%20Images/status1.jpeg",
-  "https://storage.googleapis.com/campaigners-images/Temple%20Images/status2.jpeg",
-  "https://storage.googleapis.com/campaigners-images/Temple%20Images/status3.jpeg",
-  "https://storage.googleapis.com/campaigners-images/Temple%20Images/status4.jpeg",
+  "https://pub-f62a54aab54448388c9e16334109aea9.r2.dev/Temple%2520Images/status1.jpeg",
+  "https://pub-f62a54aab54448388c9e16334109aea9.r2.dev/Temple%2520Images/status2.jpeg",
+  "https://pub-f62a54aab54448388c9e16334109aea9.r2.dev/Temple%2520Images/status3.jpeg",
+  "https://pub-f62a54aab54448388c9e16334109aea9.r2.dev/Temple%2520Images/status4.jpeg",
 ];
 
 const ConstructionStatus = () => {

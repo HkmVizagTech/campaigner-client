@@ -198,7 +198,7 @@ const CampaignerRegister = () => {
           </Button>
 
           <img
-            src="https://storage.googleapis.com/campaigners-images/Temple%20Images/govindaFrontView.jpg"
+            src="https://pub-f62a54aab54448388c9e16334109aea9.r2.dev/Temple%2520Images/govindaFrontView.jpg"
             className="w-full h-72 sm:h-96 object-cover rounded-2xl shadow-xl"
           />
 

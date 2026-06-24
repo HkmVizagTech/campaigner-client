@@ -5,43 +5,43 @@ const spaces = [
     title: "Divine Altar",
     desc: "Beautifully carved altar of Sri Srinivasa Govinda",
     image:
-      "https://storage.googleapis.com/campaigners-images/Temple%20Images/govinda.jpg",
+      "https://pub-f62a54aab54448388c9e16334109aea9.r2.dev/Temple%2520Images/govinda.jpg",
   },
   {
     title: "Vedic Planetarium",
     desc: "To awaken timeless wisdom through the light of modern technology.",
     image:
-      "https://storage.googleapis.com/campaigners-images/Temple%20Images/vedic.jpg",
+      "https://pub-f62a54aab54448388c9e16334109aea9.r2.dev/Temple%2520Images/vedic.jpg",
   },
   {
     title: "Prasadam Hall",
     desc: "A sacred hall serving Krishna-prasadam.",
     image:
-      "https://storage.googleapis.com/campaigners-images/Temple%20Images/annadanam_hall.jpg",
+      "https://pub-f62a54aab54448388c9e16334109aea9.r2.dev/Temple%2520Images/annadanam_hall.jpg",
   },
   {
     title: "Festival Hall",
     desc: "A grand space for kirtans, festivals & cultural celebrations.",
     image:
-      "https://storage.googleapis.com/campaigners-images/Temple%20Images/festival_hall.jpg",
+      "https://pub-f62a54aab54448388c9e16334109aea9.r2.dev/Temple%2520Images/festival_hall.jpg",
   },
   {
     title: "Harinam Mandap",
     desc: "A serene space for chanting & meditation.",
     image:
-      "https://storage.googleapis.com/campaigners-images/Temple%20Images/harinaam_mandap.jpg",
+      "https://pub-f62a54aab54448388c9e16334109aea9.r2.dev/Temple%2520Images/harinaam_mandap.jpg",
   },
   {
     title: "Bala Samskriti Program",
     desc: "Value-based cultural learning for children.",
     image:
-      "https://storage.googleapis.com/campaigners-images/Temple%20Images/icvk.jpg",
+      "https://pub-f62a54aab54448388c9e16334109aea9.r2.dev/Temple%2520Images/icvk.jpg",
   },
   {
     title: "Gita Life Program",
     desc: "Transforming youth & families with Gita wisdom.",
     image:
-      "https://storage.googleapis.com/campaigners-images/Temple%20Images/gita_life.jpg",
+      "https://pub-f62a54aab54448388c9e16334109aea9.r2.dev/Temple%2520Images/gita_life.jpg",
   },
 ];
 

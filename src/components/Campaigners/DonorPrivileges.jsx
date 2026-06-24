@@ -5,28 +5,28 @@ const privileges = [
     title: "Gift & Mahaprasadam",
     desc: "Donate and receive blessed Mahaprasadam and a spiritual gift as divine blessings.",
     image:
-      "https://storage.googleapis.com/campaigners-images/Temple%20Images/gift.jpg",
+      "https://pub-f62a54aab54448388c9e16334109aea9.r2.dev/Temple%2520Images/gift.jpg",
     bg: "bg-blue-50",
   },
   {
     title: "80G Tax Exemption",
     desc: "Donors will receive an 80G certificate for tax exemption.",
     image:
-      "https://storage.googleapis.com/campaigners-images/Temple%20Images/tax.jpg",
+      "https://pub-f62a54aab54448388c9e16334109aea9.r2.dev/Temple%2520Images/tax.jpg",
     bg: "bg-amber-50",
   },
   {
     title: "Special Puja",
     desc: "A special puja will be offered in your name at the temple inauguration.",
     image:
-      "https://storage.googleapis.com/campaigners-images/Temple%20Images/puja.jpg",
+      "https://pub-f62a54aab54448388c9e16334109aea9.r2.dev/Temple%2520Images/puja.jpg",
     bg: "bg-blue-50",
   },
   {
     title: "Vedic Literatures",
     desc: "A special gift set of spiritual books delivered to your doorstep.",
     image:
-      "https://storage.googleapis.com/campaigners-images/Temple%20Images/vedic_books.jpg",
+      "https://pub-f62a54aab54448388c9e16334109aea9.r2.dev/Temple%2520Images/vedic_books.jpg",
     bg: "bg-amber-50",
   },
 ];

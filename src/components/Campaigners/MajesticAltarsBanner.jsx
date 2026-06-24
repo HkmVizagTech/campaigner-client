@@ -13,7 +13,7 @@ export default function MajesticAltarsBanner() {
         "
       >
         <img
-          src="https://storage.googleapis.com/campaigners-images/Temple%20Images/majestic_altar.jpg"
+          src="https://pub-f62a54aab54448388c9e16334109aea9.r2.dev/Temple%2520Images/majestic_altar.jpg"
           alt="Altars"
           className="absolute inset-0 w-full h-full object-cover opacity-40 zoom-medium"
           loading="lazy"

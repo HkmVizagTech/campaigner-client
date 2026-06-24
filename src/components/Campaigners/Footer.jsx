@@ -16,7 +16,7 @@ export default function Footer() {
         className="absolute inset-0 bg-cover bg-center"
         style={{
           backgroundImage:
-            "url('https://storage.googleapis.com/campaigners-images/Temple%20Images/govindaSideView.jpg')",
+            "url('https://pub-f62a54aab54448388c9e16334109aea9.r2.dev/Temple%2520Images/govindaSideView.jpg')",
         }}
       />
 
