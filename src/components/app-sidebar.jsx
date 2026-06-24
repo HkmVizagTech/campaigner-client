@@ -182,7 +182,7 @@ export function AppSidebar({ loading, ...props }) {
         <div className="flex items-center justify-center p-3">
           {state === "expanded" ? (
             <img
-              src="/logo.png"
+              src="https://storage.googleapis.com/campaigners-images/Temple%20Images/hkmlogopng-blackfont.jpg"
               alt="HKM Logo"
               className="w-auto h-20 object-cover"
             />
