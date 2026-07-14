@@ -6,6 +6,7 @@ import {
   HeartHandshake,
   LayoutDashboard,
   Megaphone,
+  RefreshCw,
   UserCog,
   Users,
   Wallet,
@@ -107,6 +108,11 @@ const navMain = {
       title: "Add Cash Donation",
       url: "/admin/add-donation",
       icon: HandCoins,
+    },
+    {
+      title: "Reconcile Donations",
+      url: "/admin/reconcile-donations",
+      icon: RefreshCw,
     },
   ],
   devotee: [

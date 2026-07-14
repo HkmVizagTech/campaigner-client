@@ -22,6 +22,7 @@ import DevoteForm from "@/pages/Admin/Devotes/DevoteForm";
 import DevoteeList from "@/pages/Admin/Devotes/DevoteList";
 import ResetPasswordPage from "@/pages/auth/ResetPasswordForm";
 import AddCashDonation from "@/pages/Admin/Donations/AddCashDonation";
+import ReconcileDonations from "@/pages/Admin/Donations/ReconcileDonations";
 import Reports from "@/pages/Admin/Reports/index";
 
 const AllRoutes = () => {
@@ -51,6 +52,7 @@ const AllRoutes = () => {
         <Route path="/admin/create-campaigner" element={<CreateCampaigner />} />
         <Route path="/admin/campaigners" element={<Campaigners />} />
         <Route path="/admin/add-donation" element={<AddCashDonation />} />
+        <Route path="/admin/reconcile-donations" element={<ReconcileDonations />} />
         <Route path="/admin/reports" element={<Reports />} />
         <Route
           path="/admin/campaigner/edit/:campaignerId"
