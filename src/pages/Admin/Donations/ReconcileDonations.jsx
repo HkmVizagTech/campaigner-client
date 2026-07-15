@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import api from "@/api/api";
 import { toast } from "@/utils/toast";
-import { RefreshCw, Search, CheckCircle2, Clock } from "lucide-react";
+import { RefreshCw, Search, CheckCircle2, Clock, ShieldAlert } from "lucide-react";
 
 const fmt = (n) =>
   Number(n || 0).toLocaleString("en-IN", { maximumFractionDigits: 0 });
@@ -19,6 +19,12 @@ const ReconcileDonations = () => {
 
   const [pending, setPending] = useState([]);
   const [loadingPending, setLoadingPending] = useState(false);
+
+  const [auditing, setAuditing] = useState(false);
+  const [auditResult, setAuditResult] = useState(null);
+  const [auditFromDate, setAuditFromDate] = useState("");
+  const [auditToDate, setAuditToDate] = useState("");
+  const [correctingId, setCorrectingId] = useState(null);
 
   const fetchPending = async () => {
     setLoadingPending(true);
@@ -82,6 +88,62 @@ const ReconcileDonations = () => {
     setDonationId(row._id);
     setPaymentId("");
     setLookupResult(null);
+  };
+
+  const handleAudit = async () => {
+    setAuditing(true);
+    setAuditResult(null);
+    try {
+      const query = new URLSearchParams();
+      if (auditFromDate) query.set("fromDate", auditFromDate);
+      if (auditToDate) query.set("toDate", auditToDate);
+
+      const res = await api.get(`/dashboard/audit-donations?${query.toString()}`);
+      setAuditResult(res.data?.data);
+
+      const { totalMismatches } = res.data?.data || {};
+      if (totalMismatches > 0) {
+        toast.error(`Found ${totalMismatches} donation(s) marked success that Razorpay disputes`);
+      } else {
+        toast.success("All checked donations match Razorpay records");
+      }
+    } catch (err) {
+      toast.error(err?.response?.data?.message || "Audit failed");
+    } finally {
+      setAuditing(false);
+    }
+  };
+
+  const useAuditMismatch = (m) => {
+    setDonationId(m.donationId);
+    setPaymentId(m.gatewayPaymentId || "");
+    setLookupResult(null);
+  };
+
+  const handleCorrect = async (m) => {
+    if (
+      !window.confirm(
+        `Mark ${m.donorName}'s donation (₹${fmt(m.amount)}) as failed and reverse the raised amount from ${m.campaigner || "the campaigner"}? This cannot be undone.`,
+      )
+    ) {
+      return;
+    }
+    setCorrectingId(m.donationId);
+    try {
+      const res = await api.post("/dashboard/correct-mismatched-donation", {
+        donationId: m.donationId,
+      });
+      toast.success(res.data?.message || "Corrected successfully");
+      setAuditResult((prev) => ({
+        ...prev,
+        mismatches: prev.mismatches.filter((x) => x.donationId !== m.donationId),
+        totalMismatches: prev.totalMismatches - 1,
+      }));
+    } catch (err) {
+      toast.error(err?.response?.data?.message || "Correction failed");
+    } finally {
+      setCorrectingId(null);
+    }
   };
 
   return (
@@ -176,12 +238,121 @@ const ReconcileDonations = () => {
         )}
       </Card>
 
+      {/* Audit section */}
+      <Card className="p-4 space-y-4">
+        <div>
+          <h3 className="text-sm font-medium flex items-center gap-2">
+            <ShieldAlert className="h-4 w-4 text-red-600" />
+            Audit Donations Against Razorpay
+          </h3>
+          <p className="text-xs text-muted-foreground mt-1">
+            Re-checks every donation currently marked "success" directly with
+            Razorpay's records. Flags any that Razorpay disputes — these may
+            have had a receipt/WhatsApp sent incorrectly.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
+          <div className="space-y-1.5">
+            <Label>From Date (optional)</Label>
+            <Input
+              type="date"
+              value={auditFromDate}
+              onChange={(e) => setAuditFromDate(e.target.value)}
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label>To Date (optional)</Label>
+            <Input
+              type="date"
+              value={auditToDate}
+              onChange={(e) => setAuditToDate(e.target.value)}
+            />
+          </div>
+          <Button
+            onClick={handleAudit}
+            disabled={auditing}
+            variant="destructive"
+            className="flex items-center gap-2"
+          >
+            <ShieldAlert className="h-4 w-4" />
+            {auditing ? "Auditing..." : "Run Audit"}
+          </Button>
+        </div>
+
+        {auditResult && (
+          <div className="rounded-md border p-3 bg-muted/30 text-sm space-y-3">
+            <p>
+              Checked <strong>{auditResult.totalChecked}</strong> donation(s) —{" "}
+              <span
+                className={
+                  auditResult.totalMismatches > 0
+                    ? "text-red-600 font-medium"
+                    : "text-green-700 font-medium"
+                }
+              >
+                {auditResult.totalMismatches} mismatch(es) found
+              </span>
+            </p>
+
+            {auditResult.mismatches?.length > 0 && (
+              <div className="overflow-x-auto">
+                <table className="w-full text-xs">
+                  <thead>
+                    <tr className="text-left text-muted-foreground border-b">
+                      <th className="py-1.5 pr-3">Donor</th>
+                      <th className="py-1.5 pr-3">Amount</th>
+                      <th className="py-1.5 pr-3">Campaigner</th>
+                      <th className="py-1.5 pr-3">Razorpay Status</th>
+                      <th className="py-1.5 pr-3">Receipt</th>
+                      <th className="py-1.5 pr-3"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {auditResult.mismatches.map((m) => (
+                      <tr key={m.donationId} className="border-b border-muted/50">
+                        <td className="py-1.5 pr-3">{m.donorName}</td>
+                        <td className="py-1.5 pr-3">₹{fmt(m.amount)}</td>
+                        <td className="py-1.5 pr-3">{m.campaigner || "—"}</td>
+                        <td className="py-1.5 pr-3">
+                          <span className="bg-red-100 text-red-800 px-1.5 py-0.5 rounded-full">
+                            {m.razorpayStatus}
+                          </span>
+                        </td>
+                        <td className="py-1.5 pr-3">{m.receiptNumber || "—"}</td>
+                        <td className="py-1.5 pr-3 flex gap-1">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => useAuditMismatch(m)}
+                          >
+                            Investigate
+                          </Button>
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => handleCorrect(m)}
+                            disabled={correctingId === m.donationId}
+                          >
+                            {correctingId === m.donationId ? "Correcting..." : "Correct"}
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
+      </Card>
+
       {/* Pending donations list */}
       <div>
         <div className="flex items-center justify-between mb-2">
           <h3 className="text-sm font-medium flex items-center gap-2">
             <Clock className="h-4 w-4 text-yellow-600" />
-            Pending Donations ({pending.length})
+            Pending / Failed Donations ({pending.length})
           </h3>
           <Button variant="ghost" size="sm" onClick={fetchPending} disabled={loadingPending}>
             <RefreshCw className={`h-4 w-4 ${loadingPending ? "animate-spin" : ""}`} />
@@ -207,6 +378,7 @@ const ReconcileDonations = () => {
                   <th className="text-left px-4 py-2">Donor</th>
                   <th className="text-left px-4 py-2">Campaigner</th>
                   <th className="text-right px-4 py-2">Amount</th>
+                  <th className="text-left px-4 py-2">Status</th>
                   <th className="text-left px-4 py-2">Date</th>
                   <th className="text-left px-4 py-2"></th>
                 </tr>
