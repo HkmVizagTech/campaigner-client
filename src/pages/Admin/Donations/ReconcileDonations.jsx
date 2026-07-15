@@ -98,7 +98,9 @@ const ReconcileDonations = () => {
       if (auditFromDate) query.set("fromDate", auditFromDate);
       if (auditToDate) query.set("toDate", auditToDate);
 
-      const res = await api.get(`/dashboard/audit-donations?${query.toString()}`);
+      const res = await api.get(`/dashboard/audit-donations?${query.toString()}`, {
+        timeout: 60000, // this checks each donation against Razorpay, can take longer than default
+      });
       setAuditResult(res.data?.data);
 
       const { totalMismatches } = res.data?.data || {};
@@ -108,7 +110,11 @@ const ReconcileDonations = () => {
         toast.success("All checked donations match Razorpay records");
       }
     } catch (err) {
-      toast.error(err?.response?.data?.message || "Audit failed");
+      if (err.code === "ECONNABORTED") {
+        toast.error("Audit timed out — try a narrower date range");
+      } else {
+        toast.error(err?.response?.data?.message || err.message || "Audit failed");
+      }
     } finally {
       setAuditing(false);
     }
