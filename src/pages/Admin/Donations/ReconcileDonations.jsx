@@ -349,6 +349,23 @@ const ReconcileDonations = () => {
                 </table>
               </div>
             )}
+
+            {auditResult.transientErrors?.length > 0 && (
+              <div className="rounded-md border border-yellow-300 bg-yellow-50 p-3">
+                <p className="text-xs font-medium text-yellow-800 mb-1">
+                  ⚠ {auditResult.transientErrors.length} donation(s) couldn't be verified right now
+                  (network/rate-limit issue) — these are NOT flagged as problems, just re-run the
+                  audit to check them again:
+                </p>
+                <ul className="text-xs text-yellow-700 space-y-0.5">
+                  {auditResult.transientErrors.map((e) => (
+                    <li key={e.donationId}>
+                      {e.donorName} — {e.error}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         )}
       </Card>
