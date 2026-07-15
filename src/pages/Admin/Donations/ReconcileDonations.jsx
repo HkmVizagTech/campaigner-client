@@ -321,8 +321,14 @@ const ReconcileDonations = () => {
                         <td className="py-1.5 pr-3">₹{fmt(m.amount)}</td>
                         <td className="py-1.5 pr-3">{m.campaigner || "—"}</td>
                         <td className="py-1.5 pr-3">
-                          <span className="bg-red-100 text-red-800 px-1.5 py-0.5 rounded-full">
-                            {m.razorpayStatus}
+                          <span
+                            className={`px-1.5 py-0.5 rounded-full ${
+                              m.needsManualCheck
+                                ? "bg-yellow-100 text-yellow-800"
+                                : "bg-red-100 text-red-800"
+                            }`}
+                          >
+                            {m.needsManualCheck ? "Not on Razorpay — check manually" : m.razorpayStatus}
                           </span>
                         </td>
                         <td className="py-1.5 pr-3">{m.receiptNumber || "—"}</td>
@@ -334,19 +340,28 @@ const ReconcileDonations = () => {
                           >
                             Investigate
                           </Button>
-                          <Button
-                            variant="destructive"
-                            size="sm"
-                            onClick={() => handleCorrect(m)}
-                            disabled={correctingId === m.donationId}
-                          >
-                            {correctingId === m.donationId ? "Correcting..." : "Correct"}
-                          </Button>
+                          {!m.needsManualCheck && (
+                            <Button
+                              variant="destructive"
+                              size="sm"
+                              onClick={() => handleCorrect(m)}
+                              disabled={correctingId === m.donationId}
+                            >
+                              {correctingId === m.donationId ? "Correcting..." : "Correct"}
+                            </Button>
+                          )}
                         </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
+
+                <p className="text-xs text-yellow-700 mt-2">
+                  ⚠ Rows marked "Not on Razorpay — check manually" have no Correct
+                  button on purpose. A missing payment ID is usually a test/live
+                  API key mismatch on our side, not proof the donation is fake —
+                  verify directly in the Razorpay dashboard before doing anything.
+                </p>
               </div>
             )}
 
