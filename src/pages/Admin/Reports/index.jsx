@@ -1,11 +1,13 @@
 import { useSelector } from "react-redux";
 import DevoteeReport from "./DevoteeReport";
 import PrasadamReport from "./PrasadamReport";
+import FundersWithOrderId from "./FundersWithOrderId";
 import { useState } from "react";
 
 const tabs = [
   { id: "devotee", label: "Devotee Summary", roles: ["admin", "superAdmin"] },
   { id: "prasadam", label: "Prasadam Donors", roles: ["admin", "superAdmin"] },
+  { id: "funders", label: "Funders with Order ID", roles: ["admin", "superAdmin"] },
 ];
 
 const Reports = () => {
@@ -16,7 +18,7 @@ const Reports = () => {
   const [activeTab, setActiveTab] = useState(visibleTabs[0]?.id || "devotee");
 
   return (
-    <div className="p-4 space-y-5 max-w-5xl mx-auto">
+    <div className="p-4 space-y-5 max-w-6xl mx-auto">
       {/* Header */}
       <div>
         <h2 className="text-xl font-semibold">Reports</h2>
@@ -47,6 +49,7 @@ const Reports = () => {
       {/* Tab content */}
       {activeTab === "devotee" && <DevoteeReport />}
       {activeTab === "prasadam" && <PrasadamReport />}
+      {activeTab === "funders" && <FundersWithOrderId />}
     </div>
   );
 };
