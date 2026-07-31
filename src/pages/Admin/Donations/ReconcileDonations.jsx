@@ -106,24 +106,40 @@ const ReconcileDonations = () => {
     setLookupResult(null);
   };
 
-  const handleAudit = async () => {
+  const handleAudit = async (page = 1) => {
     setAuditing(true);
-    setAuditResult(null);
+    if (page === 1) setAuditResult(null);
     try {
       const query = new URLSearchParams();
       if (auditFromDate) query.set("fromDate", auditFromDate);
       if (auditToDate) query.set("toDate", auditToDate);
+      query.set("page", page);
+      query.set("limit", 500);
 
       const res = await api.get(`/dashboard/audit-donations?${query.toString()}`, {
-        timeout: 60000, // this checks each donation against Razorpay, can take longer than default
+        timeout: 90000, // this checks each donation against Razorpay, can take longer than default
       });
-      setAuditResult(res.data?.data);
+      const data = res.data?.data;
 
-      const { totalMismatches } = res.data?.data || {};
-      if (totalMismatches > 0) {
-        toast.error(`Found ${totalMismatches} donation(s) marked success that Razorpay disputes`);
+      setAuditResult((prev) => {
+        if (page === 1 || !prev) return data;
+        const mergedMismatches = [...prev.mismatches, ...data.mismatches];
+        const mergedTransientErrors = [...prev.transientErrors, ...data.transientErrors];
+        return {
+          ...data,
+          mismatches: mergedMismatches,
+          transientErrors: mergedTransientErrors,
+          totalChecked: prev.totalChecked + data.totalChecked,
+          totalMismatches: mergedMismatches.length,
+        };
+      });
+
+      if (data.totalMismatches > 0) {
+        toast.error(`Found ${data.totalMismatches} donation(s) marked success that Razorpay disputes on this batch`);
+      } else if (data.isFullyCovered) {
+        toast.success("All success donations checked — none disputed by Razorpay");
       } else {
-        toast.success("All checked donations match Razorpay records");
+        toast.success(`Batch clean — ${data.totalMatchingSuccessDonations - page * 500 > 0 ? "more remain, click Check Next Batch" : ""}`);
       }
     } catch (err) {
       if (err.code === "ECONNABORTED") {
@@ -385,7 +401,7 @@ const ReconcileDonations = () => {
             />
           </div>
           <Button
-            onClick={handleAudit}
+            onClick={() => handleAudit(1)}
             disabled={auditing}
             variant="destructive"
             className="flex items-center gap-2"
@@ -397,8 +413,19 @@ const ReconcileDonations = () => {
 
         {auditResult && (
           <div className="rounded-md border p-3 bg-muted/30 text-sm space-y-3">
+            <p
+              className={
+                auditResult.isFullyCovered
+                  ? "text-green-700"
+                  : "text-yellow-700 font-medium"
+              }
+            >
+              {auditResult.isFullyCovered
+                ? `✓ Checked all ${auditResult.totalMatchingSuccessDonations} success donation(s) — full coverage.`
+                : `⚠ Only checked ${auditResult.totalChecked} of ${auditResult.totalMatchingSuccessDonations} total success donations so far. Click "Check Next Batch" below to continue — many more may be unchecked.`}
+            </p>
             <p>
-              Checked <strong>{auditResult.totalChecked}</strong> donation(s) —{" "}
+              Checked <strong>{auditResult.totalChecked}</strong> donation(s) so far —{" "}
               <span
                 className={
                   auditResult.totalMismatches > 0
@@ -472,6 +499,19 @@ const ReconcileDonations = () => {
                   verify directly in the Razorpay dashboard before doing anything.
                 </p>
               </div>
+            )}
+
+            {!auditResult.isFullyCovered && (
+              <Button
+                onClick={() => handleAudit(auditResult.currentPage + 1)}
+                disabled={auditing}
+                variant="outline"
+                size="sm"
+              >
+                {auditing
+                  ? "Checking..."
+                  : `Check Next Batch (${auditResult.totalMatchingSuccessDonations - auditResult.totalChecked} remaining)`}
+              </Button>
             )}
 
             {auditResult.transientErrors?.length > 0 && (
