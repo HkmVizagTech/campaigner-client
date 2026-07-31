@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import api from "@/api/api";
 import { toast } from "@/utils/toast";
-import { RefreshCw, Search, CheckCircle2, Clock, ShieldAlert } from "lucide-react";
+import { RefreshCw, Search, CheckCircle2, Clock, ShieldAlert, AlertTriangle } from "lucide-react";
 
 const fmt = (n) =>
   Number(n || 0).toLocaleString("en-IN", { maximumFractionDigits: 0 });
@@ -26,6 +26,9 @@ const ReconcileDonations = () => {
   const [auditToDate, setAuditToDate] = useState("");
   const [correctingId, setCorrectingId] = useState(null);
 
+  const [orderIdFunders, setOrderIdFunders] = useState([]);
+  const [loadingOrderIdFunders, setLoadingOrderIdFunders] = useState(false);
+
   const fetchPending = async () => {
     setLoadingPending(true);
     try {
@@ -38,8 +41,21 @@ const ReconcileDonations = () => {
     }
   };
 
+  const fetchOrderIdFunders = async () => {
+    setLoadingOrderIdFunders(true);
+    try {
+      const res = await api.get("/dashboard/donations-with-order-id-as-payment-id");
+      setOrderIdFunders(res.data?.data || []);
+    } catch (err) {
+      toast.error(err?.response?.data?.message || "Failed to fetch funders with order ID");
+    } finally {
+      setLoadingOrderIdFunders(false);
+    }
+  };
+
   useEffect(() => {
     fetchPending();
+    fetchOrderIdFunders();
   }, []);
 
   const handleLookup = async () => {
@@ -161,6 +177,99 @@ const ReconcileDonations = () => {
           wasn't captured (donor closed the browser, webhook missed it, etc.)
         </p>
       </div>
+
+      {/* Funders with Order ID instead of Payment ID — urgent */}
+      <Card className="p-4 space-y-3 border-red-300">
+        <div className="flex items-center justify-between">
+          <h3 className="text-sm font-medium flex items-center gap-2 text-red-700">
+            <AlertTriangle className="h-4 w-4" />
+            Funders with Order ID instead of Payment ID ({orderIdFunders.length})
+          </h3>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={fetchOrderIdFunders}
+            disabled={loadingOrderIdFunders}
+          >
+            <RefreshCw className={`h-4 w-4 ${loadingOrderIdFunders ? "animate-spin" : ""}`} />
+          </Button>
+        </div>
+        <p className="text-xs text-muted-foreground">
+          These donations have a Razorpay <strong>order ID</strong> (starts with
+          "order_") stored where a <strong>payment ID</strong> (starts with
+          "pay_") should be. This means they were never actually verified
+          against a real Razorpay payment — receipts and WhatsApp may have
+          gone out incorrectly. Use Investigate to check each one, then
+          re-verify with the correct payment ID from Razorpay.
+        </p>
+
+        {loadingOrderIdFunders ? (
+          <div className="space-y-2">
+            {[1, 2].map((i) => (
+              <div key={i} className="h-8 bg-muted rounded animate-pulse" />
+            ))}
+          </div>
+        ) : orderIdFunders.length === 0 ? (
+          <p className="text-sm text-green-700 flex items-center gap-2">
+            <CheckCircle2 className="h-4 w-4" />
+            None found — every donation has a proper payment ID.
+          </p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="text-left text-muted-foreground border-b">
+                  <th className="py-1.5 pr-3">Donor</th>
+                  <th className="py-1.5 pr-3">Amount</th>
+                  <th className="py-1.5 pr-3">Campaigner</th>
+                  <th className="py-1.5 pr-3">Status</th>
+                  <th className="py-1.5 pr-3">Stored ID</th>
+                  <th className="py-1.5 pr-3">Receipt</th>
+                  <th className="py-1.5 pr-3"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {orderIdFunders.map((d) => (
+                  <tr key={d._id} className="border-b border-muted/50">
+                    <td className="py-1.5 pr-3">
+                      <p className="font-medium">{d.donorName}</p>
+                      <p className="text-muted-foreground">{d.donorPhone}</p>
+                    </td>
+                    <td className="py-1.5 pr-3">₹{fmt(d.amount)}</td>
+                    <td className="py-1.5 pr-3">{d.campaigner?.name || "—"}</td>
+                    <td className="py-1.5 pr-3">
+                      <span
+                        className={`px-1.5 py-0.5 rounded-full ${
+                          d.status === "success"
+                            ? "bg-red-100 text-red-800"
+                            : "bg-yellow-100 text-yellow-800"
+                        }`}
+                      >
+                        {d.status}
+                      </span>
+                    </td>
+                    <td className="py-1.5 pr-3 font-mono">{d.gatewayPaymentId}</td>
+                    <td className="py-1.5 pr-3">{d.receiptNumber || "—"}</td>
+                    <td className="py-1.5 pr-3">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setDonationId(d._id);
+                          setPaymentId("");
+                          setLookupResult(null);
+                        }}
+                      >
+                        Use ID
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </Card>
 
       {/* Lookup + Reconcile form */}
       <Card className="p-4 space-y-4">
