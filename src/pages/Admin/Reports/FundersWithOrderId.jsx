@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/select";
 import api from "@/api/api";
 import { toast } from "@/utils/toast";
-import { Download, Copy } from "lucide-react";
+import { Download, Copy, ShieldCheck } from "lucide-react";
 
 const fmt = (n) =>
   Number(n || 0).toLocaleString("en-IN", { maximumFractionDigits: 0 });
@@ -56,6 +56,8 @@ const FundersWithOrderId = () => {
   const [pagination, setPagination] = useState(null);
   const [page, setPage] = useState(1);
   const [exporting, setExporting] = useState(false);
+  const [verifying, setVerifying] = useState(false);
+  const [verifiedMap, setVerifiedMap] = useState({});
 
   const fetchFunders = async (params = {}) => {
     setLoading(true);
@@ -71,6 +73,7 @@ const FundersWithOrderId = () => {
       const res = await api.get(`/dashboard/reports/funders-with-order-id?${query.toString()}`);
       setFunders(res.data?.data?.funders || []);
       setPagination(res.data?.data?.pagination || null);
+      setVerifiedMap({});
     } catch (err) {
       toast.error(err?.response?.data?.message || "Failed to fetch funders");
     } finally {
@@ -157,6 +160,50 @@ const FundersWithOrderId = () => {
     }
   };
 
+  const handleVerify = async () => {
+    const orderIds = funders.map((f) => f.gatewayOrderId).filter(Boolean);
+    if (orderIds.length === 0) {
+      toast.error("No order IDs on this page to verify");
+      return;
+    }
+    setVerifying(true);
+    try {
+      const res = await api.post(
+        "/dashboard/verify-orders",
+        { orderIds },
+        { timeout: 60000 },
+      );
+      const results = res.data?.data?.results || [];
+      const map = {};
+      results.forEach((r) => {
+        map[r.orderId] = r;
+      });
+      setVerifiedMap((prev) => ({ ...prev, ...map }));
+
+      const mismatchCount = results.filter((r) => {
+        const funder = funders.find((f) => f.gatewayOrderId === r.orderId);
+        if (!funder) return false;
+        const razorpaySaysOk = r.razorpayStatus === "captured" || r.razorpayStatus === "authorized";
+        const ourSaysOk = funder.donationStatus === "success";
+        return razorpaySaysOk !== ourSaysOk;
+      }).length;
+
+      if (mismatchCount > 0) {
+        toast.error(`${mismatchCount} order(s) don't match Razorpay's records`);
+      } else {
+        toast.success("All visible orders match Razorpay's records");
+      }
+    } catch (err) {
+      if (err.code === "ECONNABORTED") {
+        toast.error("Verification timed out — try a smaller page size");
+      } else {
+        toast.error(err?.response?.data?.message || "Verification failed");
+      }
+    } finally {
+      setVerifying(false);
+    }
+  };
+
   return (
     <div className="space-y-5">
       <Card className="p-4">
@@ -196,10 +243,21 @@ const FundersWithOrderId = () => {
         <p className="text-sm text-muted-foreground">
           {pagination?.total ?? 0} donation{pagination?.total !== 1 ? "s" : ""} found
         </p>
-        <Button variant="outline" onClick={handleExport} disabled={exporting} className="flex items-center gap-2">
-          <Download className="h-4 w-4" />
-          {exporting ? "Exporting..." : "Export CSV"}
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            variant="destructive"
+            onClick={handleVerify}
+            disabled={verifying || funders.length === 0}
+            className="flex items-center gap-2"
+          >
+            <ShieldCheck className="h-4 w-4" />
+            {verifying ? "Verifying..." : "Verify with Razorpay"}
+          </Button>
+          <Button variant="outline" onClick={handleExport} disabled={exporting} className="flex items-center gap-2">
+            <Download className="h-4 w-4" />
+            {exporting ? "Exporting..." : "Export CSV"}
+          </Button>
+        </div>
       </div>
 
       <Card className="overflow-hidden">
@@ -217,6 +275,7 @@ const FundersWithOrderId = () => {
                   <th className="text-left px-4 py-3">Donor</th>
                   <th className="text-right px-4 py-3">Amount</th>
                   <th className="text-left px-4 py-3">Status</th>
+                  <th className="text-left px-4 py-3">Razorpay Says</th>
                   <th className="text-left px-4 py-3">Campaigner</th>
                   <th className="text-left px-4 py-3">Order ID</th>
                   <th className="text-left px-4 py-3">Payment ID</th>
@@ -232,6 +291,32 @@ const FundersWithOrderId = () => {
                     </td>
                     <td className="px-4 py-2.5 text-right font-medium">₹{fmt(f.amount)}</td>
                     <td className="px-4 py-2.5"><StatusBadge status={f.donationStatus} /></td>
+                    <td className="px-4 py-2.5">
+                      {(() => {
+                        const v = verifiedMap[f.gatewayOrderId];
+                        if (!v) {
+                          return <span className="text-xs text-muted-foreground">Not checked</span>;
+                        }
+                        const razorpaySaysOk = v.razorpayStatus === "captured" || v.razorpayStatus === "authorized";
+                        const ourSaysOk = f.donationStatus === "success";
+                        const mismatch = razorpaySaysOk !== ourSaysOk;
+                        return (
+                          <span
+                            className={`text-xs font-medium px-2 py-0.5 rounded-full ${
+                              mismatch
+                                ? "bg-red-100 text-red-800"
+                                : razorpaySaysOk
+                                ? "bg-green-100 text-green-800"
+                                : "bg-yellow-100 text-yellow-800"
+                            }`}
+                            title={mismatch ? "Doesn't match our stored status!" : ""}
+                          >
+                            {mismatch && "⚠ "}
+                            {v.razorpayStatus.replace(/_/g, " ")}
+                          </span>
+                        );
+                      })()}
+                    </td>
                     <td className="px-4 py-2.5 text-muted-foreground">{f.campaigner || "—"}</td>
                     <td className="px-4 py-2.5"><CopyableId value={f.gatewayOrderId} /></td>
                     <td className="px-4 py-2.5"><CopyableId value={f.gatewayPaymentId} /></td>
