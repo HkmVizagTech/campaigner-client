@@ -372,39 +372,45 @@ export default function CreateCampaigner() {
             <div className="space-y-2">
               <Label>Upload Image</Label>
 
-              <div className="relative">
+              <label
+                htmlFor="campaigner-image-input"
+                className="block border-2 border-dashed border-border rounded-lg p-6 text-center transition-all duration-200 hover:bg-muted cursor-pointer"
+              >
                 <input
+                  id="campaigner-image-input"
                   type="file"
                   accept="image/*"
                   onChange={handleImageChange}
-                  className="absolute inset-0 opacity-0 cursor-pointer z-10"
+                  className="hidden"
                 />
 
-                <div className="border-2 border-dashed border-border rounded-lg p-6 text-center transition-all duration-200 hover:bg-muted">
-                  {preview ? (
-                    <div className="relative inline-block">
-                      <img
-                        src={preview}
-                        alt="Preview"
-                        className="mx-auto h-28 object-cover rounded-md"
-                      />
-                      {isEdit && (
-                        <button
-                          type="button"
-                          onClick={handleRemoveImage}
-                          className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600 transition-colors"
-                        >
-                          ×
-                        </button>
-                      )}
-                    </div>
-                  ) : (
-                    <span className="text-muted-foreground">
-                      Click to upload or drag image
-                    </span>
-                  )}
-                </div>
-              </div>
+                {preview ? (
+                  <div className="relative inline-block">
+                    <img
+                      src={preview}
+                      alt="Preview"
+                      className="mx-auto h-28 object-cover rounded-md"
+                    />
+                    {isEdit && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleRemoveImage();
+                        }}
+                        className="absolute -top-2 -right-2 z-10 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600 transition-colors"
+                      >
+                        ×
+                      </button>
+                    )}
+                  </div>
+                ) : (
+                  <span className="text-muted-foreground">
+                    Click to upload or drag image
+                  </span>
+                )}
+              </label>
               {isEdit && preview && (
                 <p className="text-xs text-muted-foreground mt-1">
                   Click on the image to change it, or click the × button to
