@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useDispatch, useSelector } from "react-redux";
 import { adminLogin } from "@/store/auth/auth.service";
 import { toast } from "@/utils/toast";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const LoginPage = () => {
   const dispatch = useDispatch();
@@ -181,6 +181,15 @@ const LoginPage = () => {
                         {errors.password}
                       </p>
                     )}
+
+                    <div className="text-right">
+                      <Link
+                        to="/admin/forgot-password"
+                        className="text-xs text-primary hover:underline"
+                      >
+                        Forgot password?
+                      </Link>
+                    </div>
                   </div>
 
                   <Button
