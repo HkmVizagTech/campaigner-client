@@ -80,3 +80,21 @@ export const resetPasswordWithOtp = createAsyncThunk(
     }
   },
 );
+
+export const adminLoginWithOtp = createAsyncThunk(
+  "adminlogin-otp",
+  async (formData, { rejectWithValue }) => {
+    try {
+      const response = await api.post("/login-otp", formData);
+      if (response?.data?.data?.token) {
+        sessionStorage.setItem("token", response?.data?.data?.token);
+      }
+      return response?.data;
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Internal Server Error");
+      return rejectWithValue(
+        error.response?.data?.message || "Internal Server error",
+      );
+    }
+  },
+);

@@ -22,6 +22,7 @@ import DevoteForm from "@/pages/Admin/Devotes/DevoteForm";
 import DevoteeList from "@/pages/Admin/Devotes/DevoteList";
 import ResetPasswordPage from "@/pages/auth/ResetPasswordForm";
 import ForgotPasswordPage from "@/pages/auth/ForgotPasswordPage";
+import LoginWithOtpPage from "@/pages/auth/LoginWithOtpPage";
 import AddCashDonation from "@/pages/Admin/Donations/AddCashDonation";
 import ReconcileDonations from "@/pages/Admin/Donations/ReconcileDonations";
 import Reports from "@/pages/Admin/Reports/index";
@@ -39,6 +40,7 @@ const AllRoutes = () => {
       <Route path="/admin/login" element={<LoginPage />} />
       <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
       <Route path="/admin/forgot-password" element={<ForgotPasswordPage />} />
+      <Route path="/admin/login-otp" element={<LoginWithOtpPage />} />
 
       <Route
         element={

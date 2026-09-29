@@ -190,6 +190,14 @@ const LoginPage = () => {
                         Forgot password?
                       </Link>
                     </div>
+                    <div className="text-center pt-1">
+                      <Link
+                        to="/admin/login-otp"
+                        className="text-xs text-primary hover:underline"
+                      >
+                        Login with WhatsApp OTP instead
+                      </Link>
+                    </div>
                   </div>
 
                   <Button
