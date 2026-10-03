@@ -40,6 +40,9 @@ const PAYMENT_MODES = [
   { value: "bank_transfer", label: "Bank Transfer" },
 ];
 
+// Today's date as YYYY-MM-DD in the user's own timezone (en-CA formats that way)
+const todayStr = () => new Date().toLocaleDateString("en-CA");
+
 const AddCashDonation = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -65,6 +68,7 @@ const AddCashDonation = () => {
     hasReceipt: false,
     receiptNumber: "",
     paymentReference: "",
+    paymentDate: "",
   });
 
   useEffect(() => {
@@ -137,6 +141,14 @@ const AddCashDonation = () => {
         );
         return;
       }
+      if (!formData.paymentDate) {
+        toast.error("Please enter the date of the UPI transaction");
+        return;
+      }
+      if (formData.paymentDate > todayStr()) {
+        toast.error("Transaction date cannot be in the future");
+        return;
+      }
     }
 
     if (formData.hasReceipt && !formData.receiptNumber.trim()) {
@@ -157,6 +169,8 @@ const AddCashDonation = () => {
           paymentMode: formData.paymentMode,
           paymentReference:
             formData.paymentMode === "upi" ? upiReference : undefined,
+          paymentDate:
+            formData.paymentMode === "upi" ? formData.paymentDate : undefined,
           isAnonymous: formData.isAnonymous,
           receiptNumber: formData.hasReceipt
             ? formData.receiptNumber.trim()
@@ -176,6 +190,7 @@ const AddCashDonation = () => {
         hasReceipt: false,
         receiptNumber: "",
         paymentReference: "",
+        paymentDate: "",
       });
       setSelectedCampaigner(null);
       setSearch("");
@@ -331,6 +346,7 @@ const AddCashDonation = () => {
                   ...prev,
                   paymentMode: value,
                   paymentReference: value === "upi" ? prev.paymentReference : "",
+                  paymentDate: value === "upi" ? prev.paymentDate : "",
                 }))
               }
             >
@@ -359,25 +375,42 @@ const AddCashDonation = () => {
         </div>
 
         {formData.paymentMode === "upi" && (
-          <div className="space-y-2">
-            <Label>
-              UPI Reference Number (UTR){" "}
-              <span className="text-red-500">*</span>
-            </Label>
-            <Input
-              placeholder="e.g. 412345678901"
-              maxLength={35}
-              value={formData.paymentReference}
-              onChange={(e) =>
-                handleChange(
-                  "paymentReference",
-                  e.target.value.replace(/[^a-zA-Z0-9\s]/g, "").toUpperCase(),
-                )
-              }
-            />
+          <div className="space-y-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>
+                  UPI Reference Number (UTR){" "}
+                  <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  placeholder="e.g. 412345678901"
+                  maxLength={35}
+                  value={formData.paymentReference}
+                  onChange={(e) =>
+                    handleChange(
+                      "paymentReference",
+                      e.target.value
+                        .replace(/[^a-zA-Z0-9\s]/g, "")
+                        .toUpperCase(),
+                    )
+                  }
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>
+                  Date of Transaction <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  type="date"
+                  max={todayStr()}
+                  value={formData.paymentDate}
+                  onChange={(e) => handleChange("paymentDate", e.target.value)}
+                />
+              </div>
+            </div>
             <p className="text-xs text-muted-foreground">
-              Copy it from the donor's payment screenshot (UPI Ref No. / UTR /
-              Transaction ID). Each reference can only be recorded once.
+              Copy both from the donor's payment screenshot (UPI Ref No. / UTR
+              and the payment date). Each reference can only be recorded once.
             </p>
           </div>
         )}
