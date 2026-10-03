@@ -111,7 +111,7 @@ const DevoteeReport = () => {
   const handleExport = () => {
     if (!data?.devotees?.length) return;
 
-    const rows = [["Devotee", "Short Form", "Campaigner", "Status", "Raised (₹)", "Donors"]];
+    const rows = [["Devotee", "Short Form", "Campaigner", "Status", "Target (₹)", "Raised (₹)", "Donors"]];
     data.devotees.forEach((d) => {
       d.campaigners.forEach((c, i) => {
         rows.push([
@@ -119,14 +119,15 @@ const DevoteeReport = () => {
           i === 0 ? d.shortForm : "",
           c.name,
           c.status,
+          c.targetAmount || 0,
           c.raisedAmount,
           c.donorCount,
         ]);
       });
-      rows.push(["", "", "SUBTOTAL", "", d.totalRaised, d.donorCount]);
+      rows.push(["", "", "SUBTOTAL (committed, excl. rejected)", "", d.committedTarget || 0, d.totalRaised, d.donorCount]);
       rows.push([]);
     });
-    rows.push(["GRAND TOTAL", "", "", "", data.grandTotal.totalRaised, data.grandTotal.donorCount]);
+    rows.push(["GRAND TOTAL", "", "", "", data.grandTotal.committedTarget || 0, data.grandTotal.totalRaised, data.grandTotal.donorCount]);
 
     const csv = rows.map((r) => r.join(",")).join("\n");
     const blob = new Blob([csv], { type: "text/csv" });
@@ -241,7 +242,7 @@ const DevoteeReport = () => {
 
       {/* Summary cards */}
       {data && (
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <Card className="p-4">
             <div className="flex items-center gap-2 text-muted-foreground mb-1">
               <Users className="h-4 w-4" />
@@ -249,6 +250,18 @@ const DevoteeReport = () => {
             </div>
             <p className="text-2xl font-semibold">
               {data.devotees?.length || 0}
+            </p>
+          </Card>
+          <Card className="p-4">
+            <div className="flex items-center gap-2 text-muted-foreground mb-1">
+              <IndianRupee className="h-4 w-4" />
+              <span className="text-xs">Committed Target</span>
+            </div>
+            <p className="text-2xl font-semibold">
+              ₹{fmt(data.grandTotal?.committedTarget)}
+            </p>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              by {fmt(data.grandTotal?.committedCampaigners)} campaigners
             </p>
           </Card>
           <Card className="p-4">
@@ -310,6 +323,14 @@ const DevoteeReport = () => {
               </div>
               <div className="flex items-center gap-6">
                 <div className="text-right">
+                  <p className="text-xs text-muted-foreground">
+                    Committed Target
+                  </p>
+                  <p className="font-semibold">
+                    ₹{fmt(devotee.committedTarget)}
+                  </p>
+                </div>
+                <div className="text-right">
                   <p className="text-xs text-muted-foreground">Raised</p>
                   <p className="font-semibold text-green-700">
                     ₹{fmt(devotee.totalRaised)}
@@ -339,6 +360,7 @@ const DevoteeReport = () => {
                     <tr className="bg-muted/30 text-muted-foreground text-xs">
                       <th className="text-left px-4 py-2 pl-14">Campaigner</th>
                       <th className="text-left px-4 py-2">Status</th>
+                      <th className="text-right px-4 py-2">Target</th>
                       <th className="text-right px-4 py-2">Raised</th>
                       <th className="text-right px-4 py-2">Donors</th>
                     </tr>
@@ -358,6 +380,20 @@ const DevoteeReport = () => {
                           <td className="px-4 py-2.5">
                             <StatusBadge status={c.status} />
                           </td>
+                          <td
+                            className={`px-4 py-2.5 text-right ${
+                              c.status === "reject"
+                                ? "text-muted-foreground line-through"
+                                : ""
+                            }`}
+                            title={
+                              c.status === "reject"
+                                ? "Rejected — not counted in committed target"
+                                : undefined
+                            }
+                          >
+                            ₹{fmt(c.targetAmount)}
+                          </td>
                           <td className="px-4 py-2.5 text-right text-green-700 font-medium">
                             ₹{fmt(c.raisedAmount)}
                           </td>
@@ -372,6 +408,9 @@ const DevoteeReport = () => {
                         Subtotal
                       </td>
                       <td />
+                      <td className="px-4 py-2 text-right">
+                        ₹{fmt(devotee.committedTarget)}
+                      </td>
                       <td className="px-4 py-2 text-right text-green-700">
                         ₹{fmt(devotee.totalRaised)}
                       </td>
