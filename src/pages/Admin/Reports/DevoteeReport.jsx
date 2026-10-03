@@ -52,6 +52,7 @@ const DevoteeReport = () => {
 
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
+  const [exportingXlsx, setExportingXlsx] = useState(false);
   const [campaignId, setCampaignId] = useState("all");
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState(null);
@@ -137,6 +138,30 @@ const DevoteeReport = () => {
     URL.revokeObjectURL(url);
   };
 
+  // Excel workbook: one sheet per devotee with campaigner name, phone, target
+  const handleExportWorkbook = async () => {
+    setExportingXlsx(true);
+    try {
+      const query = new URLSearchParams();
+      if (campaignId && campaignId !== "all") query.set("campaignId", campaignId);
+
+      const res = await api.get(
+        `/dashboard/reports/devotee-campaigners-export?${query.toString()}`,
+        { responseType: "blob", timeout: 60000 },
+      );
+      const url = URL.createObjectURL(res.data);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `devotee-wise-campaigners-${new Date().toISOString().slice(0, 10)}.xlsx`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      toast.error("Could not generate the Excel file. Please try again.");
+    } finally {
+      setExportingXlsx(false);
+    }
+  };
+
   return (
     <div className="p-4 space-y-5 max-w-5xl mx-auto">
       <div className="flex items-center justify-between">
@@ -146,15 +171,26 @@ const DevoteeReport = () => {
             Donation summary grouped by devotee and their campaigners
           </p>
         </div>
-        <Button
-          variant="outline"
-          onClick={handleExport}
-          disabled={!data?.devotees?.length}
-          className="flex items-center gap-2"
-        >
-          <Download className="h-4 w-4" />
-          Export CSV
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            onClick={handleExportWorkbook}
+            disabled={exportingXlsx}
+            className="flex items-center gap-2"
+          >
+            <Download className="h-4 w-4" />
+            {exportingXlsx ? "Preparing..." : "Campaigners by Devotee (Excel)"}
+          </Button>
+          <Button
+            variant="outline"
+            onClick={handleExport}
+            disabled={!data?.devotees?.length}
+            className="flex items-center gap-2"
+          >
+            <Download className="h-4 w-4" />
+            Export CSV
+          </Button>
+        </div>
       </div>
 
       {/* Filters */}
