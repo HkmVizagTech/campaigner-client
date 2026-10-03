@@ -64,6 +64,7 @@ const AddCashDonation = () => {
     isAnonymous: false,
     hasReceipt: false,
     receiptNumber: "",
+    paymentReference: "",
   });
 
   useEffect(() => {
@@ -122,6 +123,22 @@ const AddCashDonation = () => {
       return;
     }
 
+    const upiReference = formData.paymentReference
+      .replace(/\s+/g, "")
+      .toUpperCase();
+    if (formData.paymentMode === "upi") {
+      if (!upiReference) {
+        toast.error("Please enter the UPI reference number (UTR)");
+        return;
+      }
+      if (!/^[A-Z0-9]{8,35}$/.test(upiReference)) {
+        toast.error(
+          "UPI reference must be 8–35 letters/digits (e.g. the 12-digit UTR)",
+        );
+        return;
+      }
+    }
+
     if (formData.hasReceipt && !formData.receiptNumber.trim()) {
       toast.error("Please enter the existing receipt number");
       return;
@@ -138,6 +155,8 @@ const AddCashDonation = () => {
           amount: Number(formData.amount),
           pan: formData.pan.trim() || undefined,
           paymentMode: formData.paymentMode,
+          paymentReference:
+            formData.paymentMode === "upi" ? upiReference : undefined,
           isAnonymous: formData.isAnonymous,
           receiptNumber: formData.hasReceipt
             ? formData.receiptNumber.trim()
@@ -156,6 +175,7 @@ const AddCashDonation = () => {
         isAnonymous: false,
         hasReceipt: false,
         receiptNumber: "",
+        paymentReference: "",
       });
       setSelectedCampaigner(null);
       setSearch("");
@@ -173,8 +193,8 @@ const AddCashDonation = () => {
         <div>
           <h2 className="text-xl font-semibold">Add Cash Donation</h2>
           <p className="text-sm text-muted-foreground mt-1">
-            Record an offline donation (cash, UPI, cheque, or bank transfer)
-            received directly from a donor.
+            Record a donation received directly from a donor (cash, UPI, cheque, or
+            bank transfer). UPI donations need the transaction reference.
           </p>
         </div>
 
@@ -306,7 +326,13 @@ const AddCashDonation = () => {
             <Label>Payment Mode</Label>
             <Select
               value={formData.paymentMode}
-              onValueChange={(value) => handleChange("paymentMode", value)}
+              onValueChange={(value) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  paymentMode: value,
+                  paymentReference: value === "upi" ? prev.paymentReference : "",
+                }))
+              }
             >
               <SelectTrigger className="w-full">
                 <SelectValue />
@@ -331,6 +357,30 @@ const AddCashDonation = () => {
             />
           </div>
         </div>
+
+        {formData.paymentMode === "upi" && (
+          <div className="space-y-2">
+            <Label>
+              UPI Reference Number (UTR){" "}
+              <span className="text-red-500">*</span>
+            </Label>
+            <Input
+              placeholder="e.g. 412345678901"
+              maxLength={35}
+              value={formData.paymentReference}
+              onChange={(e) =>
+                handleChange(
+                  "paymentReference",
+                  e.target.value.replace(/[^a-zA-Z0-9\s]/g, "").toUpperCase(),
+                )
+              }
+            />
+            <p className="text-xs text-muted-foreground">
+              Copy it from the donor's payment screenshot (UPI Ref No. / UTR /
+              Transaction ID). Each reference can only be recorded once.
+            </p>
+          </div>
+        )}
 
         <div className="space-y-2">
           <Label>PAN (optional, for 80G receipt)</Label>
