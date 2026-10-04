@@ -438,7 +438,7 @@ const AddCashDonation = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label>In honour of (optional)</Label>
+            <Label>In honour of / Sevak Name (optional)</Label>
             <Input
               placeholder="Name of the person being honoured"
               maxLength={100}

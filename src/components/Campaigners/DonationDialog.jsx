@@ -475,7 +475,7 @@ export function DonationDialog({
                     }
                   />
                   <p className="text-xs text-muted-foreground">
-                    Printed on the donation receipt.
+                    Printed as the Sevak Name on the donation receipt.
                   </p>
                 </div>
               )}
