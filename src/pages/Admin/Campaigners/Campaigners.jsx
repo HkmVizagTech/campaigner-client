@@ -45,6 +45,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import CampaignerDetailsModal from "@/components/utils/CampaignerDetailsModal";
+import ResendCampaignerLinks from "@/components/utils/ResendCampaignerLinks";
 import { toast } from "@/utils/toast";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -278,6 +279,8 @@ export default function CampaignersTable() {
               </PopoverHeader>
             </PopoverContent>
           </Popover>
+
+          {isAdmin && <ResendCampaignerLinks campaignId={effectiveCampaignId} />}
         </div>
       </div>
       <div className="grid gap-3 md:hidden">
