@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
+import { Button } from "@/components/ui/button";
 
 const YOUTUBE_ID_PATTERN =
   /(?:youtube\.com\/(?:shorts\/|watch\?(?:.*&)?v=|embed\/|live\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/;
@@ -37,9 +38,9 @@ const ConstructionUpdateSection = ({ onDonate }) => {
 
   return (
     <section ref={sectionRef} className="py-6">
-      <div className="mx-auto grid w-full max-w-7xl items-center gap-10 rounded-3xl bg-[#F4F6FC] px-5 py-10 sm:px-10 md:grid-cols-[minmax(0,400px)_1fr] md:gap-16 md:py-12 lg:px-16">
+      <div className="mx-auto grid w-full max-w-7xl items-center gap-10 rounded-2xl bg-muted px-5 py-10 sm:px-10 md:grid-cols-[minmax(0,400px)_1fr] md:gap-16 md:py-12 lg:px-16">
         <div className="mx-auto w-full max-w-[320px] md:max-w-[400px]">
-          <div className="relative aspect-9/16 overflow-hidden rounded-[28px] bg-black shadow-2xl shadow-slate-900/15">
+          <div className="relative aspect-9/16 overflow-hidden rounded-3xl bg-black shadow-2xl ring-1 ring-yellow-500/30">
             {inView ? (
               <iframe
                 src={embedUrl}
@@ -60,28 +61,31 @@ const ConstructionUpdateSection = ({ onDonate }) => {
         </div>
 
         <div className="flex flex-col items-start gap-5 text-left">
-          <span className="rounded-full bg-[#26357F] px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-white">
+          <span className="rounded-full border border-yellow-500/60 bg-linear-to-br from-yellow-300 via-yellow-400 to-amber-500 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-black shadow-sm">
             Monthly Construction Update
           </span>
 
-          <h2 className="text-3xl font-bold leading-tight tracking-tight text-[#1D1B16] sm:text-4xl lg:text-5xl">
-            Watch The Temple Rise, Brick by Brick
+          <h2 className="text-3xl font-bold leading-tight sm:text-4xl lg:text-5xl">
+            Watch The Temple Rise,{" "}
+            <span className="bg-linear-to-r from-yellow-300 via-yellow-400 to-amber-500 bg-clip-text font-semibold text-transparent">
+              Brick by Brick
+            </span>
           </h2>
 
-          <p className="max-w-xl text-base leading-relaxed text-[#5F584B] sm:text-lg">
+          <p className="max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
             Every seva you offer becomes real progress on site. Watch our latest
             monthly update and see exactly how your contribution is shaping the
             Hare Krishna Vaikuntham Temple — foundation to framework, floor by
             floor.
           </p>
 
-          <button
-            type="button"
+          <Button
+            size="lg"
             onClick={onDonate}
-            className="mt-1 rounded-xl bg-linear-to-b from-[#EDC75A] to-[#D9A62E] px-10 py-4 text-lg font-semibold text-[#1D1B16] shadow-lg shadow-amber-600/20 transition hover:shadow-xl hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#26357F]"
+            className="mt-1 rounded-full bg-linear-to-r from-[#8C6A1D] via-[#FFD700] to-[#B8962E] px-12 font-semibold text-black shadow-[0_6px_20px_rgba(255,215,0,0.35)] transition hover:brightness-110"
           >
             Donate Now
-          </button>
+          </Button>
         </div>
       </div>
     </section>
