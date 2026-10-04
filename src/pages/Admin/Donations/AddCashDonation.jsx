@@ -65,6 +65,8 @@ const AddCashDonation = () => {
     pan: "",
     paymentMode: "cash",
     isAnonymous: false,
+    honoreeName: "",
+    honorOccasion: "",
     hasReceipt: false,
     receiptNumber: "",
     paymentReference: "",
@@ -113,6 +115,17 @@ const AddCashDonation = () => {
     const phone = formData.donorPhone.replace(/\D/g, "");
     if (phone.length !== 10) {
       toast.error("Please enter a valid 10-digit phone number");
+      return;
+    }
+    if (
+      formData.donorEmail.trim() &&
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.donorEmail.trim())
+    ) {
+      toast.error("Please enter a valid email address");
+      return;
+    }
+    if (formData.honorOccasion.trim() && !formData.honoreeName.trim()) {
+      toast.error("Please enter the name of the person being honoured");
       return;
     }
     if (!formData.amount || Number(formData.amount) <= 0) {
@@ -172,6 +185,12 @@ const AddCashDonation = () => {
           paymentDate:
             formData.paymentMode === "upi" ? formData.paymentDate : undefined,
           isAnonymous: formData.isAnonymous,
+          inHonorOf: formData.honoreeName.trim()
+            ? {
+                name: formData.honoreeName.trim(),
+                occasion: formData.honorOccasion.trim(),
+              }
+            : undefined,
           receiptNumber: formData.hasReceipt
             ? formData.receiptNumber.trim()
             : undefined,
@@ -187,6 +206,8 @@ const AddCashDonation = () => {
         pan: "",
         paymentMode: "cash",
         isAnonymous: false,
+        honoreeName: "",
+        honorOccasion: "",
         hasReceipt: false,
         receiptNumber: "",
         paymentReference: "",
@@ -367,7 +388,7 @@ const AddCashDonation = () => {
             <Label>Email (optional)</Label>
             <Input
               type="email"
-              placeholder="Donor email"
+              placeholder="Leave blank to use donor@hkmvizag.org"
               value={formData.donorEmail}
               onChange={(e) => handleChange("donorEmail", e.target.value)}
             />
@@ -414,6 +435,27 @@ const AddCashDonation = () => {
             </p>
           </div>
         )}
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label>In honour of (optional)</Label>
+            <Input
+              placeholder="Name of the person being honoured"
+              maxLength={100}
+              value={formData.honoreeName}
+              onChange={(e) => handleChange("honoreeName", e.target.value)}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Occasion (optional)</Label>
+            <Input
+              placeholder="e.g. Birthday, In loving memory"
+              maxLength={100}
+              value={formData.honorOccasion}
+              onChange={(e) => handleChange("honorOccasion", e.target.value)}
+            />
+          </div>
+        </div>
 
         <div className="space-y-2">
           <Label>PAN (optional, for 80G receipt)</Label>

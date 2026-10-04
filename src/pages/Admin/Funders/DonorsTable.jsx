@@ -228,6 +228,11 @@ export default function DonorsTable() {
                   <p className="text-sm text-muted-foreground">
                     {donor.donorPhone}
                   </p>
+                  {donor.inHonorOf?.name && (
+                    <p className="text-xs text-muted-foreground">
+                      In honour of {donor.inHonorOf.name}
+                    </p>
+                  )}
                 </div>
                 <Badge variant="default" className="capitalize">
                   {donor.status}
@@ -322,6 +327,11 @@ export default function DonorsTable() {
                       <span className="text-xs text-muted-foreground">
                         {donor.donorPhone}
                       </span>
+                      {donor.inHonorOf?.name && (
+                        <span className="text-xs text-muted-foreground">
+                          In honour of {donor.inHonorOf.name}
+                        </span>
+                      )}
                     </div>
                   </TableCell>
 

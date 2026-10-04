@@ -174,6 +174,17 @@ export default function ThankYouPage() {
 
               <DetailRow label="Donor Name" value={donation?.donorName} />
 
+              {donation?.inHonorOf?.name && (
+                <DetailRow
+                  label="In Honour Of"
+                  value={
+                    donation.inHonorOf.occasion
+                      ? `${donation.inHonorOf.name} (${donation.inHonorOf.occasion})`
+                      : donation.inHonorOf.name
+                  }
+                />
+              )}
+
               <DetailRow label="Email" value={donation?.donorEmail ?? "N/A"} />
 
               <DetailRow
