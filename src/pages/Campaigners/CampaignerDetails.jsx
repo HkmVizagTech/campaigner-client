@@ -11,6 +11,7 @@ import MajesticAltarsBanner from "@/components/Campaigners/MajesticAltarsBanner"
 import PowerOfGivingSection from "@/components/Campaigners/PowerOfGivingSection";
 import ProjectOverviewSection from "@/components/Campaigners/ProjectOverviewSection";
 import RecentContributors from "@/components/Campaigners/RecentContributors";
+import ConstructionUpdateSection from "@/components/Campaigners/ConstructionUpdateSection";
 import TempleHighlights from "@/components/Campaigners/TempleHighlights";
 import TempleSpacesSection from "@/components/Campaigners/TempleSpacesSection";
 import TempleVisionSection from "@/components/Campaigners/TempleVisionSection";
@@ -220,6 +221,13 @@ const CampaignerDetails = () => {
           <div className="container mx-auto px-2 pt-8 space-y-1">
             <CampaignSideBySide ref={sidbysideRef} />
             <RecentContributors />
+            <ConstructionUpdateSection
+              onDonate={() =>
+                document
+                  .getElementById("donation-card")
+                  ?.scrollIntoView({ behavior: "smooth", block: "start" })
+              }
+            />
             <TempleVisionSection />
             <TempleHighlights />
             <ProjectOverviewSection />
