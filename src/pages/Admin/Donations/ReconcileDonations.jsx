@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import api from "@/api/api";
+import PendingPaymentsCheck from "@/components/utils/PendingPaymentsCheck";
 import { toast } from "@/utils/toast";
 import { RefreshCw, Search, CheckCircle2, Clock, ShieldAlert, AlertTriangle } from "lucide-react";
 
@@ -193,6 +194,8 @@ const ReconcileDonations = () => {
           wasn't captured (donor closed the browser, webhook missed it, etc.)
         </p>
       </div>
+
+      <PendingPaymentsCheck />
 
       {/* Funders with Order ID instead of Payment ID — urgent */}
       <Card className="p-4 space-y-3 border-red-300">
