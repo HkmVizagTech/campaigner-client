@@ -214,7 +214,7 @@ export default function CreateCampaign() {
               <p className="text-xs text-muted-foreground">
                 Shown as &ldquo;Monthly Construction Update&rdquo; on every
                 campaigner page. Paste the new link each month; leave empty to
-                hide the section.
+                use the default temple update video.
               </p>
             </div>
 

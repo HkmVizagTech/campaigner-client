@@ -7,12 +7,16 @@ const YOUTUBE_ID_PATTERN =
 
 const getYoutubeId = (url) => url?.match(YOUTUBE_ID_PATTERN)?.[1] ?? null;
 
+// Same Short as the HKM site's sqft-seva campaign page; used until an admin
+// sets a different "Monthly update video" on the campaign.
+const DEFAULT_VIDEO_ID = "mPAt0gb__Hw";
+
 // Monthly construction update: the campaign's YouTube Short beside a short
-// pitch and a Donate button. Hidden until an admin sets the video link on
-// the campaign.
+// pitch and a Donate button. Shows the campaign's video, or the default.
 const ConstructionUpdateSection = ({ onDonate }) => {
   const { currentCampaign } = useSelector((state) => state.campaign);
-  const videoId = getYoutubeId(currentCampaign?.updateVideoUrl);
+  const videoId =
+    getYoutubeId(currentCampaign?.updateVideoUrl) || DEFAULT_VIDEO_ID;
   const sectionRef = useRef(null);
   const [inView, setInView] = useState(false);
 
@@ -31,8 +35,6 @@ const ConstructionUpdateSection = ({ onDonate }) => {
 
     return () => observer.disconnect();
   }, [videoId, inView]);
-
-  if (!videoId) return null;
 
   const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&playsinline=1&rel=0&modestbranding=1`;
 
