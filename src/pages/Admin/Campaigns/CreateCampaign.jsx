@@ -26,6 +26,7 @@ export default function CreateCampaign() {
     targetAmount: "",
     startDate: "",
     endDate: "",
+    updateVideoUrl: "",
   });
   const {
     createCampaignLoading: loading,
@@ -54,6 +55,7 @@ export default function CreateCampaign() {
       endDate: new Date(singleCampaignDetails?.endDate)
         .toISOString()
         .split("T")[0],
+      updateVideoUrl: singleCampaignDetails?.updateVideoUrl ?? "",
     });
   }, [singleCampaignDetails, isEdit, id, dispatch]);
 
@@ -99,6 +101,7 @@ export default function CreateCampaign() {
         targetAmount: "",
         startDate: "",
         endDate: "",
+        updateVideoUrl: "",
       });
     }
   };
@@ -194,6 +197,27 @@ export default function CreateCampaign() {
               </div>
             </div>
 
+            {/* Monthly construction update video */}
+            <div className="space-y-2">
+              <Label htmlFor="updateVideoUrl">
+                Monthly update video (YouTube link, optional)
+              </Label>
+              <Input
+                id="updateVideoUrl"
+                name="updateVideoUrl"
+                type="url"
+                placeholder="https://youtube.com/shorts/..."
+                value={formData.updateVideoUrl}
+                onChange={handleChange}
+                className="focus-visible:ring-2 focus-visible:ring-primary"
+              />
+              <p className="text-xs text-muted-foreground">
+                Shown as &ldquo;Monthly Construction Update&rdquo; on every
+                campaigner page. Paste the new link each month; leave empty to
+                hide the section.
+              </p>
+            </div>
+
             {/* Duration Preview */}
             {duration && (
               <div className="flex flex-col gap-1 rounded-lg border bg-muted p-4 text-sm sm:flex-row sm:items-center sm:justify-between">
@@ -224,6 +248,7 @@ export default function CreateCampaign() {
                       targetAmount: "",
                       startDate: "",
                       endDate: "",
+                      updateVideoUrl: "",
                     })
                   }
                 >

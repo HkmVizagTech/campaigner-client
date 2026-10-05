@@ -207,6 +207,9 @@ export function DonationDialog({
     pan: "",
     tax: false,
     anonymous: false,
+    honor: false,
+    honoreeName: "",
+    honorOccasion: "",
     prasadam: inputValue >= 999,
     address: "",
     city: "",
@@ -241,6 +244,17 @@ export function DonationDialog({
       newErrors.phoneNumber = "Phone number is required";
     } else if (!/^[6-9]\d{9}$/.test(formData.phoneNumber)) {
       newErrors.phoneNumber = "Enter valid 10 digit mobile number";
+    }
+
+    if (
+      formData.email.trim() &&
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())
+    ) {
+      newErrors.email = "Enter a valid email address";
+    }
+
+    if (formData.honor && !formData.honoreeName.trim()) {
+      newErrors.honoreeName = "Enter the name of the person you are honouring";
     }
 
     if (formData.tax) {
@@ -287,7 +301,15 @@ export function DonationDialog({
     }
 
     if (formData.pan) payload.pan = formData.pan;
-    if (formData.email) payload.email = formData.email;
+    // Left blank, the server records the default donor email.
+    if (formData.email.trim()) payload.email = formData.email.trim();
+
+    if (formData.honor && formData.honoreeName.trim()) {
+      payload.inHonorOf = {
+        name: formData.honoreeName.trim(),
+        occasion: formData.honorOccasion.trim(),
+      };
+    }
 
     if (formData.tax || formData.prasadam) {
       payload.address = {
@@ -382,11 +404,15 @@ export function DonationDialog({
             )}
 
             <Input
+              type="email"
               placeholder="Email (Optional)"
               className="h-11 rounded-xl"
               value={formData.email}
               onChange={(e) => handleChange("email", e.target.value)}
             />
+            {error.email && (
+              <p className="text-destructive text-sm">{error.email}</p>
+            )}
           </div>
 
           {/* Options */}
@@ -411,6 +437,48 @@ export function DonationDialog({
                 onCheckedChange={(v) => handleChange("anonymous", v === true)}
               />
               <Label className="text-sm">Make my donation anonymous</Label>
+            </div>
+
+            <div className="space-y-3 rounded-xl border border-border/60 px-3 py-3">
+              <div className="flex items-center gap-3">
+                <Checkbox
+                  id="donation-in-honor"
+                  checked={formData.honor}
+                  onCheckedChange={(v) => handleChange("honor", v === true)}
+                />
+                <Label htmlFor="donation-in-honor" className="text-sm">
+                  Dedicate this donation in honour of someone
+                </Label>
+              </div>
+
+              {formData.honor && (
+                <div className="space-y-3">
+                  <Input
+                    className="h-11 rounded-xl"
+                    placeholder="Their name *"
+                    maxLength={100}
+                    value={formData.honoreeName}
+                    onChange={(e) => handleChange("honoreeName", e.target.value)}
+                  />
+                  {error.honoreeName && (
+                    <p className="text-destructive text-sm">
+                      {error.honoreeName}
+                    </p>
+                  )}
+                  <Input
+                    className="h-11 rounded-xl"
+                    placeholder="Occasion (optional), e.g. Birthday, In loving memory"
+                    maxLength={100}
+                    value={formData.honorOccasion}
+                    onChange={(e) =>
+                      handleChange("honorOccasion", e.target.value)
+                    }
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Printed as the Sevak Name on the donation receipt.
+                  </p>
+                </div>
+              )}
             </div>
 
             {inputValue >= 999 && (

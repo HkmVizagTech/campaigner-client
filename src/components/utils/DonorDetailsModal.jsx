@@ -16,6 +16,17 @@ export default function DonorDetailsModal({ donor, onClose }) {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
           <Detail label="Donor Name" value={donor?.donorName ?? "N/A"} />
           <Detail label="Phone" value={donor?.donorPhone ?? "N/A"} />
+          <Detail label="Email" value={donor?.donorEmail ?? "N/A"} />
+          {donor?.inHonorOf?.name && (
+            <Detail
+              label="In Honour Of"
+              value={
+                donor.inHonorOf.occasion
+                  ? `${donor.inHonorOf.name} (${donor.inHonorOf.occasion})`
+                  : donor.inHonorOf.name
+              }
+            />
+          )}
           <Detail
             label="Donation Date"
             value={new Date(donor.createdAt).toLocaleDateString("en-GB", {
