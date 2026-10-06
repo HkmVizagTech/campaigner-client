@@ -220,7 +220,6 @@ const CampaignerDetails = () => {
 
           <div className="container mx-auto px-2 pt-8 space-y-1">
             <CampaignSideBySide ref={sidbysideRef} />
-            <RecentContributors />
             <ConstructionUpdateSection
               onDonate={() =>
                 document
@@ -228,6 +227,7 @@ const CampaignerDetails = () => {
                   ?.scrollIntoView({ behavior: "smooth", block: "start" })
               }
             />
+            <RecentContributors />
             <TempleVisionSection />
             <TempleHighlights />
             <ProjectOverviewSection />
