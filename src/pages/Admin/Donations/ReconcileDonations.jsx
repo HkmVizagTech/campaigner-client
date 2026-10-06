@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import api from "@/api/api";
 import PendingPaymentsCheck from "@/components/utils/PendingPaymentsCheck";
+import WebhookHealth from "@/components/utils/WebhookHealth";
 import { toast } from "@/utils/toast";
 import { RefreshCw, Search, CheckCircle2, Clock, ShieldAlert, AlertTriangle } from "lucide-react";
 
@@ -194,6 +195,8 @@ const ReconcileDonations = () => {
           wasn't captured (donor closed the browser, webhook missed it, etc.)
         </p>
       </div>
+
+      <WebhookHealth />
 
       <PendingPaymentsCheck />
 
