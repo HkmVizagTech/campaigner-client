@@ -4,7 +4,7 @@ import api from "@/api/api";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
-const WEBHOOK_URL = `${(import.meta.env.VITE_APP_BASE_URL || "").replace(/\/+$/, "")}/webhooks/razorpay`;
+const WEBHOOK_URL = `${(import.meta.env.VITE_APP_BASE_URL || "").replace(/\/+$/, "")}/webhook/razorpay`;
 
 const OK_OUTCOMES = new Set(["ok", "already_processed", "ignored", "not_found_logged", "accepted"]);
 
