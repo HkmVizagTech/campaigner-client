@@ -151,9 +151,9 @@ const CampaignDonatePanel = ({ details, sevas = [], sevaLoading }) => {
                 </p>
               </div>
 
-              <div className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+              {/* <div className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
                 Min ₹100
-              </div>
+              </div> */}
             </div>
 
             <div className="mt-3 space-y-3">
