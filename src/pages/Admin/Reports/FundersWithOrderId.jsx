@@ -54,6 +54,7 @@ const FundersWithOrderId = () => {
   const [loading, setLoading] = useState(false);
   const [funders, setFunders] = useState([]);
   const [pagination, setPagination] = useState(null);
+  const [totals, setTotals] = useState(null);
   const [page, setPage] = useState(1);
   const [exporting, setExporting] = useState(false);
   const [verifying, setVerifying] = useState(false);
@@ -73,6 +74,7 @@ const FundersWithOrderId = () => {
       const res = await api.get(`/dashboard/reports/funders-with-order-id?${query.toString()}`);
       setFunders(res.data?.data?.funders || []);
       setPagination(res.data?.data?.pagination || null);
+      setTotals(res.data?.data?.totalsByStatus || null);
       setVerifiedMap({});
     } catch (err) {
       toast.error(err?.response?.data?.message || "Failed to fetch funders");
@@ -238,6 +240,36 @@ const FundersWithOrderId = () => {
           </div>
         </div>
       </Card>
+
+      {totals && (
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <Card className="p-4 sm:col-span-1">
+            <p className="text-xs text-muted-foreground">
+              Raised (successful) — {fromDate || toDate ? "selected dates" : "all time"}
+            </p>
+            <p className="text-2xl font-semibold text-green-700">
+              ₹{fmt(totals.success.amount)}
+            </p>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              from {fmt(totals.success.count)} donations
+            </p>
+          </Card>
+          <Card className="p-4">
+            <p className="text-xs text-muted-foreground">Pending</p>
+            <p className="text-xl font-semibold">₹{fmt(totals.pending.amount)}</p>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              {fmt(totals.pending.count)} donations
+            </p>
+          </Card>
+          <Card className="p-4">
+            <p className="text-xs text-muted-foreground">Failed</p>
+            <p className="text-xl font-semibold">₹{fmt(totals.failed.amount)}</p>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              {fmt(totals.failed.count)} donations
+            </p>
+          </Card>
+        </div>
+      )}
 
       <div className="flex items-center justify-between">
         <p className="text-sm text-muted-foreground">
