@@ -7,9 +7,9 @@ const YOUTUBE_ID_PATTERN =
 
 const getYoutubeId = (url) => url?.match(YOUTUBE_ID_PATTERN)?.[1] ?? null;
 
-// Same Short as the HKM site's sqft-seva campaign page; used until an admin
-// sets a different "Monthly update video" on the campaign.
-const DEFAULT_VIDEO_ID = "mPAt0gb__Hw";
+// Default monthly update Short; used until an admin sets a different
+// "Monthly update video" on the campaign.
+const DEFAULT_VIDEO_ID = "2Mwr0bPrP6g";
 
 // Monthly construction update: the campaign's YouTube Short beside a short
 // pitch and a Donate button. Shows the campaign's video, or the default.
