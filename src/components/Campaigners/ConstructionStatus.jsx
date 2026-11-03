@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
 
 const images = [
-  "https://pub-f62a54aab54448388c9e16334109aea9.r2.dev/Temple%2520Images/status1.jpeg",
-  "https://pub-f62a54aab54448388c9e16334109aea9.r2.dev/Temple%2520Images/status2.jpeg",
-  "https://pub-f62a54aab54448388c9e16334109aea9.r2.dev/Temple%2520Images/status3.jpeg",
-  "https://pub-f62a54aab54448388c9e16334109aea9.r2.dev/Temple%2520Images/status4.jpeg",
+  "https://pub-32ade8e1209149f980ffe2aa4ddc6c99.r2.dev/media-library/1793702996469-1793702995670-WhatsAppImage2026-11-03at4.17.19PM.jpeg",
+  "https://pub-32ade8e1209149f980ffe2aa4ddc6c99.r2.dev/media-library/1793702996064-1793702995455-WhatsAppImage2026-11-03at4.17.19PM1.jpeg",
+  "https://pub-32ade8e1209149f980ffe2aa4ddc6c99.r2.dev/media-library/1793702998947-1793702995899-WhatsAppImage2026-11-03at4.17.22PM.jpeg",
+  "https://pub-32ade8e1209149f980ffe2aa4ddc6c99.r2.dev/media-library/1793702998027-1793702995845-WhatsAppImage2026-11-03at4.17.21PM1.jpeg",
+  "https://pub-32ade8e1209149f980ffe2aa4ddc6c99.r2.dev/media-library/1793702997561-1793702995820-WhatsAppImage2026-11-03at4.17.20PM.jpeg",
+  "https://pub-32ade8e1209149f980ffe2aa4ddc6c99.r2.dev/media-library/1793702996902-1793702995743-WhatsAppImage2026-11-03at4.17.20PM1.jpeg",
+  "https://pub-32ade8e1209149f980ffe2aa4ddc6c99.r2.dev/media-library/1793702998535-1793702995853-WhatsAppImage2026-11-03at4.17.21PM.jpeg",
 ];
 
 const ConstructionStatus = () => {
